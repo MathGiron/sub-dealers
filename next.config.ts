@@ -1,7 +1,21 @@
-import type { NextConfig } from "next";
+require("dotenv").config({ path: ".env.local" });
 
-const nextConfig: NextConfig = {
-  /* config options here */
+module.exports = {
+  env: {
+    SHOPIFY_ADMIN_API_TOKEN: process.env.SHOPIFY_ADMIN_API_TOKEN,
+    SHOPIFY_STORE_DOMAIN: process.env.SHOPIFY_STORE_DOMAIN,
+  },
+};
+const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.shopify.com",
+        pathname: "/s/files/**",
+      },
+    ],
+  },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
