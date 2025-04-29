@@ -1,4 +1,4 @@
-import ProductCatalog from "@/components/product-catalog";
+import { ExpandableCardDemo } from "@/components/expandable-card-demo-grid"; // Ajustado para importação nomeada
 import HeroSectionOne from "@/components/hero-section-demo-1";
 import Navbar from "@/components/navbar";
 import { Product } from "@/services/shopifyService";
@@ -28,14 +28,14 @@ export default async function Home() {
   } catch (error) {
     console.error("Erro ao carregar produtos na página:", error);
   }
-  console.log("Produtos a serem passados para ProductCatalog:", products);
+  console.log("Produtos a serem passados para ExpandableCardDemo:", products);
 
   return (
     <div className="min-h-screen">
       <Navbar />
       <HeroSectionOne />
       <main>
-        <ProductCatalog products={products} />
+        <ExpandableCardDemo products={products} />
       </main>
     </div>
   );
