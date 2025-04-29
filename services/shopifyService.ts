@@ -4,6 +4,7 @@ import { GraphQLClient } from "graphql-request";
 interface ProductSpec {
   name: string;
   included: boolean;
+  price?: string; // Campo para o preço da variante
 }
 
 export interface Product {
@@ -17,13 +18,13 @@ export interface Product {
   highlighted?: boolean;
 }
 
-// Query GraphQL
+// Query GraphQL ajustada para incluir priceRange
 const GET_SUBDEALERS_PRODUCTS_QUERY = `
   query {
     collection(id: "gid://shopify/Collection/498546704664") {
       id
       title
-      products(first: 10) {
+      products(first: 30) {
         edges {
           node {
             id
@@ -31,6 +32,12 @@ const GET_SUBDEALERS_PRODUCTS_QUERY = `
             description
             featuredImage {
               url
+            }
+            priceRange {
+              minVariantPrice {
+                amount
+                currencyCode
+              }
             }
             variants(first: 3) {
               edges {
@@ -84,10 +91,14 @@ export const fetchSubDealersProducts = async (): Promise<Product[]> => {
     }
 
     const products: Product[] = subDealersCollection.products.edges.map((edge: any) => {
-      const variants = edge.node.variants.edges.map((variantEdge: any) => ({
-        name: variantEdge.node.title,
-        included: true,
-      }));
+      const variants = edge.node.variants.edges.map((variantEdge: any) => {
+        console.log("fetchSubDealersProducts: Variante mapeada:", variantEdge.node);
+        return {
+          name: variantEdge.node.title,
+          included: true,
+          price: variantEdge.node.price || edge.node.priceRange?.minVariantPrice?.amount, // Usar priceRange como fallback
+        };
+      });
 
       const product = {
         id: edge.node.id,

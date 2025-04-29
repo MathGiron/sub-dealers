@@ -1,5 +1,6 @@
 import ProductCatalog from "@/components/product-catalog";
-import  HeroSectionOne  from "@/components/hero-section-demo-1";
+import HeroSectionOne from "@/components/hero-section-demo-1";
+import Navbar from "@/components/navbar";
 import { Product } from "@/services/shopifyService";
 
 async function fetchProducts(): Promise<Product[]> {
@@ -29,11 +30,13 @@ export default async function Home() {
   }
   console.log("Produtos a serem passados para ProductCatalog:", products);
 
-
   return (
-    <main>
-      <HeroSectionOne></HeroSectionOne>
-      <ProductCatalog products={products} />
-    </main>
+    <div className="min-h-screen">
+      <Navbar />
+      <HeroSectionOne />
+      <main>
+        <ProductCatalog products={products} />
+      </main>
+    </div>
   );
 }

@@ -1,49 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import Image from "next/image";
+import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
+import Link from "next/link";
 import React from "react";
-
-// Define the Navbar component
-const Navbar: React.FC = () => {
-  return (
-    <nav className="flex w-full items-center justify-between border-t border-b border-neutral-200 px-4 py-4 dark:border-neutral-800">
-      <div className="flex items-center gap-2">
-        <Image
-          src="/Timber_Ecoflow.png"
-          alt="Timber EcoFlow Logo"
-          width={150}
-          height={40}
-          className="object-contain"
-        />
-      </div>
-      <div className="flex items-center gap-4">
-        <SignedOut>
-          <SignInButton mode="modal">
-            <button className="w-24 transform rounded-lg bg-black px-6 py-2 font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-800 md:w-32 dark:bg-white dark:text-black dark:hover:bg-gray-200">
-              Login
-            </button>
-          </SignInButton>
-          <SignUpButton mode="modal">
-            <button className="w-24 transform rounded-lg border border-gray-300 bg-white px-6 py-2 font-medium text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-100 md:w-32 dark:border-gray-700 dark:bg-black dark:text-white dark:hover:bg-gray-900">
-              Sign Up
-            </button>
-          </SignUpButton>
-        </SignedOut>
-        <SignedIn>
-          <UserButton />
-        </SignedIn>
-      </div>
-    </nav>
-  );
-};
 
 // Define the HeroSectionOne component
 const HeroSectionOne: React.FC = () => {
   return (
     <div className="relative mx-auto my-10 flex max-w-7xl flex-col items-center justify-center">
-      <Navbar />
       <div className="absolute inset-y-0 left-0 h-full w-px bg-neutral-200/80 dark:bg-neutral-800/80">
         <div className="absolute top-0 h-40 w-px bg-gradient-to-b from-transparent via-blue-500 to-transparent" />
       </div>
@@ -88,9 +53,20 @@ const HeroSectionOne: React.FC = () => {
           transition={{ duration: 0.3, delay: 1 }}
           className="relative z-10 mt-8 flex flex-wrap items-center justify-center gap-4"
         >
-          <button className="w-60 transform rounded-lg bg-black px-6 py-2 font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200">
-            Ver o Catalogo
-          </button>
+          <SignedOut>
+            <SignInButton mode="modal">
+              <button className="w-60 transform rounded-lg bg-black px-6 py-2 font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200">
+                Ver o Catálogo
+              </button>
+            </SignInButton>
+          </SignedOut>
+          <SignedIn>
+            <Link href="/catalogo">
+              <button className="w-60 transform rounded-lg bg-black px-6 py-2 font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-800 dark:bg-white dark:text-black dark:hover:bg-gray-200">
+                Ver o Catálogo
+              </button>
+            </Link>
+          </SignedIn>
           <button className="w-60 transform rounded-lg border border-gray-300 bg-white px-6 py-2 font-medium text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-100 dark:border-gray-700 dark:bg-black dark:text-white dark:hover:bg-gray-900">
             Contatar Suporte
           </button>
