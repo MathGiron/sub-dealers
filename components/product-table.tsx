@@ -1,75 +1,118 @@
 "use client";
 
+import * as React from "react";
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+  VisibilityState,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { ChevronDown } from "lucide-react";
+import { columns } from "@/components/ui/columns";
+import { DataTable } from "@/components/ui/data-table";
 import { Product } from "@/services/shopifyService";
-import Link from "next/link";
-import Image from "next/image";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
 
-interface ProductTableProps {
-  products: Product[];
+interface ProductDataTableProps {
+  initialData: Product[];
 }
 
-const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
-  return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full border-collapse border border-neutral-200 dark:border-neutral-800">
-        <thead>
-          <tr className="bg-neutral-100 dark:bg-neutral-900">
-            <th className="border border-neutral-200 dark:border-neutral-800 px-4 py-2 text-left text-sm font-medium text-neutral-800 dark:text-white">
-              Foto
-            </th>
-            <th className="border border-neutral-200 dark:border-neutral-800 px-4 py-2 text-left text-sm font-medium text-neutral-800 dark:text-white">
-              Nome
-            </th>
-            <th className="border border-neutral-200 dark:border-neutral-800 px-4 py-2 text-left text-sm font-medium text-neutral-800 dark:text-white">
-              Preço
-            </th>
-            <th className="border border-neutral-200 dark:border-neutral-800 px-4 py-2 text-left text-sm font-medium text-neutral-800 dark:text-white">
-              Ação
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((product) => {
-            // Obter o preço da primeira variante, se disponível
-            const price = product.specs[0]?.name === "Default Title" ? product.specs[0]?.price || "N/A" : "Consultar";
+export const ProductDataTable: React.FC<ProductDataTableProps> = ({ initialData }) => {
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
 
-            return (
-              <tr key={product.id} className="border-b border-neutral-200 dark:border-neutral-800">
-                <td className="border border-neutral-200 dark:border-neutral-800 px-4 py-2">
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    width={50}
-                    height={50}
-                    className="object-contain"
-                  />
-                </td>
-                <td className="border border-neutral-200 dark:border-neutral-800 px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400">
-                  {product.name}
-                </td>
-                <td className="border border-neutral-200 dark:border-neutral-800 px-4 py-2 text-sm text-neutral-600 dark:text-neutral-400">
-                  <SignedIn>
-                    <span>{price}</span>
-                  </SignedIn>
-                  <SignedOut>
-                    <span className="blur-sm">R$ XXXX</span>
-                  </SignedOut>
-                </td>
-                <td className="border border-neutral-200 dark:border-neutral-800 px-4 py-2 text-sm">
-                  <Link href={product.href}>
-                    <button className="transform rounded-lg bg-blue-500 px-4 py-1 font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-blue-600">
-                      Fazer Pedido
-                    </button>
-                  </Link>
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+  const table = useReactTable({
+    data: initialData,
+    columns,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+    },
+  });
+
+  return (
+    <div className="w-full">
+      <div className="flex items-center py-4">
+        <Input
+          placeholder="Filtrar por nome..."
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("name")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-auto">
+              Colunas <ChevronDown className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter((column) => column.getCanHide())
+              .map((column) => (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize"
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                >
+                  {column.id}
+                </DropdownMenuCheckboxItem>
+              ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+      <DataTable columns={columns} data={initialData} />
+      <div className="flex items-center justify-end space-x-2 py-4">
+        <div className="flex-1 text-sm text-muted-foreground">
+          {table.getFilteredSelectedRowModel().rows.length} de{" "}
+          {table.getFilteredRowModel().rows.length} linha(s) selecionada(s).
+        </div>
+        <div className="space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Anterior
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Próximo
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };
-
-export default ProductTable;
