@@ -21,23 +21,26 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
-import { columns } from "@/components/ui/columns";
-import { DataTable } from "@/components/ui/data-table";
+import { DataTable } from "@/components/ui/datatable/data-table";
+import { columns } from "@/components/ui/datatable/columns";
+import { useRouter } from "next/navigation";
 import { Product } from "@/services/shopifyService";
 
-interface ProductDataTableProps {
-  initialData: Product[];
+interface ProductDataTableProps<TData> {
+  initialData: TData[];
 }
 
-export const ProductDataTable: React.FC<ProductDataTableProps> = ({ initialData }) => {
+export function ProductDataTable<TData>({ initialData }: ProductDataTableProps<TData>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
+  const router = useRouter();
+
   const table = useReactTable({
-    data: initialData,
-    columns,
+    data: initialData as (Product & { quantity?: number })[],
+    columns: columns as ColumnDef<Product & { quantity?: number }, unknown>[],
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -53,6 +56,24 @@ export const ProductDataTable: React.FC<ProductDataTableProps> = ({ initialData 
       rowSelection,
     },
   });
+
+  const selectedRows = table.getSelectedRowModel().rows.map((row) => row.original);
+
+  const handleMakeOrder = () => {
+    if (selectedRows.length > 0) {
+      const query = new URLSearchParams(
+        selectedRows.map((product) => [
+          `products[${product.id}]`,
+          JSON.stringify({
+            name: product.name,
+            price: product.specs[0]?.price || "Consultar",
+            quantity: product.quantity || 1,
+          }),
+        ])
+      ).toString();
+      router.push(`/order?${query}`);
+    }
+  };
 
   return (
     <div className="w-full">
@@ -88,8 +109,8 @@ export const ProductDataTable: React.FC<ProductDataTableProps> = ({ initialData 
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <DataTable columns={columns} data={initialData} />
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <DataTable table={table} />
+      <div className="flex items-center justify-between space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} de{" "}
           {table.getFilteredRowModel().rows.length} linha(s) selecionada(s).
@@ -111,8 +132,16 @@ export const ProductDataTable: React.FC<ProductDataTableProps> = ({ initialData 
           >
             Próximo
           </Button>
+          <Button
+            variant="default"
+            size="sm"
+            onClick={handleMakeOrder}
+            disabled={selectedRows.length === 0}
+          >
+            Fazer Orçamento
+          </Button>
         </div>
       </div>
     </div>
   );
-};
+}

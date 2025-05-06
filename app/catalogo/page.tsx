@@ -4,6 +4,7 @@ import { Product, fetchSubDealersProducts } from "@/services/shopifyService";
 async function getData(): Promise<Product[]> {
   try {
     const products = await fetchSubDealersProducts();
+    console.log("Produtos retornados:", products); // Log para depuração
     return products;
   } catch (error) {
     console.error("Error fetching products:", error);

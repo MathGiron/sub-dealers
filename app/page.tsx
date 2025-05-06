@@ -1,5 +1,5 @@
-import { ExpandableCardDemo } from "@/components/expandable-card-demo-grid"; // Ajustado para importação nomeada
-import HeroSectionOne from "@/components/hero-section-demo-1";
+import { ExpandableCardDemo } from "@/components/expandable-card-demo-grid";
+import { GoogleGeminiEffectDemo } from "@/components/hero-section-demo-1";
 import Navbar from "@/components/navbar";
 import { Product } from "@/services/shopifyService";
 
@@ -33,8 +33,8 @@ export default async function Home() {
   return (
     <div className="min-h-screen">
       <Navbar />
-      <HeroSectionOne />
-      <main>
+      <GoogleGeminiEffectDemo />
+      <main className="bg-black"> {/* Ajuste de padding-top para evitar sobreposição com a navbar fixa */}
         <ExpandableCardDemo products={products} />
       </main>
     </div>

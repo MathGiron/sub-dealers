@@ -4,14 +4,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import React from "react";
+import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 
 const Navbar: React.FC = () => {
   return (
-    <nav className="flex w-full items-center justify-between border-t border-b border-neutral-200 px-4 py-4 dark:border-neutral-800">
+    <nav className="fixed top-0 left-0 w-full flex items-center justify-between px-4 py-4 bg-transparent backdrop-blur-md z-50">
       <div className="flex items-center gap-2">
         <Link href="/">
           <Image
-            src="/Timber_Ecoflow.png"
+            src="/WT.png"
             alt="Timber EcoFlow Logo"
             width={150}
             height={40}
@@ -22,18 +23,24 @@ const Navbar: React.FC = () => {
       <div className="flex items-center gap-4">
         <SignedOut>
           <SignInButton mode="modal">
-            <button className="w-24 transform rounded-lg bg-black px-6 py-2 font-medium text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-800 md:w-32 dark:bg-white dark:text-black dark:hover:bg-gray-200">
-              Login
-            </button>
+            <HoverBorderGradient>
+              <span>Login</span>
+            </HoverBorderGradient>
           </SignInButton>
           <SignUpButton mode="modal">
-            <button className="w-24 transform rounded-lg border border-gray-300 bg-white px-6 py-2 font-medium text-black transition-all duration-300 hover:-translate-y-0.5 hover:bg-gray-100 md:w-32 dark:border-gray-700 dark:bg-black dark:text-white dark:hover:bg-gray-900">
-              Sign Up
-            </button>
+            <HoverBorderGradient>
+              <span>Sign Up</span>
+            </HoverBorderGradient>
           </SignUpButton>
         </SignedOut>
         <SignedIn>
-          <UserButton />
+          <UserButton
+            appearance={{
+              elements: {
+                userButtonAvatarBox: "w-10 h-10",
+              },
+            }}
+          />
         </SignedIn>
       </div>
     </nav>

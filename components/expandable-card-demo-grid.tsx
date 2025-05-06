@@ -42,7 +42,7 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/20 h-full w-full z-10"
+            className="fixed inset-0 bg-black/60 h-full w-full z-10"
           />
         )}
       </AnimatePresence>
@@ -58,7 +58,7 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
                 opacity: 0,
                 transition: { duration: 0.05 },
               }}
-              className="flex absolute top-2 right-2 lg:hidden items-center justify-center bg-white rounded-full h-6 w-6"
+              className="flex absolute top-2 right-2 lg:hidden items-center justify-center bg-neutral-800 dark:bg-neutral-700 rounded-full h-6 w-6"
               onClick={() => setActive(null)}
             >
               <CloseIcon />
@@ -66,7 +66,7 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
             <motion.div
               layoutId={`card-${active.name}-${id}`}
               ref={ref}
-              className="w-full max-w-[500px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
+              className="w-full max-w-[500px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-neutral-900 dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
             >
               <motion.div layoutId={`image-${active.name}-${id}`}>
                 <Image
@@ -74,7 +74,7 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
                   height={320}
                   src={active.image}
                   alt={active.name}
-                  className="w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg object-contain"
+                  className="w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg object-contain bg-neutral-800 dark:bg-neutral-800"
                 />
               </motion.div>
 
@@ -82,11 +82,11 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
                 <div className="p-4">
                   <motion.h3
                     layoutId={`title-${active.name}-${id}`}
-                    className="font-medium text-neutral-700 dark:text-neutral-200 text-base"
+                    className="font-medium text-neutral-200 dark:text-neutral-200 text-base"
                   >
                     {active.name}
                   </motion.h3>
-                  <div className="mt-2 max-h-32 overflow-y-auto text-neutral-600 dark:text-neutral-400 text-base [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]">
+                  <div className="mt-2 max-h-32 overflow-y-auto text-neutral-400 dark:text-neutral-400 text-base [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]">
                     <motion.p
                       layoutId={`description-${active.description}-${id}`}
                     >
@@ -99,9 +99,9 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="flex-1 overflow-y-auto px-4 pb-10 text-neutral-600 dark:text-neutral-400 text-xs md:text-sm lg:text-base [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
+                  className="flex-1 overflow-y-auto px-4 pb-10 text-neutral-400 dark:text-neutral-400 text-xs md:text-sm lg:text-base [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
                 >
-                  <h4 className="font-medium">Variantes:</h4>
+                  <h4 className="font-medium text-neutral-300 dark:text-neutral-300">Variantes:</h4>
                   {active.specs.length > 0 ? (
                     <ul className="list-disc pl-5 mt-2">
                       {active.specs.map((spec, index) => (
@@ -119,8 +119,8 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
           </div>
         ) : null}
       </AnimatePresence>
-      <div className="max-w-7xl mx-auto px-4 py-10">
-        <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center text-slate-700 dark:text-slate-300 mb-8">
+      <div className="max-w-7xl mx-auto px-4 py-10 bg-black dark:bg-neutral-900">
+        <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center text-neutral-200 dark:text-neutral-200 mb-8">
           {"Conheça Nossos Produtos"
             .split(" ")
             .map((word, index) => (
@@ -133,7 +133,7 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
                   delay: index * 0.1,
                   ease: "easeInOut",
                 }}
-                className="inline-block mr-2"
+                className="inline-block mr-2 "
               >
                 {word}
               </motion.span>
@@ -145,7 +145,7 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
               layoutId={`card-${product.name}-${id}`}
               key={product.id}
               onClick={() => setActive(product)}
-              className="p-4 flex flex-col hover:bg-neutral-50 dark:hover:bg-neutral-800 rounded-xl cursor-pointer"
+              className="p-4 flex flex-col hover:border-1 hover:border-white rounded-xl cursor-pointer"
             >
               <div className="flex gap-4 flex-col w-full">
                 <motion.div layoutId={`image-${product.name}-${id}`}>
@@ -154,13 +154,13 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
                     height={240}
                     src={product.image}
                     alt={product.name}
-                    className="h-60 w-full rounded-lg object-contain"
+                    className="h-60 w-full  rounded-lg object-contain bg-neutral-800 dark:bg-neutral-800"
                   />
                 </motion.div>
                 <div className="flex justify-center items-center flex-col">
                   <motion.h3
                     layoutId={`title-${product.name}-${id}`}
-                    className="font-medium text-neutral-800 dark:text-neutral-200 text-center md:text-left text-base"
+                    className="font-medium text-neutral-200 dark:text-neutral-200 text-center md:text-left text-base"
                   >
                     {product.name}
                   </motion.h3>
@@ -192,7 +192,7 @@ export function CloseIcon() {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="h-4 w-4 text-black"
+      className="h-4 w-4 text-white dark:text-white"
     >
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
       <path d="M18 6l-12 12" />
