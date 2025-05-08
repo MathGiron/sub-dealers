@@ -1,5 +1,6 @@
 import { ProductDataTable } from "@/components/product-table";
 import { Product, fetchSubDealersProducts } from "@/services/shopifyService";
+import Navbar from "@/components/navbar"; // Importando a navbar correta
 
 async function getData(): Promise<Product[]> {
   try {
@@ -16,8 +17,11 @@ export default async function DemoPage() {
   const data = await getData();
 
   return (
-    <div className="container mx-auto py-10">
-      <ProductDataTable initialData={data} />
+    <div className="min-h-screen bg-black dark:bg-black text-white dark:text-white">
+      <Navbar />
+      <div className="container mx-auto py-20">
+        <ProductDataTable initialData={data} />
+      </div>
     </div>
   );
 }

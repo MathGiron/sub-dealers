@@ -16,7 +16,7 @@ interface DataTableProps<TData> {
 
 export const DataTable = <TData,>({ table }: DataTableProps<TData>) => {
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border border-gray-300 dark:border-gray-300 bg-black dark:bg-black">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -52,7 +52,7 @@ export const DataTable = <TData,>({ table }: DataTableProps<TData>) => {
             <TableRow>
               <TableCell
                 colSpan={table.getAllColumns().length}
-                className="h-24 text-center"
+                className="h-24 text-center text-white dark:text-white"
               >
                 No results.
               </TableCell>

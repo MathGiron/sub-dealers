@@ -32,13 +32,14 @@ export const columns: ColumnDef<Product & { quantity?: number }>[] = [
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="text-white dark:text-white hover:text-blue-400 dark:hover:text-blue-400"
       >
         Nome
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <ArrowUpDown className="ml-2 h-4 w-4 text-white dark:text-white" />
       </Button>
     ),
     cell: ({ row }) => (
-      <div className="text-sm text-neutral-600 dark:text-neutral-400">
+      <div className="text-sm text-white dark:text-white">
         {row.getValue("name")}
       </div>
     ),
@@ -49,16 +50,17 @@ export const columns: ColumnDef<Product & { quantity?: number }>[] = [
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        className="text-white dark:text-white hover:text-blue-400 dark:hover:text-blue-400"
       >
         Preço
-        <ArrowUpDown className="ml-2 h-4 w-4" />
+        <ArrowUpDown className="ml-2 h-4 w-4 text-white dark:text-white" />
       </Button>
     ),
     cell: ({ row }) => {
       const priceSpec = row.original.specs[0];
       const price = priceSpec?.price || "Consultar";
       return (
-        <div className="text-sm text-neutral-600 dark:text-neutral-400">
+        <div className="text-sm text-white dark:text-white">
           <SignedIn>
             <span>{price}</span>
           </SignedIn>
@@ -91,7 +93,7 @@ export const columns: ColumnDef<Product & { quantity?: number }>[] = [
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
         />
-        <span>Selecionados</span>
+        <span className="text-white dark:text-white">Selecionados</span>
       </div>
     ),
     cell: ({ row }) => {
@@ -116,7 +118,7 @@ export const columns: ColumnDef<Product & { quantity?: number }>[] = [
             min="1"
             value={quantity}
             onChange={(e) => handleQuantityChange(e.target.value)}
-            className="w-16"
+            className="w-16 bg-black dark:bg-black text-white dark:text-white border-gray-300 dark:border-gray-300"
           />
         </div>
       );

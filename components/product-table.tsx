@@ -76,30 +76,30 @@ export function ProductDataTable<TData>({ initialData }: ProductDataTableProps<T
   };
 
   return (
-    <div className="w-full">
-      <div className="flex items-center py-4">
+    <div className="w-full bg-black dark:bg-black text-white dark:text-white">
+      <div className="flex items-center py-4 bg-black dark:bg-black">
         <Input
           placeholder="Filtrar por nome..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="max-w-sm bg-black dark:bg-black text-white dark:text-white border-gray-300 dark:border-gray-300 placeholder-gray-400 dark:placeholder-gray-400"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Colunas <ChevronDown className="ml-2 h-4 w-4" />
+            <Button variant="outline" className="ml-auto bg-black dark:bg-black text-white dark:text-white border-gray-300 dark:border-gray-300 hover:bg-gray-800 dark:hover:bg-gray-800">
+              Colunas <ChevronDown className="ml-2 h-4 w-4 text-white dark:text-white" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent className="bg-black dark:bg-black text-white dark:text-white border-gray-300 dark:border-gray-300">
             {table
               .getAllColumns()
               .filter((column) => column.getCanHide())
               .map((column) => (
                 <DropdownMenuCheckboxItem
                   key={column.id}
-                  className="capitalize"
+                  className="capitalize text-white dark:text-white hover:bg-gray-800 dark:hover:bg-gray-800"
                   checked={column.getIsVisible()}
                   onCheckedChange={(value) => column.toggleVisibility(!!value)}
                 >
@@ -110,8 +110,8 @@ export function ProductDataTable<TData>({ initialData }: ProductDataTableProps<T
         </DropdownMenu>
       </div>
       <DataTable table={table} />
-      <div className="flex items-center justify-between space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
+      <div className="flex items-center justify-between space-x-2 py-4 bg-black dark:bg-black">
+        <div className="flex-1 text-sm text-gray-400 dark:text-gray-400">
           {table.getFilteredSelectedRowModel().rows.length} de{" "}
           {table.getFilteredRowModel().rows.length} linha(s) selecionada(s).
         </div>
@@ -121,6 +121,7 @@ export function ProductDataTable<TData>({ initialData }: ProductDataTableProps<T
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
+            className="bg-black dark:bg-black text-white dark:text-white border-gray-300 dark:border-gray-300 hover:bg-gray-800 dark:hover:bg-gray-800"
           >
             Anterior
           </Button>
@@ -129,6 +130,7 @@ export function ProductDataTable<TData>({ initialData }: ProductDataTableProps<T
             size="sm"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
+            className="bg-black dark:bg-black text-white dark:text-white border-gray-300 dark:border-gray-300 hover:bg-gray-800 dark:hover:bg-gray-800"
           >
             Próximo
           </Button>
@@ -137,6 +139,7 @@ export function ProductDataTable<TData>({ initialData }: ProductDataTableProps<T
             size="sm"
             onClick={handleMakeOrder}
             disabled={selectedRows.length === 0}
+            className="bg-blue-700 dark:bg-blue-700 text-white dark:text-white hover:bg-blue-600 dark:hover:bg-blue-600"
           >
             Fazer Orçamento
           </Button>
