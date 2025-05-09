@@ -1,6 +1,6 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { Product } from "@/services/shopifyService";
 import Image from "next/image";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
@@ -10,14 +10,14 @@ import { ArrowUpDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import React, { useState } from "react";
 
-const QuantityCell = ({ row, onQuantityChange }: { row: any; onQuantityChange: (newQuantity: number) => void }) => {
+const QuantityCell = ({ row, onQuantityChange }: { row: Row<Product & { quantity?: number }>; onQuantityChange: (newQuantity: number) => void }) => {
   const [quantity, setQuantity] = useState(row.original.quantity || 1);
 
   const handleQuantityChange = (value: string) => {
     const newValue = parseInt(value) || 1;
     if (newValue < 1) return;
     setQuantity(newValue);
-    onQuantityChange(newQuantity);
+    onQuantityChange(newValue);
   };
 
   return (
