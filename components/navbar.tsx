@@ -1,30 +1,31 @@
-"use client";
+"use client"
 
-import Image from "next/image";
-import Link from "next/link";
-import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton, useAuth } from "@clerk/nextjs";
-import React from "react";
-import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
-import { useRouter } from "next/navigation";
+import Image from "next/image"
+import Link from "next/link"
+import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton, useAuth } from "@clerk/nextjs"
+import React from "react"
+import { HoverBorderGradient } from "@/components/ui/hover-border-gradient"
+import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
 
 const Navbar: React.FC = () => {
-  const { isLoaded, userId } = useAuth();
-  const router = useRouter();
+  const { isLoaded, userId } = useAuth()
+  const router = useRouter()
 
   const handleBecomeReseller = () => {
     if (isLoaded) {
       if (userId) {
-        router.push("/register-company"); // Redireciona para o registro se logado
+        router.push("/register-company") // Redireciona para o registro se logado
       } else {
         // Se não logado, ativa o modal de login
-        SignInButton();
+        SignInButton()
       }
     }
-  };
+  }
 
   return (
     <nav className="fixed top-0 left-0 w-full flex items-center justify-between px-4 py-4 bg-transparent backdrop-blur-md z-50">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-4">
         <Link href="/">
           <Image
             src="/WT.png"
@@ -33,6 +34,11 @@ const Navbar: React.FC = () => {
             height={40}
             className="object-contain"
           />
+        </Link>
+        <Link href="/manuais">
+          <Button  className="text-white hover:text-gray-300 border:white ">
+            Manuais
+          </Button>
         </Link>
       </div>
       <div className="flex items-center gap-4">
@@ -62,7 +68,7 @@ const Navbar: React.FC = () => {
         </SignedIn>
       </div>
     </nav>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar
