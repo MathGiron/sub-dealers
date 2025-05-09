@@ -8,7 +8,35 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import React, { useState } from "react";
+
+const QuantityCell = ({ row, onQuantityChange }: { row: any; onQuantityChange: (newQuantity: number) => void }) => {
+  const [quantity, setQuantity] = useState(row.original.quantity || 1);
+
+  const handleQuantityChange = (value: string) => {
+    const newValue = parseInt(value) || 1;
+    if (newValue < 1) return;
+    setQuantity(newValue);
+    onQuantityChange(newQuantity);
+  };
+
+  return (
+    <div className="flex items-center space-x-2">
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+      <Input
+        type="number"
+        min="1"
+        value={quantity}
+        onChange={(e) => handleQuantityChange(e.target.value)}
+        className="w-16 bg-black dark:bg-black text-white dark:text-white border-gray-300 dark:border-gray-300"
+      />
+    </div>
+  );
+};
 
 export const columns: ColumnDef<Product & { quantity?: number }>[] = [
   {
@@ -71,7 +99,7 @@ export const columns: ColumnDef<Product & { quantity?: number }>[] = [
       );
     },
     enableSorting: true,
-    sortingFn: (rowA, rowB, columnId) => {
+    sortingFn: (rowA, rowB) => {
       const priceA = rowA.original.specs[0]?.price
         ? parseFloat(rowA.original.specs[0].price)
         : Infinity;
@@ -96,33 +124,14 @@ export const columns: ColumnDef<Product & { quantity?: number }>[] = [
         <span className="text-white dark:text-white">Selecionados</span>
       </div>
     ),
-    cell: ({ row }) => {
-      const [quantity, setQuantity] = useState(row.original.quantity || 1);
-
-      const handleQuantityChange = (value: string) => {
-        const newValue = parseInt(value) || 1;
-        if (newValue < 1) return;
-        setQuantity(newValue);
-        row.original.quantity = newValue; // Atualiza a quantidade no objeto original
-      };
-
-      return (
-        <div className="flex items-center space-x-2">
-          <Checkbox
-            checked={row.getIsSelected()}
-            onCheckedChange={(value) => row.toggleSelected(!!value)}
-            aria-label="Select row"
-          />
-          <Input
-            type="number"
-            min="1"
-            value={quantity}
-            onChange={(e) => handleQuantityChange(e.target.value)}
-            className="w-16 bg-black dark:bg-black text-white dark:text-white border-gray-300 dark:border-gray-300"
-          />
-        </div>
-      );
-    },
+    cell: ({ row }) => (
+      <QuantityCell
+        row={row}
+        onQuantityChange={(newQuantity) => {
+          row.original.quantity = newQuantity;
+        }}
+      />
+    ),
     enableSorting: false,
     enableHiding: false,
   },

@@ -13,9 +13,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
-import Image from "next/image";
-import Link from "next/link";
-import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton, useAuth } from "@clerk/nextjs";
 import Navbar from "@/components/navbar";
 
 interface RegisterCompanyFormData {
