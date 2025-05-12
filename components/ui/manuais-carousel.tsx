@@ -51,10 +51,58 @@ const data: Manual[] = [
     },
     {
         category: "Manual",
-        title: "River 2 Pro",
-        src: "/manuais/river/EF River 2 Pro - Capa.jpg", // Caminho atualizado
-        pdfPath: "/manuais/river/EF River 2 Pro - manual.pdf",
+        title: "Delta Pro",
+        src: "/manuais/delta/EF Delta Pro - Capa.webp", // Caminho atualizado
+        pdfPath: "/manuais/delta/Delta Pro - manual.pdf",
     },
+    {
+      category: "Manual",
+      title: "Delta Pro ULTRA",
+      src: "/manuais/delta/EcoFlow Delta Pro ULTRA - Capa.png", // Caminho atualizado
+      pdfPath: "/manuais/delta/EcoFlow Delta Pro ULTRA - manual.pdf",
+  },
+  {
+    category: "Manual",
+    title: "Delta Pro ULTRA Bateria",
+    src: "/manuais/delta/EcoFlow Delta Pro ULTRA Bateria - Capa.jpg", // Caminho atualizado
+    pdfPath: "/manuais/delta/EcoFlow Delta Pro ULTRA Bateria - manual.pdf",
+  },
+    {
+      category: "Manual",
+      title: "Delta 2",
+      src: "/manuais/delta/EF Delta 2 - Capa.png", // Caminho atualizado
+      pdfPath: "/manuais/delta/Delta 2 - manual.pdf",
+  },
+  {
+    category: "Manual",
+    title: "Delta 2 Max",
+    src: "/manuais/delta/EF Delta 2 Max - Capa.jpg", // Caminho atualizado
+    pdfPath: "/manuais/delta/Delta Pro - manual.pdf",
+},
+{
+  category: "Manual",
+  title: "Delta 2 Max Bateria Extra",
+  src: "/manuais/delta/EF Delta 2 Max Bateria Extra - Capa.webp", // Caminho atualizado
+  pdfPath: "/manuais/delta/Delta Pro - manual.pdf",
+},
+{
+  category: "Manual",
+  title: "Delta 2 Max Aplicativo",
+  src: "/manuais/delta/EF Delta 2 Max - Capa.jpg", // Caminho atualizado
+  pdfPath: "/manuais/delta/EF Delta 2 Max  APP - manual.pdf",
+},
+{
+  category: "Manual",
+  title: "Delta Pro 3 (EN-US)",
+  src: "/manuais/delta/Delta Pro 3 - Capa.jpg", // Caminho atualizado
+  pdfPath: "/manuais/delta/Delta Pro 3 - manual EN-US.pdf",
+},
+{
+  category: "Manual",
+  title: "Delta Pro 3 Extra Battery (EN-US)",
+  src: "/manuais/delta/Delta Pro 3 Extra Battery - Capa.webp", // Caminho atualizado
+  pdfPath: "/manuais/delta/Delta Pro 3 Extra Battery - Manual  EN-US.pdf",
+},
     // Adicione mais manuais conforme necessário
 ]
 

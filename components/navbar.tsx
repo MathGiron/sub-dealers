@@ -36,7 +36,7 @@ const Navbar: React.FC = () => {
           />
         </Link>
         <Link href="/manuais">
-          <Button  className="text-white hover:text-gray-300 border:white ">
+          <Button  className="text-white hover:text-gray-300 border border-radius- rounded-md px-4 py-5 rounded-full">
             Manuais
           </Button>
         </Link>
