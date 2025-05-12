@@ -48,20 +48,20 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
 
   const scrollLeft = () => {
     if (carouselRef.current) {
-      carouselRef.current.scrollBy({ left: -300, behavior: "smooth" })
+      carouselRef.current.scrollBy({ left: -400, behavior: "smooth" }) // Aumentado para 400 para melhor espaçamento
     }
   }
 
   const scrollRight = () => {
     if (carouselRef.current) {
-      carouselRef.current.scrollBy({ left: 300, behavior: "smooth" })
+      carouselRef.current.scrollBy({ left: 400, behavior: "smooth" }) // Aumentado para 400
     }
   }
 
   const handleCardClose = (index: number) => {
     if (carouselRef.current) {
       const cardWidth = isMobile() ? 230 : 384
-      const gap = isMobile() ? 4 : 8
+      const gap = isMobile() ? 16 : 24 // Aumentado o gap para melhor espaçamento
       const scrollPosition = (cardWidth + gap) * (index + 1)
       carouselRef.current.scrollTo({
         left: scrollPosition,
@@ -85,13 +85,13 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
         >
           <div
             className={cn(
-              "absolute right-0 z-[1000] h-auto w-[5%] overflow-hidden bg-gradient-to-l"
+              "absolute right-0 z-[1000] h-auto w-[5%] overflow-hidden bg-gradient-to-l from-black to-transparent"
             )}
           ></div>
 
           <div
             className={cn(
-              "flex flex-row justify-start gap-4 pl-4",
+              "flex flex-row justify-start gap-6 pl-4", // Aumentado gap para 6
               "mx-auto max-w-7xl"
             )}
           >
@@ -139,21 +139,20 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
 
 export const Card = ({ card, index }: { card: Card; index: number }) => {
   return (
-    <div className="relative z-10 flex h-80 w-56 flex-col items-start justify-start overflow-hidden rounded-3xl bg-gray-100 md:h-[40rem] md:w-96 dark:bg-neutral-900">
+    <div className="relative z-10 flex h-80 w-56 flex-col items-center justify-start overflow-hidden rounded-3xl md:h-[40rem] md:w-96">
       <div className="pointer-events-none absolute inset-x-0 top-0 z-30 h-full bg-gradient-to-b from-black/50 via-transparent to-transparent" />
-      <div className="relative z-40 p-8">
+      <div className="relative z-40 p-4 text-center">
         <p className="text-left font-sans text-sm font-medium text-white md:text-base">
           {card.category}
         </p>
-        <p className="mt-2 max-w-xs text-left font-sans text-xl font-semibold [text-wrap:balance] text-white md:text-3xl">
+        <p className="mt-2 max-w-xs text-center font-sans text-xl font-semibold [text-wrap:balance] text-white md:text-3xl">
           {card.title}
         </p>
       </div>
-      <BlurImage
+      <img
         src={card.src}
         alt={card.title}
-        fill
-        className="absolute inset-0 z-10 object-cover"
+        className="absolute inset-0 z-10 object-contain w-full h-full"
       />
     </div>
   )
