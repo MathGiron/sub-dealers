@@ -17,21 +17,21 @@ const data: Manual[] = [
   {
     category: "Manual",
     title: "River 2",
-    src: "/manuais/river/EF River 2 - Capa.jpg",
+    src: "/manuais/river/EF River 2 - Capa.png",
     pdfPath: "/manuais/river/EF River 2 - manual.pdf",
     group: "River",
   },
   {
     category: "Manual",
     title: "River 2 Pro",
-    src: "/manuais/river/EF River 2 Pro - Capa.jpg",
+    src: "/manuais/river/EF River 2 Pro - Capa.png",
     pdfPath: "/manuais/river/EF River 2 Pro - manual.pdf",
     group: "River",
   },
   {
     category: "Manual",
     title: "River 2 Max",
-    src: "/manuais/river/EF River 2 Max - Capa.jpg",
+    src: "/manuais/river/EF River 2 Max - Capa.png",
     pdfPath: "/manuais/river/EF River 2 Max - manual.pdf",
     group: "River",
   },
@@ -52,7 +52,7 @@ const data: Manual[] = [
   {
     category: "Manual",
     title: "River 3 Plus Bateria Extra",
-    src: "/manuais/river/EF River 3 Plus Bateria Extra - Capa.webp",
+    src: "/manuais/river/EF River 3 Plus Bateria Extra - Capa.png",
     pdfPath: "/manuais/river/EF River 3 Plus Bateria Extra - manual.pdf",
     group: "River",
   },
