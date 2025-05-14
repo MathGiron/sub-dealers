@@ -45,7 +45,7 @@ const data: Manual[] = [
   {
     category: "",
     title: "River 3 Plus",
-    src: "/manuais/river/EF River 3 Plus - Capa.png",
+    src: "/manuais/river/EF River 3 PlUS - Capa.png",
     pdfPath: "/manuais/river/EF River 3 Plus - manual.pdf",
     group: "River",
   },
