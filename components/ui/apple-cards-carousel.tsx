@@ -48,20 +48,20 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
 
   const scrollLeft = () => {
     if (carouselRef.current) {
-      carouselRef.current.scrollBy({ left: -400, behavior: "smooth" }) // Aumentado para 400 para melhor espaçamento
+      carouselRef.current.scrollBy({ left: -400, behavior: "smooth" })
     }
   }
 
   const scrollRight = () => {
     if (carouselRef.current) {
-      carouselRef.current.scrollBy({ left: 400, behavior: "smooth" }) // Aumentado para 400
+      carouselRef.current.scrollBy({ left: 400, behavior: "smooth" })
     }
   }
 
   const handleCardClose = (index: number) => {
     if (carouselRef.current) {
       const cardWidth = isMobile() ? 230 : 384
-      const gap = isMobile() ? 16 : 24 // Aumentado o gap para melhor espaçamento
+      const gap = isMobile() ? 16 : 24
       const scrollPosition = (cardWidth + gap) * (index + 1)
       carouselRef.current.scrollTo({
         left: scrollPosition,
@@ -91,7 +91,7 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
 
           <div
             className={cn(
-              "flex flex-row justify-start gap-6 pl-4", // Aumentado gap para 6
+              "flex flex-row justify-start gap-6 pl-4",
               "mx-auto max-w-7xl"
             )}
           >
@@ -115,22 +115,24 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
               </motion.div>
             ))}
           </div>
-        </div>
-        <div className="mr-10 flex justify-end gap-2">
-          <button
-            className="relative z-40 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 disabled:opacity-50"
-            onClick={scrollLeft}
-            disabled={!canScrollLeft}
-          >
-            <IconArrowNarrowLeft className="h-6 w-6 text-gray-500" />
-          </button>
-          <button
-            className="relative z-40 flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 disabled:opacity-50"
-            onClick={scrollRight}
-            disabled={!canScrollRight}
-          >
-            <IconArrowNarrowRight className="h-6 w-6 text-gray-500" />
-          </button>
+
+          {/* Botões de navegação com espaçamento ajustado */}
+          <div className="absolute top-28 right-10 z-50 flex gap-2">
+            <button
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 disabled:opacity-50"
+              onClick={scrollLeft}
+              disabled={!canScrollLeft}
+            >
+              <IconArrowNarrowLeft className="h-6 w-6 text-gray-500" />
+            </button>
+            <button
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 disabled:opacity-50"
+              onClick={scrollRight}
+              disabled={!canScrollRight}
+            >
+              <IconArrowNarrowRight className="h-6 w-6 text-gray-500" />
+            </button>
+          </div>
         </div>
       </div>
     </CarouselContext.Provider>
@@ -139,7 +141,7 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
 
 export const Card = ({ card, index }: { card: Card; index: number }) => {
   return (
-    <div className="relative z-10 flex h-80 w-56 flex-col items-center justify-start overflow-hidden rounded-3xl md:h-[40rem] md:w-96">
+    <div className="relative z-10 flex h-56 w-44 flex-col items-center justify-start overflow-hidden rounded-3xl md:h-[28rem] md:w-72">
       <div className="pointer-events-none absolute inset-x-0 top-0 z-30 h-full bg-gradient-to-b from-black/50 via-transparent to-transparent" />
       <div className="relative z-40 p-4 text-center">
         <p className="text-left font-sans text-sm font-medium text-white md:text-base">

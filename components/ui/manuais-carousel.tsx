@@ -43,7 +43,7 @@ const data: Manual[] = [
     group: "River",
   },
   {
-    category: "Manual",
+    category: "",
     title: "River 3 Plus",
     src: "/manuais/river/EF River 3 Plus - Capa.png",
     pdfPath: "/manuais/river/EF River 3 Plus - manual.pdf",
@@ -121,38 +121,87 @@ const data: Manual[] = [
   },
   {
     category: "Manual",
-    title: "Gerador Inteligente",
-    src: "/manuais/EF Wave 2 - Glacier - Gerador Bi-Combustivel/EF Gerador Inteligente - Capa.webp",
-    pdfPath: "/manuais/EF Wave 2 - Glacier - Gerador Bi-Combustivel/EF Gerador Inteligente - Manual.pdf",
-    group: "Outros",
-  },
-  {
-    category: "Manual",
     title: "Glacier",
-    src: "/manuais/EF Wave 2 - Glacier - Gerador Bi-Combustivel/EF Glacier - Capa.jpg",
+    src: "/manuais/EF Wave 2 - Glacier - Gerador Bi-Combustivel/EF Glacier - Capa.png",
     pdfPath: "/manuais/EF Wave 2 - Glacier - Gerador Bi-Combustivel/EF Glacier - Manual.pdf",
     group: "Wave e Glacier",
   },
   {
     category: "Manual",
     title: "Glacier Bateria Plug-In",
-    src: "/manuais/EF Wave 2 - Glacier - Gerador Bi-Combustivel/EF Glacier Bateria plug-in - Capa.jpg",
+    src: "/manuais/EF Wave 2 - Glacier - Gerador Bi-Combustivel/EF Glacier Bateria plug-in - Capa.png",
     pdfPath: "/manuais/EF Wave 2 - Glacier - Gerador Bi-Combustivel/EF Glacier Bateria plug-in - Manual.pdf",
     group: "Wave e Glacier",
   },
   {
     category: "Manual",
     title: "WAVE 2",
-    src: "/manuais/EF Wave 2 - Glacier - Gerador Bi-Combustivel/EF Wave 2 - Capa.jpg",
+    src: "/manuais/EF Wave 2 - Glacier - Gerador Bi-Combustivel/EF Wave 2 - Capa.png",
     pdfPath: "/manuais/EF Wave 2 - Glacier - Gerador Bi-Combustivel/EF Wave 2 - Manual.pdf",
     group: "Wave e Glacier",
   },
   {
     category: "Manual",
     title: "WAVE 2 Add-On Bateria (EN-US)",
-    src: "/manuais/EF Wave 2 - Glacier - Gerador Bi-Combustivel/EF Wave 2 Add-on Battery - Capa.webp",
+    src: "/manuais/EF Wave 2 - Glacier - Gerador Bi-Combustivel/EF Wave 2 Add-on Battery - Capa.png",
     pdfPath: "/manuais/EF Wave 2 - Glacier - Gerador Bi-Combustivel/EF Wave 2 Add-on Battery - Manual V1 (EN).pdf",
     group: "Wave e Glacier",
+  },
+  {
+    category: "Manual",
+    title: "Painel Solar Portatíl 45W",
+    src: "/manuais/Painel Solar/EF 45W Painel Solar Portátil - Capa.png",
+    pdfPath: "/manuais/Painel Solar/EF 45W Painel Solar Portátil - Manual.pdf",
+    group: "Painéis Solares",
+  },
+  {
+    category: "Manual",
+    title: "Painel Solar Portatíl 60W",
+    src: "/manuais/Painel Solar/EF 60W Portable Solar Panel - Capa.png",
+    pdfPath: "/manuais/Painel Solar/EF 60W Portable Solar Panel - Manual.pdf",
+    group: "Painéis Solares",
+  },
+  {
+    category: "Manual",
+    title: "Painel Solar Portatíl 110W",
+    src: "/manuais/Painel Solar/EF 110W Portable Solar Panel - Capa.png",
+    pdfPath: "/manuais/Painel Solar/EF 110W Portable Solar Panel - Manual.pdf",
+    group: "Painéis Solares",
+  },
+  {
+    category: "Manual",
+    title: "Painel Solar Portatíl 160W",
+    src: "/manuais/Painel Solar/EF 160W Painel Solar Next Generation - Capa.png",
+    pdfPath: "/manuais/Painel Solar/EF 160W Painel Solar Next Generation - Manual.pdf",
+    group: "Painéis Solares",
+  },
+  {
+    category: "Manual",
+    title: "Painel Solar Portatíl 220W",
+    src: "/manuais/Painel Solar/EF 220W Painel Solar Portátil - Capa.png",
+    pdfPath: "/manuais/Painel Solar/EF 220W Painel Solar Portátil - Manual.pdf",
+    group: "Painéis Solares",
+  },
+  {
+    category: "Manual",
+    title: "Painel Solar Portatíl 400W",
+    src: "/manuais/Painel Solar/EF 400W Solar Panel - Capa.png",
+    pdfPath: "/manuais/Painel Solar/EF 400 Solar Panel - Manual.pdf",
+    group: "Painéis Solares",
+  },
+  {
+    category: "Manual",
+    title: "Gerador Inteligente",
+    src: "/manuais/EF Wave 2 - Glacier - Gerador Bi-Combustivel/EF Gerador Inteligente - Capa.png",
+    pdfPath: "/manuais/EF Wave 2 - Glacier - Gerador Bi-Combustivel/EF Gerador Inteligente - Manual.pdf",
+    group: "Outros",
+  },
+  {
+    category: "Manual",
+    title: "Altenador Carregador 800W",
+    src: "/manuais/EF Alternador Carregador 800W - Capa.png",
+    pdfPath: "/manuais/EF Alternador Carregador 800W - Manual.pdf",
+    group: "Outros",
   },
 ]
 
@@ -177,7 +226,7 @@ export function ManualsCarousel() {
   }, {} as Record<string, Manual[]>)
 
   // Ordenar os grupos (opcional, para exibir em uma ordem específica)
-  const orderedGroups = ["River", "Delta", "Wave e Glacier", "Outros"]
+  const orderedGroups = ["River", "Delta", "Wave e Glacier", "Painéis Solares", "Outros"]
 
   return (
     <div className="w-full h-full py-20">
@@ -195,7 +244,7 @@ export function ManualsCarousel() {
                 <Card card={card} index={index} />
                 <Button
                   onClick={() => handleDownload(card.pdfPath, card.title + ".pdf")}
-                  className=" bg-gray-800 text-white hover:bg-gray-700 rounded-full" // Aumentado mt-6 e rounded-full
+                  className="mt-1 bg-gray-800 text-white hover:bg-gray-700 rounded-full"
                 >
                   <Download className="mr-2 h-4 w-4" /> Baixar PDF
                 </Button>
