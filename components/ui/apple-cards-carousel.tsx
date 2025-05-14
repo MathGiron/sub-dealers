@@ -116,8 +116,8 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
             ))}
           </div>
 
-          {/* Botões de navegação com espaçamento ajustado */}
-          <div className="absolute top-28 right-10 z-50 flex gap-2">
+          {/* Botões de navegação ajustados para ficarem logo acima dos cards */}
+          <div className="absolute top-10 right-10 z-50 flex gap-2">
             <button
               className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 disabled:opacity-50"
               onClick={scrollLeft}
