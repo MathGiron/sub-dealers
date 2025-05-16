@@ -1,18 +1,22 @@
 require("dotenv").config({ path: ".env.local" });
 
-module.exports = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   env: {
     SHOPIFY_ADMIN_API_TOKEN: process.env.SHOPIFY_ADMIN_API_TOKEN,
     SHOPIFY_STORE_DOMAIN: process.env.SHOPIFY_STORE_DOMAIN,
   },
-};
-const nextConfig = {
   images: {
     remotePatterns: [
       {
         protocol: "https",
         hostname: "cdn.shopify.com",
         pathname: "/s/files/**",
+      },
+      {
+        protocol: "https",
+        hostname: "via.placeholder.com", // Adicionando pra permitir o fallback
+        pathname: "/**",
       },
     ],
   },
