@@ -3,18 +3,13 @@
 import { useUser } from "@clerk/nextjs";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "@/components/navbar";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-
-interface RegisterCompanyFormData {
-  cnpj: string;
-  cep: string;
-  name: string;
-  companyName: string;
-}
+import { isValidCNPJ } from "@/lib/cnpj";
+import { RegisterCompanyFormData } from "@/services/index";
 
 const BottomGradient = () => {
   return (
@@ -39,44 +34,22 @@ const LabelInputContainer = ({
   );
 };
 
-const isValidCNPJ = (cnpj: string) => {
-  cnpj = cnpj.replace(/[^\d]/g, "");
-  if (cnpj.length !== 14 || /^(\d)\1+$/.test(cnpj)) return false;
-
-  let size = cnpj.length - 2;
-  let numbers = cnpj.substring(0, size);
-  let digits = cnpj.substring(size);
-  let sum = 0;
-  let pos = size - 7;
-
-  for (let i = size; i >= 1; i--) {
-    sum += parseInt(numbers.charAt(size - i)) * pos--;
-    if (pos < 2) pos = 9;
-  }
-
-  let result = sum % 11 < 2 ? 0 : 11 - (sum % 11);
-  if (result !== parseInt(digits.charAt(0))) return false;
-
-  size = size + 1;
-  numbers = cnpj.substring(0, size);
-  sum = 0;
-  pos = size - 7;
-
-  for (let i = size; i >= 1; i--) {
-    sum += parseInt(numbers.charAt(size - i)) * pos--;
-    if (pos < 2) pos = 9;
-  }
-
-  result = sum % 11 < 2 ? 0 : 11 - (sum % 11);
-  return result === parseInt(digits.charAt(1));
-};
-
 export default function RegisterCompany() {
   const { user, isLoaded } = useUser();
   const router = useRouter();
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<RegisterCompanyFormData>();
   const [cnpjInput, setCnpjInput] = useState("");
   const [cepInput, setCepInput] = useState("");
+  const [contactInput, setContactInput] = useState("");
+
+  useEffect(() => {
+    if (isLoaded && user) {
+      const storedCNPJ = user.unsafeMetadata?.cnpj as string | undefined;
+      if (storedCNPJ && isValidCNPJ(storedCNPJ)) {
+        router.push("/dashboard");
+      }
+    }
+  }, [isLoaded, user, router]);
 
   const formatCNPJ = (value: string) => {
     const cleaned = value.replace(/\D/g, "");
@@ -106,6 +79,18 @@ export default function RegisterCompany() {
     return formatted;
   };
 
+  const formatContact = (value: string) => {
+    const cleaned = value.replace(/\D/g, "");
+    const limited = cleaned.slice(0, 11); // Máximo 11 dígitos (2 do código do país + 2 do DDD + 9 do número)
+
+    let formatted = "55 "; // Código do país
+    if (limited.length > 2) formatted += limited.slice(2, 4) + " "; // DDD
+    if (limited.length > 4) formatted += limited.slice(4, 9) + "-"; // Primeira parte do número
+    if (limited.length > 9) formatted += limited.slice(9); // Segunda parte do número
+
+    return formatted.trim();
+  };
+
   const handleCNPJChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
     const formattedValue = formatCNPJ(rawValue);
@@ -120,6 +105,13 @@ export default function RegisterCompany() {
     setValue("cep", formattedValue, { shouldValidate: true });
   };
 
+  const handleContactChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value;
+    const formattedValue = formatContact(rawValue);
+    setContactInput(formattedValue);
+    setValue("contactNumber", formattedValue, { shouldValidate: true });
+  };
+
   const onSubmit = async (data: RegisterCompanyFormData) => {
     if (isLoaded && user) {
       await user.update({
@@ -128,6 +120,7 @@ export default function RegisterCompany() {
           cep: data.cep,
           name: data.name,
           companyName: data.companyName,
+          contactNumber: data.contactNumber, // Novo campo
         },
       });
       router.push("/dashboard");
@@ -217,6 +210,28 @@ export default function RegisterCompany() {
               />
               {errors.companyName?.message && (
                 <p className="text-red-500 text-sm">{errors.companyName.message}</p>
+              )}
+            </LabelInputContainer>
+
+            <LabelInputContainer>
+              <Label htmlFor="contactNumber">Número de Contato</Label>
+              <Input
+                id="contactNumber"
+                {...register("contactNumber", { 
+                  required: "Número de contato é obrigatório", 
+                  pattern: {
+                    value: /^55\s\d{2}\s\d{5}-\d{4}$/,
+                    message: "Formato inválido (ex.: 55 41 99999-9999)"
+                  }
+                })}
+                value={contactInput}
+                onChange={handleContactChange}
+                maxLength={17}
+                placeholder="55 41 99999-9999"
+                className="bg-black text-white border-gray-300"
+              />
+              {errors.contactNumber?.message && (
+                <p className="text-red-500 text-sm">{errors.contactNumber.message}</p>
               )}
             </LabelInputContainer>
 

@@ -15,6 +15,15 @@ declare module "@tanstack/react-table" {
   }
 }
 
+export interface Product {
+  id: string;
+  name: string;
+  image?: string;
+  specs: Array<{
+    price: string;
+  }>;
+}
+
 export interface Option {
   label: string;
   value: string;

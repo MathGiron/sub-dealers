@@ -65,9 +65,7 @@ export function ProductDataTable<TData>({ initialData }: ProductDataTableProps<T
         selectedRows.map((product) => [
           `products[${product.id}]`,
           JSON.stringify({
-            name: product.name,
-            price: product.specs[0]?.price || "Consultar",
-            quantity: product.quantity || 1,
+            quantity: product.quantity || 1, // Envia apenas a quantidade
           }),
         ])
       ).toString();

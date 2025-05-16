@@ -2,19 +2,27 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton, useAuth } from "@clerk/nextjs";
+import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton, useAuth, useUser } from "@clerk/nextjs";
 import React from "react";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { useRouter } from "next/navigation";
+import { isValidCNPJ } from "@/lib/cnpj";
 
 const Navbar: React.FC = () => {
   const { isLoaded, userId } = useAuth();
+  const { user } = useUser();
   const router = useRouter();
+
+  const hasValidCNPJ = isLoaded && user && user.unsafeMetadata?.cnpj && isValidCNPJ(user.unsafeMetadata.cnpj as string);
 
   const handleBecomeReseller = () => {
     if (isLoaded) {
       if (userId) {
-        router.push("/register-company"); // Redireciona para o registro se logado
+        if (hasValidCNPJ) {
+          router.push("/catalogo"); // Usuário já tem CNPJ válido, vai direto pro catálogo
+        } else {
+          router.push("/register-company"); // Usuário logado, mas sem CNPJ, vai pro registro
+        }
       } else {
         // Se não logado, ativa o modal de login
         SignInButton();
@@ -57,7 +65,7 @@ const Navbar: React.FC = () => {
             }}
           />
           <HoverBorderGradient onClick={handleBecomeReseller}>
-            <span>Seja um Revendedor</span>
+            <span>{hasValidCNPJ ? "Fazer Pedido" : "Seja um Revendedor"}</span>
           </HoverBorderGradient>
         </SignedIn>
       </div>
