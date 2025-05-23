@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { motion, MotionValue } from "motion/react";
 import React from "react";
-import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignInButton, SignedIn, SignedOut, useUser } from "@clerk/nextjs";
 import Link from "next/link";
 
 const transition = {
@@ -37,6 +37,11 @@ export const GoogleGeminiEffect = ({
   description?: string;
   className?: string;
 }) => {
+  const { user, isLoaded } = useUser();
+
+  // Verifica se o usuário tem registerCompany definido como true
+  const hasRegisteredCompany = isLoaded && user?.unsafeMetadata?.registerCompany === true;
+
   return (
     <div className={cn("relative min-h-screen w-full overflow-hidden", className)}>
       {/* Título e subtítulo abaixo da navbar */}
@@ -63,7 +68,7 @@ export const GoogleGeminiEffect = ({
         </SignInButton>
       </SignedOut>
       <SignedIn>
-        <Link href="/catalogo">
+        <Link href={hasRegisteredCompany ? "/catalogo" : "/register-company"}>
           <div
             className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-40"
             style={{ top: "40.9%" }} // 364/890 ≈ 40.9%, alinhado ao path mais alto

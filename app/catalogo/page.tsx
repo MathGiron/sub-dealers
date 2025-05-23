@@ -1,6 +1,7 @@
 import { ProductDataTable } from "@/components/product-table";
-import { Product, fetchSubDealersProducts } from "@/services/shopifyService";
+import { fetchSubDealersProducts } from "@/services/shopifyService";
 import Navbar from "@/components/navbar";
+import { Product } from "@/services/index";
 
 async function getData(): Promise<Product[]> {
   try {

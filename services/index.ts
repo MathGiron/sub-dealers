@@ -1,18 +1,17 @@
-export interface ProductSpec {
-  name: string;
-  included: boolean;
-  price?: string; // Campo para o preço da variante
-}
-
 export interface Product {
   id: string;
   name: string;
   image: string;
   description: string;
-  specs: ProductSpec[];
+  price?: number; // Adiciona o campo price
+  specs: Array<{
+    name: string;
+    included: boolean;
+    price?: string | number;
+  }>;
   buttonText: string;
   href: string;
-  highlighted?: boolean;
+  highlighted: boolean;
 }
 
 export interface OrderProduct extends Product {

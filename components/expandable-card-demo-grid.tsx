@@ -3,7 +3,7 @@
 import React, { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useOutsideClick } from "@/hooks/use-outside-click";
-import { Product } from "@/services/shopifyService";
+import { Product } from "@/services";
 import Image from "next/image";
 
 interface ExpandableCardDemoProps {

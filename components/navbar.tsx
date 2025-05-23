@@ -64,6 +64,11 @@ const Navbar: React.FC = () => {
               },
             }}
           />
+          <Link href="/profile">
+            <HoverBorderGradient>
+              <span>Perfil</span>
+            </HoverBorderGradient>
+          </Link>
           <HoverBorderGradient onClick={handleBecomeReseller}>
             <span>{hasValidCNPJ ? "Fazer Pedido" : "Seja um Revendedor"}</span>
           </HoverBorderGradient>

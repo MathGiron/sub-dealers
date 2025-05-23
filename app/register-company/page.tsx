@@ -46,7 +46,7 @@ export default function RegisterCompany() {
     if (isLoaded && user) {
       const storedCNPJ = user.unsafeMetadata?.cnpj as string | undefined;
       if (storedCNPJ && isValidCNPJ(storedCNPJ)) {
-        router.push("/dashboard");
+        router.push("/catalogo");
       }
     }
   }, [isLoaded, user, router]);
@@ -81,14 +81,20 @@ export default function RegisterCompany() {
 
   const formatContact = (value: string) => {
     const cleaned = value.replace(/\D/g, "");
-    const limited = cleaned.slice(0, 11); // Máximo 11 dígitos (2 do código do país + 2 do DDD + 9 do número)
+    const limited = cleaned.slice(0, 13); // 55 + 2 DDD + 9 número = 13 dígitos
 
-    let formatted = "55 "; // Código do país
-    if (limited.length > 2) formatted += limited.slice(2, 4) + " "; // DDD
-    if (limited.length > 4) formatted += limited.slice(4, 9) + "-"; // Primeira parte do número
-    if (limited.length > 9) formatted += limited.slice(9); // Segunda parte do número
+    if (limited.length !== 13) {
+      return limited; // Retorna sem formatação se não tiver 13 dígitos
+    }
 
-    return formatted.trim();
+    // Aplica a formatação: 55 41 99999-9999
+    let formatted = "";
+    formatted = limited.slice(0, 2); // 55
+    formatted += " " + limited.slice(2, 4); // DDD
+    formatted += " " + limited.slice(4, 9); // Primeiros 5 dígitos
+    formatted += "-" + limited.slice(9, 13); // Últimos 4 dígitos
+
+    return formatted;
   };
 
   const handleCNPJChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,7 +113,8 @@ export default function RegisterCompany() {
 
   const handleContactChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
-    const formattedValue = formatContact(rawValue);
+    const cleanedValue = rawValue.replace(/\D/g, "").slice(0, 13); // Limpa e limita a 13 dígitos
+    const formattedValue = formatContact(cleanedValue);
     setContactInput(formattedValue);
     setValue("contactNumber", formattedValue, { shouldValidate: true });
   };
@@ -118,12 +125,12 @@ export default function RegisterCompany() {
         unsafeMetadata: {
           cnpj: data.cnpj,
           cep: data.cep,
-          name: data.name,
           companyName: data.companyName,
-          contactNumber: data.contactNumber, // Novo campo
+          contactNumber: data.contactNumber,
+          registerCompany: true,
         },
       });
-      router.push("/dashboard");
+      router.push("/catalogo");
     }
   };
 
@@ -188,19 +195,6 @@ export default function RegisterCompany() {
             </LabelInputContainer>
 
             <LabelInputContainer>
-              <Label htmlFor="name">Nome do Contato</Label>
-              <Input
-                id="name"
-                {...register("name", { required: "Nome é obrigatório" })}
-                placeholder="Seu nome"
-                className="bg-black text-white border-gray-300"
-              />
-              {errors.name?.message && (
-                <p className="text-red-500 text-sm">{errors.name.message}</p>
-              )}
-            </LabelInputContainer>
-
-            <LabelInputContainer>
               <Label htmlFor="companyName">Nome da Empresa</Label>
               <Input
                 id="companyName"
@@ -226,7 +220,7 @@ export default function RegisterCompany() {
                 })}
                 value={contactInput}
                 onChange={handleContactChange}
-                maxLength={17}
+                maxLength={14} // 55 41 99999-9999 = 14 caracteres (incluindo espaços e hífen)
                 placeholder="55 41 99999-9999"
                 className="bg-black text-white border-gray-300"
               />

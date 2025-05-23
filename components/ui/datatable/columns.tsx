@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef, Row } from "@tanstack/react-table";
-import { Product } from "@/services/shopifyService";
+import { Product } from "@/services/index";
 import Image from "next/image";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { Checkbox } from "@/components/ui/checkbox";

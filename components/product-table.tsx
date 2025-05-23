@@ -24,7 +24,7 @@ import { ChevronDown } from "lucide-react";
 import { DataTable } from "@/components/ui/datatable/data-table";
 import { columns } from "@/components/ui/datatable/columns";
 import { useRouter } from "next/navigation";
-import { Product } from "@/services/shopifyService";
+import { Product } from "@/services/index";
 
 interface ProductDataTableProps<TData> {
   initialData: TData[];
