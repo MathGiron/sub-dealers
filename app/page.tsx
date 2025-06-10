@@ -1,5 +1,5 @@
 import { ExpandableCardDemo } from "@/components/acertenity/expandable-card-demo-grid";
-import { GoogleGeminiEffectDemo } from "@/components/hero-section-demo-1";
+import { HeroSection } from "@/components/hero-section";
 import Navbar from "@/components/navbar";
 import { Product } from "@/services/shopifyService";
 
@@ -33,7 +33,7 @@ export default async function Home() {
   return (
     <div className="min-h-screen">
       <Navbar />
-      <GoogleGeminiEffectDemo />
+      <HeroSection />
       <main className="bg-black">
         <ExpandableCardDemo products={products} />
       </main>
