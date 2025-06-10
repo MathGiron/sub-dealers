@@ -120,7 +120,7 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
         ) : null}
       </AnimatePresence>
       <div className="max-w-7xl mx-auto px-4 py-10 bg-black dark:bg-neutral-900">
-        <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-center text-neutral-200 dark:text-neutral-200 mb-8">
+        <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-left text-neutral-200 dark:text-neutral-200 mb-8">
           {"Conheça Nossos Produtos"
             .split(" ")
             .map((word, index) => (
@@ -139,7 +139,7 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
               </motion.span>
             ))}
         </h2>
-        <ul className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 items-start gap-4">
+        <ul className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 items-start gap-4">
           {products.map((product) => (
             <motion.div
               layoutId={`card-${product.name}-${id}`}
