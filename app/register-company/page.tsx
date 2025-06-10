@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { isValidCNPJ } from "@/lib/cnpj";
 import { RegisterCompanyFormData } from "@/services/index";
+import { toast } from "@/components/ui/sonner";
 
 const BottomGradient = () => {
   return (
@@ -130,7 +131,30 @@ export default function RegisterCompany() {
           registerCompany: true,
         },
       });
-      router.push("/catalogo");
+
+      // Mostrar o toast de sucesso
+      const now = new Date();
+      const formattedDate = now.toLocaleString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      });
+      toast("Cadastro concluído!", {
+        description: formattedDate, // Ex.: "Friday, May 23, 2025 at 02:44 PM"
+        action: {
+          label: "Fechar",
+          onClick: () => console.log("Fechar"),
+        },
+      });
+
+      // Redirecionar pra /catalogo após 1,5 segundos
+      setTimeout(() => {
+        router.push("/catalogo");
+      }, 1500);
     }
   };
 

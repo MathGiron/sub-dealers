@@ -1,4 +1,4 @@
-import { ExpandableCardDemo } from "@/components/expandable-card-demo-grid";
+import { ExpandableCardDemo } from "@/components/acertenity/expandable-card-demo-grid";
 import { GoogleGeminiEffectDemo } from "@/components/hero-section-demo-1";
 import Navbar from "@/components/navbar";
 import { Product } from "@/services/shopifyService";
@@ -6,7 +6,7 @@ import { Product } from "@/services/shopifyService";
 async function fetchProducts(): Promise<Product[]> {
   console.log("Iniciando fetch para /api/produtos...");
   const res = await fetch("http://localhost:3000/api/produtos", {
-    cache: "no-store", // Garante que a requisição seja feita no SSR
+    cache: "no-store",
   });
   console.log("Resposta recebida de /api/produtos:", res.status, res.statusText);
 
@@ -34,7 +34,7 @@ export default async function Home() {
     <div className="min-h-screen">
       <Navbar />
       <GoogleGeminiEffectDemo />
-      <main className="bg-black"> {/* Ajuste de padding-top para evitar sobreposição com a navbar fixa */}
+      <main className="bg-black">
         <ExpandableCardDemo products={products} />
       </main>
     </div>

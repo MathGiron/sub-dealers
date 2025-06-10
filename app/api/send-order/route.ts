@@ -13,13 +13,13 @@ export async function POST(request: Request) {
 
     const orderDetails = products
       .map((product: any, index: number) => {
-        const price = product.specs?.[0]?.price ? parseFloat(product.specs[0].price) : 0;
+        const price = product.price ? parseFloat(product.price) : 0; // Usar product.price diretamente
         const total = price * (product.quantity || 1);
         return `${index + 1}. ${product.name}\n   Quantidade: ${product.quantity}\n   Preço Unitário: R$ ${price.toFixed(2)}\n   Total: R$ ${total.toFixed(2)}`;
       })
       .join("\n\n");
     const totalAmount = products.reduce((sum: number, product: any) => {
-      const price = product.specs?.[0]?.price ? parseFloat(product.specs[0].price) : 0;
+      const price = product.price ? parseFloat(product.price) : 0; // Usar product.price diretamente
       return sum + price * (product.quantity || 1);
     }, 0);
 

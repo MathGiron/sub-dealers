@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { motion, MotionValue } from "motion/react";
+import { motion, MotionValue } from "framer-motion";
 import React from "react";
 import { SignInButton, SignedIn, SignedOut, useUser } from "@clerk/nextjs";
 import Link from "next/link";
@@ -39,18 +39,17 @@ export const GoogleGeminiEffect = ({
 }) => {
   const { user, isLoaded } = useUser();
 
-  // Verifica se o usuário tem registerCompany definido como true
   const hasRegisteredCompany = isLoaded && user?.unsafeMetadata?.registerCompany === true;
 
   return (
     <div className={cn("relative min-h-screen w-full overflow-hidden", className)}>
       {/* Título e subtítulo abaixo da navbar */}
-      <div className="absolute top-[56px] left-0 w-full flex justify-center z-50 mt-4 md:mt-6">
-        <div className="text-center">
-          <p className="text-lg md:text-7xl font-normal pb-4 bg-clip-text text-transparent bg-gradient-to-b from-neutral-100 to-neutral-300">
+      <div className="absolute top-[80px] left-0 w-full flex justify-center z-50">
+        <div className="text-center px-4">
+          <p className="text-2xl md:text-7xl font-normal pb-4 bg-clip-text text-transparent bg-gradient-to-b from-neutral-100 to-neutral-300">
             {title || `Bem vindo ao Ecoflow Sub-Dealers`}
           </p>
-          <p className="text-xs md:text-xl font-normal text-neutral-400 max-w-lg mx-auto px-4">
+          <p className="text-lg md:text-xl font-normal text-neutral-400 max-w-lg mx-auto">
             {description ||
               `Energizar um novo mundo, um chamado para o futuro aspiracional, orientado pela tecnologia e ecológico, compartilhado por todos.`}
           </p>
@@ -61,7 +60,7 @@ export const GoogleGeminiEffect = ({
         <SignInButton mode="modal">
           <div
             className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-40"
-            style={{ top: "40.9%" }} // 364/890 ≈ 40.9%, alinhado ao path mais alto
+            style={{ top: "40.9%" }}
           >
             <HoverBorderGradientDemo />
           </div>
@@ -71,7 +70,7 @@ export const GoogleGeminiEffect = ({
         <Link href={hasRegisteredCompany ? "/catalogo" : "/register-company"}>
           <div
             className="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-40"
-            style={{ top: "40.9%" }} // 364/890 ≈ 40.9%, alinhado ao path mais alto
+            style={{ top: "40.9%" }}
           >
             <HoverBorderGradientDemo />
           </div>
@@ -91,12 +90,8 @@ export const GoogleGeminiEffect = ({
           stroke="#FFB7C5"
           strokeWidth="2"
           fill="none"
-          initial={{
-            pathLength: 0,
-          }}
-          style={{
-            pathLength: pathLengths[0],
-          }}
+          initial={{ pathLength: 0 }}
+          style={{ pathLength: pathLengths[0] }}
           transition={transition}
         />
         <motion.path
@@ -104,12 +99,8 @@ export const GoogleGeminiEffect = ({
           stroke="#FFDDB7"
           strokeWidth="2"
           fill="none"
-          initial={{
-            pathLength: 0,
-          }}
-          style={{
-            pathLength: pathLengths[1],
-          }}
+          initial={{ pathLength: 0 }}
+          style={{ pathLength: pathLengths[1] }}
           transition={transition}
         />
         <motion.path
@@ -117,12 +108,8 @@ export const GoogleGeminiEffect = ({
           stroke="#B1C5FF"
           strokeWidth="2"
           fill="none"
-          initial={{
-            pathLength: 0,
-          }}
-          style={{
-            pathLength: pathLengths[2],
-          }}
+          initial={{ pathLength: 0 }}
+          style={{ pathLength: pathLengths[2] }}
           transition={transition}
         />
         <motion.path
@@ -130,12 +117,8 @@ export const GoogleGeminiEffect = ({
           stroke="#4FABFF"
           strokeWidth="2"
           fill="none"
-          initial={{
-            pathLength: 0,
-          }}
-          style={{
-            pathLength: pathLengths[3],
-          }}
+          initial={{ pathLength: 0 }}
+          style={{ pathLength: pathLengths[3] }}
           transition={transition}
         />
         <motion.path
@@ -143,16 +126,11 @@ export const GoogleGeminiEffect = ({
           stroke="#076EFF"
           strokeWidth="2"
           fill="none"
-          initial={{
-            pathLength: 0,
-          }}
-          style={{
-            pathLength: pathLengths[4],
-          }}
+          initial={{ pathLength: 0 }}
+          style={{ pathLength: pathLengths[4] }}
           transition={transition}
         />
 
-        {/* Gaussian blur for the background paths */}
         <path
           d="M0 663C145.5 663 191 666.265 269 647C326.5 630 339.5 621 397.5 566C439 531.5 455 529.5 490 523C509.664 519.348 521 503.736 538 504.236C553.591 504.236 562.429 514.739 584.66 522.749C592.042 525.408 600.2 526.237 607.356 523.019C624.755 515.195 641.446 496.324 657 496.735C673.408 496.735 693.545 519.572 712.903 526.769C718.727 528.934 725.184 528.395 730.902 525.965C751.726 517.115 764.085 497.106 782 496.735C794.831 496.47 804.103 508.859 822.469 518.515C835.13 525.171 850.214 526.815 862.827 520.069C875.952 513.049 889.748 502.706 903.5 503.736C922.677 505.171 935.293 510.562 945.817 515.673C954.234 519.76 963.095 522.792 972.199 524.954C996.012 530.611 1007.42 534.118 1034 549C1077.5 573.359 1082.5 594.5 1140 629C1206 670 1328.5 662.5 1440 662.5"
           stroke="#FFB7C5"

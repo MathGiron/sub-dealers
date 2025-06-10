@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect, useState } from "react";
 import { useScroll, useTransform } from "motion/react";
-import { GoogleGeminiEffect } from "@/components/ui/google-gemini-effect";
+import { GoogleGeminiEffect } from "@/components/acertenity/google-gemini-effect";
 
 export function GoogleGeminiEffectDemo() {
   const ref = React.useRef(null);
@@ -58,15 +58,7 @@ export function GoogleGeminiEffectDemo() {
       className="h-[200vh] bg-black w-full dark:border dark:border-white/[0.1] relative pt-40 overflow-clip"
       ref={ref}
     >
-      <video
-        muted
-        playsInline
-        ref={videoRef}
-        className="w-full h-auto absolute top-150 left-0 object-cover z-0"
-      >
-        <source src="/river_video.webm" type="video/webm" />
-        Seu navegador não suporta o elemento de vídeo.
-      </video>
+      
       <GoogleGeminiEffect
         pathLengths={[
           pathLengthFirst,

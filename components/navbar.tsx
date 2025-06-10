@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton, useAuth, useUser } from "@clerk/nextjs";
 import React from "react";
-import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
+import { HoverBorderGradient } from "@/components/acertenity/hover-border-gradient";
 import { useRouter } from "next/navigation";
 import { isValidCNPJ } from "@/lib/cnpj";
 
@@ -15,23 +15,8 @@ const Navbar: React.FC = () => {
 
   const hasValidCNPJ = isLoaded && user && user.unsafeMetadata?.cnpj && isValidCNPJ(user.unsafeMetadata.cnpj as string);
 
-  const handleBecomeReseller = () => {
-    if (isLoaded) {
-      if (userId) {
-        if (hasValidCNPJ) {
-          router.push("/catalogo"); // Usuário já tem CNPJ válido, vai direto pro catálogo
-        } else {
-          router.push("/register-company"); // Usuário logado, mas sem CNPJ, vai pro registro
-        }
-      } else {
-        // Se não logado, ativa o modal de login
-        SignInButton();
-      }
-    }
-  };
-
   return (
-    <nav className="fixed top-0 left-0 w-full flex items-center justify-between px-4 py-4 bg-transparent backdrop-blur-md z-50">
+    <nav className="fixed top-0 left-0 w-full flex items-center justify-between px-4 py-4 bg-transparent backdrop-blur-md z-60">
       <div className="flex items-center gap-2">
         <Link href="/">
           <Image
@@ -46,12 +31,16 @@ const Navbar: React.FC = () => {
       <div className="flex items-center gap-4">
         <SignedOut>
           <SignInButton mode="modal">
-            <HoverBorderGradient>
+            <HoverBorderGradient
+              className="px-4 py-2 rounded-full transition duration-200 hover:bg-gray-700 active:bg-gray-700"
+            >
               <span>Login</span>
             </HoverBorderGradient>
           </SignInButton>
           <SignUpButton mode="modal">
-            <HoverBorderGradient>
+            <HoverBorderGradient
+              className="px-4 py-2 rounded-full transition duration-200 hover:bg-gray-700 active:bg-gray-700"
+            >
               <span>Sign Up</span>
             </HoverBorderGradient>
           </SignUpButton>
@@ -64,14 +53,38 @@ const Navbar: React.FC = () => {
               },
             }}
           />
-          <Link href="/profile">
-            <HoverBorderGradient>
-              <span>Perfil</span>
+          <Link href="/profile" className="relative">
+            <HoverBorderGradient
+              className="px-4 py-2 rounded-full transition duration-200 hover:bg-gray-700 active:bg-gray-700"
+            >
+              <span className="hidden md:inline">Meus Pedidos</span>
+              <Image
+                src="/meus_pedidos.svg"
+                alt="Meus Pedidos"
+                width={28}
+                height={28}
+                className="md:hidden block mx-auto"
+                style={{ filter: "brightness(0) invert(1)" }}
+              />
             </HoverBorderGradient>
           </Link>
-          <HoverBorderGradient onClick={handleBecomeReseller}>
-            <span>{hasValidCNPJ ? "Fazer Pedido" : "Seja um Revendedor"}</span>
-          </HoverBorderGradient>
+          <Link href="/catalogo" className="relative">
+            <HoverBorderGradient
+              className="px-4 py-2 rounded-full transition duration-200 hover:bg-gray-700 active:bg-gray-700"
+            >
+              <span className="hidden md:inline">
+                {hasValidCNPJ ? "Fazer Pedido" : "Seja um Revendedor"}
+              </span>
+              <Image
+                src="/fazer_pedido.svg"
+                alt={hasValidCNPJ ? "Fazer Pedido" : "Seja um Revendedor"}
+                width={28}
+                height={28}
+                className="md:hidden block mx-auto"
+                style={{ filter: "brightness(0) invert(1)" }}
+              />
+            </HoverBorderGradient>
+          </Link>
         </SignedIn>
       </div>
     </nav>

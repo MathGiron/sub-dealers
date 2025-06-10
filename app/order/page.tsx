@@ -287,6 +287,8 @@ export default function OrderPage() {
         },
       });
       setProducts([]);
+
+      // Redirecionar pro WhatsApp imediatamente
       window.open(result.whatsappLink, "_blank");
     } catch (error) {
       console.error("Erro ao enviar pedido:", error);
