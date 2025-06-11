@@ -17,7 +17,7 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className="fixed top-0 left-0 w-full flex items-center justify-between px-4 py-4 bg-transparent backdrop-blur-md z-60">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-4">
         <Link href="/">
           <Image
             src="/WT.png"
@@ -26,6 +26,21 @@ const Navbar: React.FC = () => {
             height={40}
             className="object-contain"
           />
+        </Link>
+        <Link href="/manuais" className="relative">
+          <HoverBorderGradient
+            className="px-4 py-2 rounded-full transition duration-200 hover:bg-gray-700 active:bg-gray-700"
+          >
+            <span className="hidden md:inline">Manuais</span>
+            <Image
+              src="/manuais.svg" // Substitua por um ícone de manual, se disponível
+              alt="Manuais"
+              width={28}
+              height={28}
+              className="md:hidden block mx-auto"
+              style={{ filter: "brightness(0) invert(1)" }}
+            />
+          </HoverBorderGradient>
         </Link>
       </div>
       <div className="flex items-center gap-4">

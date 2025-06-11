@@ -31,13 +31,13 @@ export function HeroSection() {
     offset: ["start start", "end start"],
   });
 
-  const y = useTransform(scrollYProgress, [0, 0.5], [0, -200], { ease: easeInOut });
+  const y = useTransform(scrollYProgress, [0, 0.3], [0, -150], { ease: easeInOut });
 
   const hasRegisteredCompany = isLoaded && user?.unsafeMetadata?.registerCompany === true;
 
   return (
     <div
-      className="relative min-h-screen w-full overflow-hidden"
+      className="relative min-h-[50vh] sm:min-h-[50vh] md:min-h-[60vh] lg:min-h-screen w-full overflow-hidden"
       ref={ref}
       style={{
         backgroundImage: "url('/banner_homepage.jpg')",
@@ -46,15 +46,15 @@ export function HeroSection() {
         backgroundAttachment: "fixed",
       }}
     >
-      <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50" />
+      <div className="absolute top-0 left-0 w-full h-full bg-black opacity-70" />
       <motion.div
         className="absolute inset-0"
         style={{ y }}
       />
-      <div className="relative min-h-screen flex flex-col items-start justify-center text-left px-40 z-10">
-        <div className="flex flex-col items-start max-w-[50vw]">
+      <div className="relative min-h-[60vh] sm:min-h-[50vh] md:min-h-[60vh] lg:min-h-screen flex flex-col items-start justify-center text-left px-4 sm:px-8 md:px-16 lg:px-20 z-10">
+        <div className="flex flex-col items-start max-w-full sm:max-w-[50vw] md:max-w-[60vw]">
           <motion.h1
-            className="text-2xl md:text-4xl font-normal pb-4"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal pb-2 sm:pb-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
@@ -62,34 +62,31 @@ export function HeroSection() {
               color: "white",
               textTransform: "uppercase",
               fontFamily: "Helvetica Now Display, sans-serif",
-              fontSize: "5vw",
               fontWeight: 700,
-              lineHeight: "5vw",
+              lineHeight: "1.2",
             }}
           >
             Bem vindo ao Ecoflow Sub-Dealers
           </motion.h1>
           <motion.p
-            className="text-lg md:text-xl font-normal"
+            className="text-base sm:text-lg md:text-xl lg:text-2xl font-normal mt-2 sm:mt-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             style={{
               color: "white",
-              letterSpacing: "0.1em",
               textTransform: "none",
               marginTop: 0,
               marginBottom: 0,
               fontFamily: "Helvetica Now Display, sans-serif",
-              fontSize: "1.6em",
               fontWeight: 400,
-              lineHeight: "1.5em",
+              lineHeight: "1.4",
             }}
           >
             Energizar um novo mundo, um chamado para o futuro aspiracional, orientado pela tecnologia e ecológico, compartilhado por todos.
           </motion.p>
           <motion.p
-            className="text-lg md:text-base font-normal mt-4"
+            className="text-base sm:text-lg md:text-xl lg:text-2xl font-normal mt-2 sm:mt-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
@@ -100,15 +97,14 @@ export function HeroSection() {
               marginTop: 0,
               marginBottom: 0,
               fontFamily: "Helvetica Now Display, sans-serif",
-              fontSize: "2em",
               fontWeight: 600,
-              lineHeight: "2em",
+              lineHeight: "1.4",
             }}
           >
             Junte-se a nós na revolução verde e tecnológica.
           </motion.p>
         </div>
-        <div className="mt-8">
+        <div className="mt-4 sm:mt-6 md:mt-8">
           <SignedOut>
             <SignInButton mode="modal">
               <HoverBorderGradientDemo />
