@@ -33,8 +33,23 @@ const Navbar: React.FC = () => {
           >
             <span className="hidden md:inline">Manuais</span>
             <Image
-              src="/manuais.svg" // Substitua por um ícone de manual, se disponível
+              src="/manuais.svg"
               alt="Manuais"
+              width={28}
+              height={28}
+              className="md:hidden block mx-auto"
+              style={{ filter: "brightness(0) invert(1)" }}
+            />
+          </HoverBorderGradient>
+        </Link>
+        <Link href="/apresentacao" className="relative">
+          <HoverBorderGradient
+            className="px-4 py-2 rounded-full transition duration-200 hover:bg-gray-700 active:bg-gray-700"
+          >
+            <span className="hidden md:inline">Catálogo</span>
+            <Image
+              src="/catalogo.svg" // Substitua por um ícone de catálogo, se disponível
+              alt="Catálogo" // Atualizado para refletir o texto visível
               width={28}
               height={28}
               className="md:hidden block mx-auto"
