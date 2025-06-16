@@ -119,7 +119,7 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
           </div>
         ) : null}
       </AnimatePresence>
-      <div className="max-w-7xl mx-auto px-4 py-10 bg-black dark:bg-neutral-900">
+      <div className="max-w-7xl mx-auto px-4 py-10  dark:bg-neutral-900">
         <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-left text-neutral-200 dark:text-neutral-200 mb-8">
           {"Conheça Nossos Produtos"
             .split(" ")

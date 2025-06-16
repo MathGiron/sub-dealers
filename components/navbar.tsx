@@ -24,7 +24,7 @@ const Navbar: React.FC = () => {
             alt="Timber EcoFlow Logo"
             width={150}
             height={40}
-            className="object-contain"
+            className="w-[120px] h-[32px] md:w-[150px] md:h-[40px] object-contain"
           />
         </Link>
         <Link href="/manuais" className="relative">
@@ -33,10 +33,10 @@ const Navbar: React.FC = () => {
           >
             <span className="hidden md:inline">Manuais</span>
             <Image
-              src="/manuais.svg" // Substitua por um ícone de manual, se disponível
+              src="navbar/manuais.svg"
               alt="Manuais"
-              width={28}
-              height={28}
+              width={15}
+              height={15}
               className="md:hidden block mx-auto"
               style={{ filter: "brightness(0) invert(1)" }}
             />
@@ -74,10 +74,10 @@ const Navbar: React.FC = () => {
             >
               <span className="hidden md:inline">Meus Pedidos</span>
               <Image
-                src="/meus_pedidos.svg"
+                src="navbar/meus_pedidos.svg"
                 alt="Meus Pedidos"
-                width={28}
-                height={28}
+                width={15}
+                height={15}
                 className="md:hidden block mx-auto"
                 style={{ filter: "brightness(0) invert(1)" }}
               />
@@ -91,10 +91,10 @@ const Navbar: React.FC = () => {
                 {hasValidCNPJ ? "Fazer Pedido" : "Seja um Revendedor"}
               </span>
               <Image
-                src="/fazer_pedido.svg"
+                src="navbar/fazer_pedido.svg"
                 alt={hasValidCNPJ ? "Fazer Pedido" : "Seja um Revendedor"}
-                width={28}
-                height={28}
+                width={15}
+                height={15}
                 className="md:hidden block mx-auto"
                 style={{ filter: "brightness(0) invert(1)" }}
               />

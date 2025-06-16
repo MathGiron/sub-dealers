@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -77,6 +76,14 @@
   --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
   --sidebar-border: oklch(0.92 0.004 286.32);
   --sidebar-ring: oklch(0.705 0.015 286.067);
+}
+
+.bg-dot-pattern {
+  background-image: radial-gradient(circle at center, rgba(255, 255, 255, 0.2) 0.8px, transparent 0.8px);
+  background-size: 60px 60px;
+  background-position: 0 0;
+  background-repeat: repeat;
+  background-color: #000000;
 }
 
 .dark {

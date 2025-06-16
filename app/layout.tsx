@@ -3,6 +3,8 @@ import "./globals.css";
 import ClerkProviderWrapper from "@/components/ClerkProviderWrapper";
 import { Toaster } from "@/components/ui/sonner";
 import Footer from "@/components/Footer";
+import { DotPattern } from "@/components/magicui/dot-pattern";
+import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,11 +20,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className={inter.className}>
+      <body className={cn(inter.className, "bg-black text-white")}>
         <ClerkProviderWrapper>
-          {children}
-          <Toaster />
-          <Footer />
+          <div className="relative min-h-screen">
+            <DotPattern
+              className={cn(
+                "text-white opacity-20",
+                "absolute inset-0 h-full w-full z-[-1]"
+              )}
+            />
+            {children}
+            <Toaster />
+            <Footer />
+          </div>
         </ClerkProviderWrapper>
       </body>
     </html>

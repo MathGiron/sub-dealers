@@ -223,18 +223,17 @@ export default function ProfilePage() {
     },
   });
 
-  if (!isLoaded || loading) return <div className="min-h-screen bg-black text-white flex items-center justify-center">Carregando...</div>;
+  if (!isLoaded || loading) return <div className="min-h-screen text-white flex items-center justify-center">Carregando...</div>;
 
-  if (!user) return <div className="min-h-screen bg-black text-white flex items-center justify-center">Por favor, faça login para ver seu perfil.</div>;
+  if (!user) return <div className="min-h-screen text-white flex items-center justify-center">Por favor, faça login para ver seu perfil.</div>;
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen text-white">
       <Navbar />
       <div className="mx-auto w-full max-w-4xl p-6 py-40">
         <div className="shadow-input w-full rounded-none bg-black p-4 md:rounded-2xl md:p-8 dark:bg-black border border-gray-300">
           <h1 className="text-xl font-bold text-neutral-200">Meus Pedidos</h1>
           <div className="mt-6">
-            
             <div className="mt-4">
               <DataTable table={table} />
               {table.getRowModel().rows.map((row) => (

@@ -31,10 +31,10 @@ export default async function Home() {
   console.log("Produtos a serem passados para ExpandableCardDemo:", products);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen text-white">
       <Navbar />
       <HeroSection />
-      <main className="bg-black">
+      <main>
         <ExpandableCardDemo products={products} />
       </main>
     </div>
