@@ -35,8 +35,23 @@ const Navbar: React.FC = () => {
             <Image
               src="navbar/manuais.svg"
               alt="Manuais"
-              width={15}
-              height={15}
+              width={20}
+              height={20}
+              className="md:hidden block mx-auto"
+              style={{ filter: "brightness(0) invert(1)" }}
+            />
+          </HoverBorderGradient>
+        </Link>
+        <Link href="/catalogo" className="relative">
+          <HoverBorderGradient
+            className="px-4 py-2 rounded-full transition duration-200 hover:bg-gray-700 active:bg-gray-700"
+          >
+            <span className="hidden md:inline">Catálogo</span>
+            <Image
+              src="navbar/catalogo.svg" // Ajuste o caminho do ícone se necessário
+              alt="Catálogo"
+              width={20}
+              height={20}
               className="md:hidden block mx-auto"
               style={{ filter: "brightness(0) invert(1)" }}
             />
@@ -76,8 +91,8 @@ const Navbar: React.FC = () => {
               <Image
                 src="navbar/meus_pedidos.svg"
                 alt="Meus Pedidos"
-                width={15}
-                height={15}
+                width={20}
+                height={20}
                 className="md:hidden block mx-auto"
                 style={{ filter: "brightness(0) invert(1)" }}
               />
@@ -93,8 +108,8 @@ const Navbar: React.FC = () => {
               <Image
                 src="navbar/fazer_pedido.svg"
                 alt={hasValidCNPJ ? "Fazer Pedido" : "Seja um Revendedor"}
-                width={15}
-                height={15}
+                width={20}
+                height={20}
                 className="md:hidden block mx-auto"
                 style={{ filter: "brightness(0) invert(1)" }}
               />
