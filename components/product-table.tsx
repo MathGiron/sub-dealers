@@ -74,15 +74,15 @@ export function ProductDataTable<TData>({ initialData }: ProductDataTableProps<T
   };
 
   return (
-    <div className="w-full bg-black dark:bg-black text-white dark:text-white">
-      <div className="flex items-center py-4 bg-black dark:bg-black">
+    <div className="w-full  text-white dark:text-white">
+      <div className="flex items-center py-4 ">
         <Input
           placeholder="Filtrar por nome..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm bg-black dark:bg-black text-white dark:text-white border-gray-300 dark:border-gray-300 placeholder-gray-400 dark:placeholder-gray-400"
+          className="max-w-sm  text-white dark:text-white border-gray-300 dark:border-gray-300 placeholder-gray-400 dark:placeholder-gray-400"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -108,7 +108,7 @@ export function ProductDataTable<TData>({ initialData }: ProductDataTableProps<T
         </DropdownMenu>
       </div>
       <DataTable table={table} />
-      <div className="flex items-center justify-between space-x-2 py-4 bg-black dark:bg-black">
+      <div className="flex items-center justify-between space-x-2 py-4 ">
         <div className="flex-1 text-sm text-gray-400 dark:text-gray-400">
           {table.getFilteredSelectedRowModel().rows.length} de{" "}
           {table.getFilteredRowModel().rows.length} linha(s) selecionada(s).

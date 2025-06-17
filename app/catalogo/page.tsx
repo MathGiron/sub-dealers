@@ -18,7 +18,7 @@ export default async function DemoPage() {
   const data = await getData();
 
   return (
-    <div className="min-h-screen bg-black dark:bg-black text-white dark:text-white">
+    <div className="min-h-screen text-white dark:text-white">
       <Navbar />
       <div className="container mx-auto py-20">
         <ProductDataTable initialData={data} />

@@ -12,6 +12,8 @@ interface ExpandableCardDemoProps {
 
 export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
   const [active, setActive] = useState<Product | boolean | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8; // Número de itens por página
   const id = useId();
   const ref = useRef<HTMLDivElement>(null);
 
@@ -34,6 +36,19 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
 
   useOutsideClick(ref, () => setActive(null));
 
+  // Calcular produtos da página atual
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const currentProducts = products.slice(0, indexOfLastItem); // Mostrar todos até a última página
+  const allProductsShown = indexOfLastItem >= products.length;
+
+  const handleShowMore = () => {
+    setCurrentPage((prev) => prev + 1);
+  };
+
+  const handleShowLess = () => {
+    setCurrentPage(1); // Volta pra primeira página
+  };
+
   return (
     <>
       <AnimatePresence>
@@ -54,10 +69,7 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
               layout
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              exit={{
-                opacity: 0,
-                transition: { duration: 0.05 },
-              }}
+              exit={{ opacity: 0, transition: { duration: 0.05 } }}
               className="flex absolute top-2 right-2 lg:hidden items-center justify-center bg-neutral-800 dark:bg-neutral-700 rounded-full h-6 w-6"
               onClick={() => setActive(null)}
             >
@@ -77,7 +89,6 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
                   className="w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg object-contain bg-neutral-800 dark:bg-neutral-800"
                 />
               </motion.div>
-
               <div className="flex flex-col h-full">
                 <div className="p-4">
                   <motion.h3
@@ -105,9 +116,7 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
                   {active.specs.length > 0 ? (
                     <ul className="list-disc pl-5 mt-2">
                       {active.specs.map((spec, index) => (
-                        <li key={index}>
-                          {spec.name}
-                        </li>
+                        <li key={index}>{spec.name}</li>
                       ))}
                     </ul>
                   ) : (
@@ -119,7 +128,7 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
           </div>
         ) : null}
       </AnimatePresence>
-      <div className="max-w-7xl mx-auto px-4 py-10  dark:bg-neutral-900">
+      <div className="max-w-7xl mx-auto px-4 py-10 dark:bg-neutral-900">
         <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-left text-neutral-200 dark:text-neutral-200 mb-8">
           {"Conheça Nossos Produtos"
             .split(" ")
@@ -128,47 +137,79 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
                 key={index}
                 initial={{ opacity: 0, filter: "blur(4px)", y: 10 }}
                 animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
-                transition={{
-                  duration: 0.3,
-                  delay: index * 0.1,
-                  ease: "easeInOut",
-                }}
-                className="inline-block mr-2 "
+                transition={{ duration: 0.3, delay: index * 0.1, ease: "easeInOut" }}
+                className="inline-block mr-2"
               >
                 {word}
               </motion.span>
             ))}
         </h2>
         <ul className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 items-start gap-4">
-          {products.map((product) => (
-            <motion.div
-              layoutId={`card-${product.name}-${id}`}
-              key={product.id}
-              onClick={() => setActive(product)}
-              className="p-4 flex flex-col hover:border-1 hover:border-white rounded-xl cursor-pointer"
-            >
-              <div className="flex gap-4 flex-col w-full">
-                <motion.div layoutId={`image-${product.name}-${id}`}>
-                  <Image
-                    width={300}
-                    height={240}
-                    src={product.image}
-                    alt={product.name}
-                    className="h-60 w-full  rounded-lg object-contain bg-neutral-800 dark:bg-neutral-800"
-                  />
-                </motion.div>
-                <div className="flex justify-center items-center flex-col">
-                  <motion.h3
-                    layoutId={`title-${product.name}-${id}`}
-                    className="font-medium text-neutral-200 dark:text-neutral-200 text-center md:text-left text-base"
-                  >
-                    {product.name}
-                  </motion.h3>
+          <AnimatePresence>
+            {currentProducts.map((product) => (
+              <motion.div
+                layoutId={`card-${product.name}-${id}`}
+                key={product.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5 }}
+                onClick={() => setActive(product)}
+                className="p-4 flex flex-col hover:border-1 hover:border-white rounded-xl cursor-pointer"
+              >
+                <div className="flex gap-4 flex-col w-full">
+                  <motion.div layoutId={`image-${product.name}-${id}`}>
+                    <Image
+                      width={300}
+                      height={240}
+                      src={product.image}
+                      alt={product.name}
+                      className="h-60 w-full rounded-lg object-contain bg-neutral-800 dark:bg-neutral-800"
+                    />
+                  </motion.div>
+                  <div className="flex justify-center items-center flex-col">
+                    <motion.h3
+                      layoutId={`title-${product.name}-${id}`}
+                      className="font-medium text-neutral-200 dark:text-neutral-200 text-center md:text-left text-base"
+                    >
+                      {product.name}
+                    </motion.h3>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </ul>
+        <div className="flex justify-center mt-8 space-x-4">
+          {!allProductsShown && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <button
+                onClick={handleShowMore}
+                className="px-6 py-3 bg-neutral-800 text-white rounded-full hover:bg-neutral-700 transition-colors duration-200"
+              >
+                Mostrar Mais
+              </button>
+            </motion.div>
+          )}
+          {allProductsShown && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <button
+                onClick={handleShowLess}
+                className="px-6 py-3 bg-neutral-800 text-white rounded-full hover:bg-neutral-700 transition-colors duration-200"
+              >
+                Mostrar Menos
+              </button>
+            </motion.div>
+          )}
+        </div>
       </div>
     </>
   );
@@ -179,10 +220,7 @@ export function CloseIcon() {
     <motion.svg
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      exit={{
-        opacity: 0,
-        transition: { duration: 0.05 },
-      }}
+      exit={{ opacity: 0, transition: { duration: 0.05 } }}
       xmlns="http://www.w3.org/2000/svg"
       width="24"
       height="24"
