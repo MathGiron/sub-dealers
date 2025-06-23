@@ -1,5 +1,5 @@
 import { GraphQLClient } from "graphql-request";
-import { ProductSpec, Product } from "./index";
+import { Product } from "./index";
 
 // Query para buscar todos os produtos da coleção (mantida como está)
 const GET_SUBDEALERS_PRODUCTS_QUERY = `

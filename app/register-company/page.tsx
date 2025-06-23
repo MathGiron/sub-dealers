@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import { isValidCNPJ } from "@/lib/cnpj";
 import { RegisterCompanyFormData } from "@/services/index";
 import { toast } from "@/components/ui/sonner";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const BottomGradient = () => {
   return (
@@ -42,6 +43,7 @@ export default function RegisterCompany() {
   const [cnpjInput, setCnpjInput] = useState("");
   const [cepInput, setCepInput] = useState("");
   const [contactInput, setContactInput] = useState("");
+  const [selectedState, setSelectedState] = useState<string>("AC"); // Default para Acre
 
   useEffect(() => {
     if (isLoaded && user) {
@@ -55,20 +57,13 @@ export default function RegisterCompany() {
   const formatCNPJ = (value: string) => {
     const cleaned = value.replace(/\D/g, "");
     const limited = cleaned.slice(0, 14);
-
     let formatted = "";
     for (let i = 0; i < limited.length; i++) {
-      if (i === 2 || i === 5) {
-        formatted += "." + limited[i];
-      } else if (i === 8) {
-        formatted += "/" + limited[i];
-      } else if (i === 12) {
-        formatted += "-" + limited[i];
-      } else {
-        formatted += limited[i];
-      }
+      if (i === 2 || i === 5) formatted += "." + limited[i];
+      else if (i === 8) formatted += "/" + limited[i];
+      else if (i === 12) formatted += "-" + limited[i];
+      else formatted += limited[i];
     }
-
     return formatted;
   };
 
@@ -82,19 +77,9 @@ export default function RegisterCompany() {
 
   const formatContact = (value: string) => {
     const cleaned = value.replace(/\D/g, "");
-    const limited = cleaned.slice(0, 13); // 55 + 2 DDD + 9 número = 13 dígitos
-
-    if (limited.length !== 13) {
-      return limited; // Retorna sem formatação se não tiver 13 dígitos
-    }
-
-    // Aplica a formatação: 55 41 99999-9999
-    let formatted = "";
-    formatted = limited.slice(0, 2); // 55
-    formatted += " " + limited.slice(2, 4); // DDD
-    formatted += " " + limited.slice(4, 9); // Primeiros 5 dígitos
-    formatted += "-" + limited.slice(9, 13); // Últimos 4 dígitos
-
+    const limited = cleaned.slice(0, 13);
+    if (limited.length !== 13) return limited;
+    let formatted = limited.slice(0, 2) + " " + limited.slice(2, 4) + " " + limited.slice(4, 9) + "-" + limited.slice(9, 13);
     return formatted;
   };
 
@@ -114,7 +99,7 @@ export default function RegisterCompany() {
 
   const handleContactChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
-    const cleanedValue = rawValue.replace(/\D/g, "").slice(0, 13); // Limpa e limita a 13 dígitos
+    const cleanedValue = rawValue.replace(/\D/g, "").slice(0, 13);
     const formattedValue = formatContact(cleanedValue);
     setContactInput(formattedValue);
     setValue("contactNumber", formattedValue, { shouldValidate: true });
@@ -128,11 +113,11 @@ export default function RegisterCompany() {
           cep: data.cep,
           companyName: data.companyName,
           contactNumber: data.contactNumber,
+          state: selectedState, // Salva o estado selecionado
           registerCompany: true,
         },
       });
 
-      // Mostrar o toast de sucesso
       const now = new Date();
       const formattedDate = now.toLocaleString("en-US", {
         weekday: "long",
@@ -144,14 +129,13 @@ export default function RegisterCompany() {
         hour12: true,
       });
       toast("Cadastro concluído!", {
-        description: formattedDate, // Ex.: "Friday, May 23, 2025 at 02:44 PM"
+        description: formattedDate,
         action: {
           label: "Fechar",
           onClick: () => console.log("Fechar"),
         },
       });
 
-      // Redirecionar pra /catalogo após 1,5 segundos
       setTimeout(() => {
         router.push("/catalogo");
       }, 1500);
@@ -165,25 +149,21 @@ export default function RegisterCompany() {
       <Navbar />
       <div className="mx-auto w-full max-w-md p-6 py-40 flex justify-center">
         <div className="shadow-input w-full rounded-none bg-black p-4 md:rounded-2xl md:p-8 dark:bg-black border border-gray-300">
-          <h2 className="text-xl font-bold text-neutral-200">
-            Cadastro de Revendedora
-          </h2>
-          <p className="mt-2 max-w-sm text-sm text-neutral-300">
-            Preencha os dados para se tornar uma revendedora.
-          </p>
+          <h2 className="text-xl font-bold text-neutral-200">Cadastro de Revendedora</h2>
+          <p className="mt-2 max-w-sm text-sm text-neutral-300">Preencha os dados para se tornar uma revendedora.</p>
 
           <form className="my-8 space-y-4" onSubmit={handleSubmit(onSubmit)}>
             <LabelInputContainer>
               <Label htmlFor="cnpj">CNPJ</Label>
               <Input
                 id="cnpj"
-                {...register("cnpj", { 
-                  required: "CNPJ é obrigatório", 
+                {...register("cnpj", {
+                  required: "CNPJ é obrigatório",
                   pattern: {
                     value: /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/,
-                    message: "Formato de CNPJ inválido (ex.: 12.345.678/0001-90)"
+                    message: "Formato de CNPJ inválido (ex.: 12.345.678/0001-90)",
                   },
-                  validate: (value) => isValidCNPJ(value) || "CNPJ inválido"
+                  validate: (value) => isValidCNPJ(value) || "CNPJ inválido",
                 })}
                 value={cnpjInput}
                 onChange={handleCNPJChange}
@@ -191,21 +171,19 @@ export default function RegisterCompany() {
                 placeholder="12.345.678/0001-90"
                 className="bg-black text-white border-gray-300"
               />
-              {errors.cnpj?.message && (
-                <p className="text-red-500 text-sm">{errors.cnpj.message}</p>
-              )}
+              {errors.cnpj?.message && <p className="text-red-500 text-sm">{errors.cnpj.message}</p>}
             </LabelInputContainer>
 
             <LabelInputContainer>
               <Label htmlFor="cep">CEP</Label>
               <Input
                 id="cep"
-                {...register("cep", { 
-                  required: "CEP é obrigatório", 
+                {...register("cep", {
+                  required: "CEP é obrigatório",
                   pattern: {
                     value: /^\d{5}-\d{3}$/,
-                    message: "Formato de CEP inválido (ex.: 12345-678)"
-                  }
+                    message: "Formato de CEP inválido (ex.: 12345-678)",
+                  },
                 })}
                 value={cepInput}
                 onChange={handleCEPChange}
@@ -213,9 +191,7 @@ export default function RegisterCompany() {
                 placeholder="12345-678"
                 className="bg-black text-white border-gray-300"
               />
-              {errors.cep?.message && (
-                <p className="text-red-500 text-sm">{errors.cep.message}</p>
-              )}
+              {errors.cep?.message && <p className="text-red-500 text-sm">{errors.cep.message}</p>}
             </LabelInputContainer>
 
             <LabelInputContainer>
@@ -226,31 +202,65 @@ export default function RegisterCompany() {
                 placeholder="Nome da empresa"
                 className="bg-black text-white border-gray-300"
               />
-              {errors.companyName?.message && (
-                <p className="text-red-500 text-sm">{errors.companyName.message}</p>
-              )}
+              {errors.companyName?.message && <p className="text-red-500 text-sm">{errors.companyName.message}</p>}
             </LabelInputContainer>
 
             <LabelInputContainer>
               <Label htmlFor="contactNumber">Número de Contato</Label>
               <Input
                 id="contactNumber"
-                {...register("contactNumber", { 
-                  required: "Número de contato é obrigatório", 
+                {...register("contactNumber", {
+                  required: "Número de contato é obrigatório",
                   pattern: {
                     value: /^55\s\d{2}\s\d{5}-\d{4}$/,
-                    message: "Formato inválido (ex.: 55 41 99999-9999)"
-                  }
+                    message: "Formato inválido (ex.: 55 41 99999-9999)",
+                  },
                 })}
                 value={contactInput}
                 onChange={handleContactChange}
-                maxLength={14} // 55 41 99999-9999 = 14 caracteres (incluindo espaços e hífen)
+                maxLength={14}
                 placeholder="55 41 99999-9999"
                 className="bg-black text-white border-gray-300"
               />
-              {errors.contactNumber?.message && (
-                <p className="text-red-500 text-sm">{errors.contactNumber.message}</p>
-              )}
+              {errors.contactNumber?.message && <p className="text-red-500 text-sm">{errors.contactNumber.message}</p>}
+            </LabelInputContainer>
+
+            <LabelInputContainer>
+              <Label htmlFor="state">Estado</Label>
+              <Select onValueChange={setSelectedState} value={selectedState}>
+                <SelectTrigger className="bg-black text-white border-gray-300">
+                  <SelectValue placeholder="Selecione o estado" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="AC">Acre (AC)</SelectItem>
+                  <SelectItem value="AL">Alagoas (AL)</SelectItem>
+                  <SelectItem value="AP">Amapá (AP)</SelectItem>
+                  <SelectItem value="AM">Amazonas (AM)</SelectItem>
+                  <SelectItem value="BA">Bahia (BA)</SelectItem>
+                  <SelectItem value="CE">Ceará (CE)</SelectItem>
+                  <SelectItem value="DF">Distrito Federal (DF)</SelectItem>
+                  <SelectItem value="ES">Espírito Santo (ES)</SelectItem>
+                  <SelectItem value="GO">Goiás (GO)</SelectItem>
+                  <SelectItem value="MA">Maranhão (MA)</SelectItem>
+                  <SelectItem value="MT">Mato Grosso (MT)</SelectItem>
+                  <SelectItem value="MS">Mato Grosso do Sul (MS)</SelectItem>
+                  <SelectItem value="MG">Minas Gerais (MG)</SelectItem>
+                  <SelectItem value="PA">Pará (PA)</SelectItem>
+                  <SelectItem value="PB">Paraíba (PB)</SelectItem>
+                  <SelectItem value="PR">Paraná (PR)</SelectItem>
+                  <SelectItem value="PE">Pernambuco (PE)</SelectItem>
+                  <SelectItem value="PI">Piauí (PI)</SelectItem>
+                  <SelectItem value="RJ">Rio de Janeiro (RJ)</SelectItem>
+                  <SelectItem value="RN">Rio Grande do Norte (RN)</SelectItem>
+                  <SelectItem value="RS">Rio Grande do Sul (RS)</SelectItem>
+                  <SelectItem value="RO">Rondônia (RO)</SelectItem>
+                  <SelectItem value="RR">Roraima (RR)</SelectItem>
+                  <SelectItem value="SC">Santa Catarina (SC)</SelectItem>
+                  <SelectItem value="SP">São Paulo (SP)</SelectItem>
+                  <SelectItem value="SE">Sergipe (SE)</SelectItem>
+                  <SelectItem value="TO">Tocantins (TO)</SelectItem>
+                </SelectContent>
+              </Select>
             </LabelInputContainer>
 
             <button

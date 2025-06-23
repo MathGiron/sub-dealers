@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton, useAuth, useUser } from "@clerk/nextjs";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { HoverBorderGradient } from "@/components/acertenity/hover-border-gradient";
 import { useRouter } from "next/navigation";
 import { isValidCNPJ } from "@/lib/cnpj";
@@ -14,7 +14,11 @@ const Navbar: React.FC = () => {
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const hasValidCNPJ = isLoaded && user && user.unsafeMetadata?.cnpj && isValidCNPJ(user.unsafeMetadata.cnpj as string);
+  useEffect(() => {
+    if (isLoaded && user && !user.unsafeMetadata?.registerCompany) {
+      router.push("/register-company");
+    }
+  }, [isLoaded, user, router]);
 
   return (
     <nav className="fixed top-0 left-0 w-full flex items-center justify-between px-2 sm:px-4 py-2 sm:py-4 bg-transparent backdrop-blur-md z-60">
@@ -89,12 +93,10 @@ const Navbar: React.FC = () => {
             <HoverBorderGradient
               className="px-2 sm:px-4 py-1 sm:py-2 rounded-full transition duration-200 hover:bg-gray-700 active:bg-gray-700 text-sm sm:text-base"
             >
-              <span className="hidden md:inline">
-                {hasValidCNPJ ? "Fazer Pedido" : "Seja um Revendedor"}
-              </span>
+              <span className="hidden md:inline">Fazer Pedido</span>
               <Image
                 src="navbar/fazer_pedido.svg"
-                alt={hasValidCNPJ ? "Fazer Pedido" : "Seja um Revendedor"}
+                alt="Fazer Pedido"
                 width={16}
                 height={16}
                 className="md:hidden block mx-auto"
@@ -137,7 +139,7 @@ const Navbar: React.FC = () => {
                   className="block text-white py-1 text-sm"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  {hasValidCNPJ ? "Fazer Pedido" : "Seja um Revendedor"}
+                  Fazer Pedido
                 </Link>
               </SignedIn>
               <SignedOut>
