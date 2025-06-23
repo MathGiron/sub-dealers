@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import Navbar from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { DataTable } from "@/components/ui/datatable/data-table";
+
 import {
   ColumnDef,
   flexRender,
@@ -16,7 +16,11 @@ import {
   SortingState,
 } from "@tanstack/react-table";
 import {
+  Table,
+  TableHeader,
   TableRow,
+  TableHead,
+  TableBody,
   TableCell,
 } from "@/components/ui/datatable/table";
 import { ArrowUpDown, ChevronDown, ChevronUp } from "lucide-react";
@@ -43,7 +47,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const [draftOrder, setDraftOrder] = useState<OrderProduct[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>([]);
   const [expandedRows, setExpandedRows] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -223,61 +227,91 @@ export default function ProfilePage() {
     },
   });
 
+  const renderExpandedRow = (row: any) => {
+    const total = row.original.products.reduce((sum, product) => sum + calculateItemTotal(product), 0);
+    return (
+      <TableRow className="bg-zinc-900">
+        <TableCell colSpan={columns.length} className="p-0 w-full">
+          <div className="p-4 sm:p-6 w-full">
+            <h3 className="text-sm font-medium text-neutral-200">Produtos do Pedido</h3>
+            <ul className="mt-2 space-y-2">
+              {row.original.products.map((product: OrderProduct) => (
+                <li key={product.id} className="flex flex-col">
+                  <p className="text-sm text-white">{product.name}</p>
+                  <p className="text-sm text-neutral-300">Quantidade: <span className="text-white">{product.quantity}</span></p>
+                  <p className="text-sm text-neutral-300">Preço Unitário: <span className="text-white">R$ {getProductPrice(product).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></p>
+                  <p className="text-sm text-neutral-300">Total: <span className="text-white">R$ {calculateItemTotal(product).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></p>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-4 text-sm font-medium text-neutral-200">
+              Total do Pedido: R$ {total.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </p>
+            {row.original.id === "draft" && (
+              <div className="mt-4 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                <Button
+                  onClick={handleContinueOrder}
+                  className="group/btn relative block h-10 w-full sm:w-auto rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset]"
+                >
+                  Continuar Pedido
+                  <BottomGradient />
+                </Button>
+                <Button
+                  onClick={handleClearDraft}
+                  className="group/btn relative block h-10 w-full sm:w-auto rounded-md bg-gradient-to-br from-red-600 to-red-800 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-red-800 dark:from-red-900 dark:to-red-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset]"
+                >
+                  Limpar Rascunho
+                  <BottomGradient />
+                </Button>
+              </div>
+            )}
+          </div>
+        </TableCell>
+      </TableRow>
+    );
+  };
+
   if (!isLoaded || loading) return <div className="min-h-screen text-white flex items-center justify-center">Carregando...</div>;
 
   if (!user) return <div className="min-h-screen text-white flex items-center justify-center">Por favor, faça login para ver seu perfil.</div>;
 
   return (
-    <div className="min-h-screen text-white">
+    <div className="min-h-screen pt-30 text-white">
       <Navbar />
-      <div className="mx-auto w-full max-w-4xl p-6 py-40">
-        <div className="shadow-input w-full rounded-none bg-black p-4 md:rounded-2xl md:p-8 dark:bg-black border border-gray-300">
+      <div className="mx-auto w-full max-w-4xl  sm:p-6 "> {/* Restaurando pt-40 */}
+        <div className="shadow-input w-full rounded-none bg-black p-4 sm:p-6 md:rounded-2xl md:p-8 dark:bg-black border border-gray-300">
           <h1 className="text-xl font-bold text-neutral-200">Meus Pedidos</h1>
           <div className="mt-6">
             <div className="mt-4">
-              <DataTable table={table} />
-              {table.getRowModel().rows.map((row) => (
-                expandedRows.includes(row.id) && (
-                  <TableRow key={`${row.id}-expanded`} className="bg-zinc-900">
-                    <TableCell colSpan={columns.length}>
-                      <div className="p-4">
-                        <h3 className="text-sm font-medium text-neutral-200">Produtos do Pedido</h3>
-                        <ul className="mt-2 space-y-2">
-                          {row.original.products.map((product) => (
-                            <li key={product.id} className="flex flex-col">
-                              <p className="text-sm text-white">{product.name}</p>
-                              <p className="text-sm text-neutral-300">Quantidade: <span className="text-white">{product.quantity}</span></p>
-                              <p className="text-sm text-neutral-300">Preço Unitário: <span className="text-white">R$ {getProductPrice(product).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></p>
-                              <p className="text-sm text-neutral-300">Total: <span className="text-white">R$ {calculateItemTotal(product).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></p>
-                            </li>
-                          ))}
-                        </ul>
-                        <p className="mt-4 text-sm font-medium text-neutral-200">
-                          Total do Pedido: R$ {row.original.products.reduce((sum, product) => sum + calculateItemTotal(product), 0).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                        </p>
-                        {row.original.id === "draft" && (
-                          <div className="mt-4 flex space-x-4">
-                            <Button
-                              onClick={handleContinueOrder}
-                              className="group/btn relative block h-10 w-1/2 rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset]"
-                            >
-                              Continuar Pedido
-                              <BottomGradient />
-                            </Button>
-                            <Button
-                              onClick={handleClearDraft}
-                              className="group/btn relative block h-10 w-1/2 rounded-md bg-gradient-to-br from-red-600 to-red-800 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-red-800 dark:from-red-900 dark:to-red-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset]"
-                            >
-                              Limpar Rascunho
-                              <BottomGradient />
-                            </Button>
-                          </div>
-                        )}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                )
-              ))}
+              <Table>
+                <TableHeader>
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <TableRow key={headerGroup.id}>
+                      {headerGroup.headers.map((header) => (
+                        <TableHead key={header.id} className="text-white">
+                          {header.isPlaceholder
+                            ? null
+                            : flexRender(header.column.columnDef.header, header.getContext())}
+                        </TableHead>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableHeader>
+                <TableBody>
+                  {table.getRowModel().rows.map((row) => (
+                    <React.Fragment key={row.id}>
+                      <TableRow className="hover:bg-zinc-800">
+                        {row.getVisibleCells().map((cell) => (
+                          <TableCell key={cell.id} className="text-white">
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                      {expandedRows.includes(row.id) && renderExpandedRow(row)}
+                    </React.Fragment>
+                  ))}
+                </TableBody>
+              </Table>
             </div>
           </div>
         </div>
