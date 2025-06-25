@@ -1,60 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
+import { fetchProductsByIds } from "@/services/shopifyService"; // Ajuste o caminho conforme a estrutura
 
 export async function POST(req: NextRequest) {
-  const { ids } = await req.json();
+  const { collectionId, productIds } = await req.json();
+  console.log("Shopify Products Proxy: Coleta recebida:", { collectionId, productIds });
 
-  if (!ids || !Array.isArray(ids) || ids.length === 0) {
-    return NextResponse.json({ error: "Nenhum ID fornecido ou formato inválido" }, { status: 400 });
+  if (!collectionId || typeof collectionId !== "string") {
+    console.error("Shopify Products Proxy: Collection ID inválido:", collectionId);
+    return NextResponse.json({ error: "Collection ID inválido ou ausente" }, { status: 400 });
   }
 
-  const adminApiAccessToken = process.env.SHOPIFY_ADMIN_API_TOKEN;
-  const hostName = process.env.SHOPIFY_STORE_DOMAIN;
-
-  if (!adminApiAccessToken || !hostName) {
-    return NextResponse.json({ error: "Variáveis de ambiente não definidas" }, { status: 500 });
+  if (!productIds || !Array.isArray(productIds) || productIds.length === 0) {
+    console.error("Shopify Products Proxy: Product IDs inválidos:", productIds);
+    return NextResponse.json({ error: "Product IDs inválidos ou ausentes" }, { status: 400 });
   }
-
-  const apiUrl = `https://${hostName}/admin/api/2024-07/graphql.json`;
-  const query = `
-    query GetProductsByIds($ids: [ID!]!) {
-      nodes(ids: $ids) {
-        ... on Product {
-          __typename
-          id
-          title
-          priceRange {
-            minVariantPrice {
-              amount
-              currencyCode
-            }
-          }
-        }
-      }
-    }
-  `;
 
   try {
-    console.log("Shopify Products Proxy: Iniciando requisição POST para IDs:", ids, "em", apiUrl);
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "X-Shopify-Access-Token": adminApiAccessToken,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ query, variables: { ids } }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Shopify Products Proxy: Erro da API Shopify - Status:", response.status, "Texto:", errorText);
-      return NextResponse.json({ error: `Erro na API Shopify: ${response.status} - ${errorText}` }, { status: response.status });
-    }
-
-    const data = await response.json();
-    console.log("Shopify Products Proxy: Dados retornados:", JSON.stringify(data, null, 2));
-    return NextResponse.json(data);
+    console.log("Shopify Products Proxy: Iniciando fetch de produtos por IDs:", productIds);
+    const products = await fetchProductsByIds(productIds);
+    console.log("Shopify Products Proxy: Produtos retornados pelo serviço:", JSON.stringify(products, null, 2));
+    return NextResponse.json(products);
   } catch (error) {
     console.error("Shopify Products Proxy: Erro ao conectar com Shopify:", error);
-    return NextResponse.json({ error: "Erro ao conectar com Shopify", details: error.message }, { status: 500 });
+    return NextResponse.json({ error: "Erro ao conectar com Shopify", details: (error as Error).message }, { status: 500 });
   }
 }

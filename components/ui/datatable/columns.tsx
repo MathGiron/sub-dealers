@@ -32,7 +32,7 @@ const QuantityCell = ({ row, onQuantityChange }: { row: Row<Product & { quantity
         min="1"
         value={quantity}
         onChange={(e) => handleQuantityChange(e.target.value)}
-        className="w-16 bg-black dark:bg-black text-white dark:text-white border-gray-300 dark:border-gray-300"
+        className="w-12 bg-black dark:bg-black text-white dark:text-white border-gray-300 dark:border-gray-300"
       />
     </div>
   );

@@ -5,9 +5,11 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@clerk/nextjs";
 import Navbar from "@/components/navbar";
-import { Product, OrderProduct } from "@/services/index";
+import { Product, OrderProduct, UserMetadata } from "@/services/index";
 import jsPDF from "jspdf";
+import FreightCalculator from "@/components/FreightCalculator";
 
+// Componente decorativo
 const BottomGradient = () => {
   return (
     <>
@@ -17,6 +19,13 @@ const BottomGradient = () => {
   );
 };
 
+const calculateDistance = (cep: string, metadata?: UserMetadata) => {
+  const cleanedCEP = cep.replace(/\D/g, "");
+  if (cleanedCEP.length !== 8) return { distance: 100, state: "SP" }; // Fallback
+  if (metadata?.cep && metadata?.state) return { distance: metadata.distance || 100, state: metadata.state };
+  return { distance: 100, state: "SP" }; // Fallback final
+};
+
 export default function OrderPage() {
   const searchParams = useSearchParams();
   const { user, isLoaded } = useUser();
@@ -24,13 +33,15 @@ export default function OrderPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [orderDate, setOrderDate] = useState<string>("");
+  const [distance, setDistance] = useState<number>(100);
+  const [state, setState] = useState<string>("SP");
+  const [freightCost, setFreightCost] = useState<number>(0);
+  const [additionalFees, setAdditionalFees] = useState<number>(0);
 
   const loadProducts = async () => {
     const entries = Object.entries(Object.fromEntries(searchParams.entries())).filter(
       ([key]) => key.startsWith("products[")
     );
-
-    console.log("Entradas do searchParams:", entries);
 
     if (entries.length === 0) {
       setError("Nenhum produto selecionado.");
@@ -42,21 +53,17 @@ export default function OrderPage() {
     const productQuantities: { [id: string]: number } = {};
 
     for (const [key, value] of entries) {
-      const id = key.replace("products[", "").replace("]", "");
+      const id = key.replace("products[", "").replace("]", "").split("/").pop();
       let parsed;
       try {
         parsed = JSON.parse(value);
       } catch (error) {
-        console.error("Erro ao parsear searchParams:", error, "Valor:", value);
         continue;
       }
       const quantity = parseInt(parsed.quantity, 10) || 1;
-      productIds.push(id);
-      productQuantities[id] = quantity;
+      productIds.push(`gid://shopify/Product/${id}`);
+      productQuantities[`gid://shopify/Product/${id}`] = quantity;
     }
-
-    console.log("IDs dos produtos:", productIds);
-    console.log("Quantidades:", productQuantities);
 
     if (productIds.length === 0) {
       setError("Nenhum ID de produto válido encontrado.");
@@ -68,78 +75,46 @@ export default function OrderPage() {
     try {
       const response = await fetch("/api/shopify-products", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ids: productIds }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ collectionId: "gid://shopify/Collection/498546704664", productIds }),
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Erro ao buscar produtos via proxy - Status:", response.status, "Texto:", errorText);
-        setError("Erro ao carregar produtos. Verifique sua conexão ou as credenciais da API.");
+        const errorData = await response.json();
+        setError(`Erro ao carregar produtos: ${errorData.error || response.statusText}`);
         setProducts([]);
         return false;
       }
 
-      const rawResponse = await response.text();
-      console.log("Resposta bruta da API:", rawResponse);
+      const data = await response.json();
+      console.log("Dados retornados pelo proxy:", data); // Log essencial
 
-      let data;
-      try {
-        data = JSON.parse(rawResponse);
-      } catch (err) {
-        console.error("Erro ao parsear resposta como JSON:", err);
-        setError("Erro ao processar dados da API Shopify.");
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        setError("Nenhum produto encontrado para os IDs selecionados na collection.");
         setProducts([]);
         return false;
       }
 
-      console.log("Dados retornados pelo proxy:", JSON.stringify(data, null, 2));
+      fetchedProducts = data.map((product: any) => ({
+        id: product.id,
+        name: product.name || `Produto Desconhecido (${product.id.split("/").pop()})`,
+        image: product.image || "/images/placeholder.png",
+        description: product.description || "Sem descrição disponível",
+        price: product.price || 0,
+        weight: product.weight || 0,
+        specs: product.specs || [],
+        buttonText: "Comprar Agora",
+        href: `/checkout/${product.id.split("/").pop()}`,
+        highlighted: product.highlighted || product.name?.includes("DELTA 2") || false,
+      }));
 
-      if (!data || !data.data || !data.data.nodes) {
-        console.error("Resposta inválida, falta 'data.data.nodes':", data);
-        setError("Dados inválidos retornados pela API Shopify.");
-        setProducts([]);
-        return false;
-      }
-
-      fetchedProducts = data.data.nodes
-        .filter((node: any) => node?.__typename === "Product" || (node.id && node.title))
-        .map((node: any) => {
-          console.log("Mapeando nó:", JSON.stringify(node, null, 2));
-          const priceAmount = node.priceRange?.minVariantPrice?.amount
-            ? parseFloat(node.priceRange.minVariantPrice.amount) / 100
-            : 0;
-
-          const product: Product = {
-            id: node.id,
-            name: node.title || `Produto Desconhecido (${node.id.split("/").pop()})`,
-            image: node.featuredImage?.url || "/images/placeholder.png",
-            description: node.description || "Sem descrição disponível",
-            price: priceAmount,
-            specs: [
-              { name: "Capacidade", included: true },
-              { name: "Potência", included: true },
-              { name: "Peso", included: true },
-            ],
-            buttonText: "Comprar Agora",
-            href: `/checkout/${node.id.split("/").pop()}`,
-            highlighted: node.title?.includes("DELTA 2") || false,
-          };
-
-          return product;
-        });
-
-      console.log("Produtos retornados:", fetchedProducts);
+      console.log("Produtos mapeados:", fetchedProducts); // Log essencial
       if (fetchedProducts.length === 0) {
-        console.warn("Nenhum produto retornado pela API Shopify após mapeamento.");
-        setError("Nenhum produto encontrado para os IDs selecionados.");
+        setError("Nenhum produto encontrado para os IDs selecionados na collection.");
         setProducts([]);
         return false;
       }
     } catch (err) {
-      console.error("Erro ao buscar produtos via proxy:", err);
       setError("Erro ao carregar produtos. Verifique sua conexão ou as credenciais da API.");
       setProducts([]);
       return false;
@@ -150,8 +125,6 @@ export default function OrderPage() {
       quantity: productQuantities[product.id] || 1,
     }));
 
-    console.log("Produtos selecionados com quantidades:", selectedProducts);
-
     setProducts(selectedProducts);
     setError(null);
     return true;
@@ -159,72 +132,55 @@ export default function OrderPage() {
 
   const saveDraft = async (draftProducts: OrderProduct[]) => {
     if (!user) return;
-
     try {
-      await user.update({
-        unsafeMetadata: {
-          ...user.unsafeMetadata,
-          draftOrder: draftProducts,
-        },
-      });
-      console.log("Rascunho salvo no unsafeMetadata:", draftProducts);
-    } catch (err) {
-      console.error("Erro ao salvar rascunho no unsafeMetadata:", err);
-    }
+      await user.update({ unsafeMetadata: { ...user.unsafeMetadata, draftOrder: draftProducts } });
+    } catch (err) {}
   };
 
   const loadDraft = () => {
     if (!user || !user.unsafeMetadata?.draftOrder) return;
-
     const draftOrder = user.unsafeMetadata.draftOrder as OrderProduct[];
-    if (draftOrder.length > 0 && products.length === 0) {
-      setProducts(draftOrder);
-      console.log("Rascunho carregado do unsafeMetadata:", draftOrder);
-    }
+    if (draftOrder.length > 0 && products.length === 0) setProducts(draftOrder);
   };
 
   useEffect(() => {
-    loadProducts();
-    const now = new Date();
-    const formattedDate = now.toLocaleString("pt-BR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-    setOrderDate(formattedDate);
-    setLoading(false);
-
-    loadDraft();
+    const loadData = async () => {
+      const hasProducts = await loadProducts();
+      if (user?.unsafeMetadata?.cep) {
+        const metadata = user.unsafeMetadata as UserMetadata;
+        const { distance: calculatedDistance, state: calculatedState } = calculateDistance(user.unsafeMetadata.cep, metadata);
+        setDistance(calculatedDistance);
+        setState(calculatedState);
+      } else {
+        setDistance(100);
+        setState("SP");
+      }
+      const now = new Date();
+      setOrderDate(now.toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }));
+      setLoading(false);
+      loadDraft();
+    };
+    loadData();
   }, [searchParams, user]);
 
   useEffect(() => {
-    if (products.length > 0) {
-      saveDraft(products);
-    }
+    if (products.length > 0) saveDraft(products);
   }, [products]);
 
   const handleSubmit = async () => {
     setLoading(true);
     const hasProducts = await loadProducts();
     const now = new Date();
-    const formattedDate = now.toLocaleString("pt-BR", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-    setOrderDate(formattedDate);
+    setOrderDate(now.toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }));
 
     if (!hasProducts) {
       setLoading(false);
       return;
     }
 
+    const total = calculateTotal(products);
+
     try {
-      // Gerar o PDF
       const doc = new jsPDF();
       doc.setFontSize(16);
       doc.text("Nota de Pedido", 20, 20);
@@ -233,23 +189,28 @@ export default function OrderPage() {
       doc.text(`CNPJ: ${(user?.unsafeMetadata?.cnpj as string) || "CNPJ não informado"}`, 20, 40);
       doc.text(`Contato: ${user?.phoneNumbers?.[0]?.phoneNumber || user?.unsafeMetadata?.contactNumber || "Número de contato não informado"}`, 20, 50);
       doc.text(`Data do Pedido: ${orderDate}`, 20, 60);
-      doc.text("Itens do Pedido:", 20, 70);
+      const metadata = user?.unsafeMetadata as UserMetadata;
+      doc.text(`Endereço de Entrega: ${metadata?.address}, ${metadata?.number}, CEP ${metadata?.cep}`, 20, 70);
+      doc.text(`Estado: ${state}`, 20, 80);
+      doc.text(`Frete Estimado: R$ ${freightCost.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`, 20, 90);
+      doc.text(`Taxas Adicionais: R$ ${additionalFees.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`, 20, 100);
+      doc.text("Itens do Pedido:", 20, 110);
 
-      let yPosition = 80;
+      let yPosition = 120;
       products.forEach((product, index) => {
         doc.text(`${index + 1}. ${product.name}`, 20, yPosition);
         doc.text(`Quantidade: ${product.quantity}`, 20, yPosition + 5);
-        doc.text(`Preço Unitário: R$ ${getProductPrice(product).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 20, yPosition + 10);
-        doc.text(`Total: R$ ${calculateItemTotal(product).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 20, yPosition + 15);
+        doc.text(`Preço Unitário: R$ ${getProductPrice(product).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`, 20, yPosition + 10);
+        doc.text(`Total Item: R$ ${calculateItemTotal(product).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`, 20, yPosition + 15);
         yPosition += 25;
       });
 
-      doc.text(`Total Geral: R$ ${totalAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, 20, yPosition);
+      doc.text(`Subtotal (sem frete/taxas): R$ ${totalAmount.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`, 20, yPosition);
+      doc.text(`Total com Frete e Taxas: R$ ${total.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`, 20, yPosition + 10);
 
-      const pdfBuffer = doc.output('arraybuffer');
-      const pdfBase64 = Buffer.from(pdfBuffer).toString('base64');
+      const pdfBuffer = doc.output("arraybuffer");
+      const pdfBase64 = Buffer.from(pdfBuffer).toString("base64");
 
-      // Enviar o pedido e o e-mail
       const response = await fetch("/api/send-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -260,53 +221,46 @@ export default function OrderPage() {
           contactNumber: user?.phoneNumbers?.[0]?.phoneNumber || user?.unsafeMetadata?.contactNumber || "Número de contato não informado",
           orderDate,
           pdfBuffer: pdfBase64,
+          freightCost,
+          additionalFees,
+          total,
+          deliveryAddress: `${metadata?.address}, ${metadata?.number}, CEP ${metadata?.cep}`,
+          state,
         }),
       });
 
       const result = await response.json();
       if (!result.success) {
-        console.error("Erro ao enviar pedido:", result.error);
         alert("Erro ao enviar pedido. Tente novamente.");
         setLoading(false);
         return;
       }
 
-      // Salvar o pedido concluído no unsafeMetadata
       const completedOrders = (user?.unsafeMetadata?.completedOrders || []) as any[];
       const newOrder = {
         id: `order_${Date.now()}`,
         products,
         orderDate,
         status: "success",
+        freightCost,
+        additionalFees,
+        total,
+        deliveryAddress: `${metadata?.address}, ${metadata?.number}, CEP ${metadata?.cep}`,
+        state,
       };
-      await user.update({
-        unsafeMetadata: {
-          ...user.unsafeMetadata,
-          completedOrders: [...completedOrders, newOrder],
-          draftOrder: [],
-        },
-      });
+      await user.update({ unsafeMetadata: { ...user.unsafeMetadata, completedOrders: [...completedOrders, newOrder], draftOrder: [] } });
       setProducts([]);
-
-      // Redirecionar pro WhatsApp imediatamente
       window.open(result.whatsappLink, "_blank");
     } catch (error) {
-      console.error("Erro ao enviar pedido:", error);
       alert("Erro ao enviar pedido. Tente novamente.");
     } finally {
       setLoading(false);
     }
   };
 
-  const getProductPrice = (product: OrderProduct) => {
-    return product.price || 0;
-  };
-
-  const calculateItemTotal = (product: OrderProduct) => {
-    const price = getProductPrice(product);
-    return price * (product.quantity || 1);
-  };
-
+  const getProductPrice = (product: OrderProduct) => product.price || 0;
+  const calculateItemTotal = (product: OrderProduct) => getProductPrice(product) * (product.quantity || 1);
+  const calculateTotal = (products: OrderProduct[]) => products.reduce((sum, product) => sum + calculateItemTotal(product), 0) + freightCost + additionalFees;
   const totalAmount = products.reduce((sum, product) => sum + calculateItemTotal(product), 0);
 
   if (!isLoaded || loading) return <div className="min-h-screen bg-black text-white flex items-center justify-center">Loading...</div>;
@@ -314,6 +268,7 @@ export default function OrderPage() {
   const clientName = user?.fullName?.toString() || "Cliente não identificado";
   const cnpj = (user?.unsafeMetadata?.cnpj as string | undefined)?.toString() || "CNPJ não informado";
   const contactNumber = (user?.phoneNumbers?.[0]?.phoneNumber || user?.unsafeMetadata?.contactNumber)?.toString() || "Número de contato não informado";
+  const metadata = user?.unsafeMetadata as UserMetadata;
 
   return (
     <div className="min-h-screen text-white">
@@ -329,6 +284,10 @@ export default function OrderPage() {
             <p className="text-sm text-neutral-300">CNPJ: {cnpj}</p>
             <p className="text-sm text-neutral-300">Contato: {contactNumber}</p>
             <p className="text-sm text-neutral-300">Data do Pedido: {orderDate}</p>
+            <p className="text-sm text-neutral-300">Endereço de Entrega: {metadata?.address}, {metadata?.number}, CEP {metadata?.cep}</p>
+            <p className="text-sm text-neutral-300">Estado: {state}</p>
+            <p className="text-sm text-neutral-300">Frete Estimado: R$ {freightCost.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
+            <p className="text-sm text-neutral-300">Taxas Adicionais: R$ {additionalFees.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
           </div>
           {products.length > 0 ? (
             <>
@@ -339,14 +298,16 @@ export default function OrderPage() {
                     <li key={product.id} className="flex flex-col">
                       <p className="text-sm text-white">{product.name}</p>
                       <p className="text-sm text-neutral-300">Quantidade: {product.quantity}</p>
-                      <p className="text-sm text-neutral-300">Preço Unitário: R$ {getProductPrice(product).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                      <p className="text-sm text-neutral-300">Total: R$ {calculateItemTotal(product).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                      <p className="text-sm text-neutral-300">Preço Unitário: R$ {getProductPrice(product).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                      <p className="text-sm text-neutral-300">Peso: {(product.weight || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })} kg</p>
+                      <p className="text-sm text-neutral-300">Total Item: R$ {calculateItemTotal(product).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                     </li>
                   ))}
                 </ul>
               </div>
               <div className="mt-6">
-                <p className="text-lg font-bold text-neutral-200">Total Geral: R$ {totalAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                <p className="text-lg font-bold text-neutral-200">Subtotal (sem frete/taxas): R$ {totalAmount.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                <p className="text-lg font-bold text-neutral-200">Total com Frete e Taxas: R$ {calculateTotal(products).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
               </div>
               <div className="mt-6">
                 <Button
@@ -360,8 +321,18 @@ export default function OrderPage() {
               </div>
             </>
           ) : (
-            <p className="text-center text-neutral-300 mt-4">Nenhum produto no pedido.</p>
+            <p className="text-center text-neutral-300 mt-4">Nenhum produto no pedido. Verifique os IDs ou a coleção.</p>
           )}
+          <FreightCalculator
+            products={products}
+            distance={distance}
+            state={state}
+            totalAmount={totalAmount}
+            onFreightCalculated={(freight, fees) => {
+              setFreightCost(freight);
+              setAdditionalFees(fees);
+            }}
+          />
         </div>
       </div>
     </div>

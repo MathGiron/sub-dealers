@@ -1,13 +1,29 @@
 import { GraphQLClient } from "graphql-request";
-import { Product } from "./index";
+import { ProductSpec, Product } from "./index";
 
-// Query para buscar todos os produtos da coleção (mantida como está)
+// Interfaces para tipagem
+interface ProductNode {
+  __typename?: string; // Opcional, pra lidar com ausência
+  id: string;
+  title: string;
+  description: string;
+  featuredImage: { url: string | null };
+  priceRange: { minVariantPrice: { amount: string; currencyCode: string } };
+  variants: { edges: { node: { id: string; title: string; price: string; metafield?: { value: string | null } | null } }[] };
+  metafield?: { value: string | null } | null; // Opcional
+}
+
+interface GraphQLResponse {
+  nodes: ProductNode[];
+}
+
+// Query para buscar todos os produtos da coleção (mantida)
 const GET_SUBDEALERS_PRODUCTS_QUERY = `
   query {
     collection(id: "gid://shopify/Collection/498546704664") {
       id
       title
-      products(first: 30) {
+      products(first: 70) {
         edges {
           node {
             id
@@ -28,8 +44,14 @@ const GET_SUBDEALERS_PRODUCTS_QUERY = `
                   id
                   title
                   price
+                  metafield(namespace: "custom", key: "peso") {
+                    value
+                  }
                 }
               }
+            }
+            metafield(namespace: "custom", key: "peso") {
+              value
             }
           }
         }
@@ -38,10 +60,11 @@ const GET_SUBDEALERS_PRODUCTS_QUERY = `
   }
 `;
 
-// Query para buscar produtos por IDs
+// Query para buscar produtos por IDs (com __typename explícito)
 const GET_PRODUCTS_BY_IDS_QUERY = `
   query GetProductsByIds($ids: [ID!]!) {
     nodes(ids: $ids) {
+      __typename
       ... on Product {
         id
         title
@@ -61,8 +84,14 @@ const GET_PRODUCTS_BY_IDS_QUERY = `
               id
               title
               price
+              metafield(namespace: "custom", key: "peso") {
+                value
+              }
             }
           }
+        }
+        metafield(namespace: "custom", key: "peso") {
+          value
         }
       }
     }
@@ -75,62 +104,51 @@ export const fetchSubDealersProducts = async (): Promise<Product[]> => {
   const hostName = process.env.SHOPIFY_STORE_DOMAIN;
 
   if (!adminApiAccessToken || !hostName) {
-    console.error("fetchSubDealersProducts: Variáveis de ambiente não definidas.", {
-      adminApiAccessToken: adminApiAccessToken ? "Definido" : "Não definido",
-      hostName: hostName ? "Definido" : "Não definido",
-    });
+    console.error("fetchSubDealersProducts: Variáveis de ambiente não definidas.");
     return [];
   }
 
   const apiUrl = `https://${hostName}/admin/api/2024-07/graphql.json`;
   const client = new GraphQLClient(apiUrl, {
-    headers: {
-      "X-Shopify-Access-Token": adminApiAccessToken,
-    },
+    headers: { "X-Shopify-Access-Token": adminApiAccessToken },
   });
 
   try {
-    console.log("fetchSubDealersProducts: Iniciando requisição para", apiUrl);
     const data = await client.request(GET_SUBDEALERS_PRODUCTS_QUERY);
-    console.log("fetchSubDealersProducts: Dados retornados:", JSON.stringify(data, null, 2));
+    const subDealersCollection = (data as any).collection;
 
-    const subDealersCollection = data.collection;
-
-    if (!subDealersCollection) {
-      console.log("fetchSubDealersProducts: Coleção não encontrada.");
-      return [];
-    }
-
-    if (subDealersCollection.products.edges.length === 0) {
-      console.log("fetchSubDealersProducts: Nenhum produto encontrado na coleção.");
-    }
+    if (!subDealersCollection) return [];
+    if (subDealersCollection.products.edges.length === 0) return [];
 
     const products: Product[] = subDealersCollection.products.edges.map((edge: any) => {
-      const variants = edge.node.variants.edges.map((variantEdge: any) => ({
-        name: variantEdge.node.title,
-        included: true,
-        price: variantEdge.node.price || edge.node.priceRange?.minVariantPrice?.amount,
-      }));
+      let weight = 0;
+      if (edge.node.metafield?.value) weight = parseFloat(edge.node.metafield.value) || 0;
 
-      const product: Product = {
+      const variants = edge.node.variants.edges.map((variantEdge: any) => {
+        let variantWeight = weight;
+        if (variantEdge.node.metafield?.value) variantWeight = parseFloat(variantEdge.node.metafield.value) || 0;
+        return {
+          name: variantEdge.node.title,
+          included: true,
+          price: variantEdge.node.price ? parseFloat(variantEdge.node.price) : edge.node.priceRange?.minVariantPrice?.amount ? parseFloat(edge.node.priceRange.minVariantPrice.amount) : 0,
+          weight: variantWeight,
+        };
+      });
+
+      return {
         id: edge.node.id,
         name: edge.node.title,
         image: edge.node.featuredImage?.url || "/images/placeholder.png",
         description: edge.node.description || "Sem descrição disponível",
-        specs: variants.length > 0 ? variants : [
-          { name: "Capacidade", included: true },
-          { name: "Potência", included: true },
-          { name: "Peso", included: true },
-        ],
+        price: edge.node.priceRange?.minVariantPrice?.amount ? parseFloat(edge.node.priceRange.minVariantPrice.amount) / 100 : 0,
+        weight: weight,
+        specs: variants.length > 0 ? variants : [{ name: "Capacidade", included: true }, { name: "Potência", included: true }, { name: "Peso", included: true }],
         buttonText: "Comprar Agora",
         href: `/checkout/${edge.node.id.split("/").pop()}`,
         highlighted: edge.node.title.includes("DELTA 2"),
       };
-
-      return product;
     });
 
-    console.log("fetchSubDealersProducts: Produtos retornados:", products);
     return products;
   } catch (error) {
     console.error("fetchSubDealersProducts: Erro na requisição:", error);
@@ -138,91 +156,76 @@ export const fetchSubDealersProducts = async (): Promise<Product[]> => {
   }
 };
 
-// Serviço para buscar produtos por IDs
+// Serviço para buscar produtos por IDs (ajustado pra aceitar nodos sem __typename)
 export const fetchProductsByIds = async (ids: string[]): Promise<Product[]> => {
   const adminApiAccessToken = process.env.SHOPIFY_ADMIN_API_TOKEN;
   const hostName = process.env.SHOPIFY_STORE_DOMAIN;
 
   if (!adminApiAccessToken || !hostName) {
-    console.error("fetchProductsByIds: Variáveis de ambiente não definidas.", {
-      adminApiAccessToken: adminApiAccessToken ? "Definido" : "Não definido",
-      hostName: hostName ? "Definido" : "Não definido",
-    });
+    console.error("fetchProductsByIds: Variáveis de ambiente não definidas.");
     return [];
   }
 
-  // Lista de versões da API pra tentar
-  const apiVersions = ["2025-01", "2024-10", "2024-07", "2024-04"];
-  let lastError: any = null;
+  const apiUrl = `https://${hostName}/admin/api/2024-07/graphql.json`;
+  const client = new GraphQLClient(apiUrl, {
+    headers: { "X-Shopify-Access-Token": adminApiAccessToken },
+  });
 
-  // Primeiro, testar a conexão com um fetch direto
-  const testUrl = `https://${hostName}/admin/api/2024-07/graphql.json`;
   try {
-    console.log("fetchProductsByIds: Testando conexão com", testUrl);
-    const testResponse = await fetch(testUrl, {
-      method: "POST",
-      headers: {
-        "X-Shopify-Access-Token": adminApiAccessToken,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ query: "query { shop { name } }" }),
-    });
-    const testResult = await testResponse.json();
-    console.log("fetchProductsByIds: Resposta do teste:", testResult, "Status:", testResponse.status);
-  } catch (testError) {
-    console.error("fetchProductsByIds: Erro no teste de conexão:", testError, "URL:", testUrl);
-    lastError = testError;
-  }
+    console.log("fetchProductsByIds: IDs recebidos:", ids);
+    console.log("fetchProductsByIds: Iniciando requisição para IDs:", ids);
+    const data = await client.request<GraphQLResponse>(GET_PRODUCTS_BY_IDS_QUERY, { ids });
+    console.log("fetchProductsByIds: Dados brutos retornados:", JSON.stringify(data, null, 2));
 
-  // Tentar cada versão da API
-  for (const version of apiVersions) {
-    const apiUrl = `https://${hostName}/admin/api/${version}/graphql.json`;
-    const client = new GraphQLClient(apiUrl, {
-      headers: {
-        "X-Shopify-Access-Token": adminApiAccessToken,
-      },
-    });
-
-    try {
-      console.log("fetchProductsByIds: Iniciando requisição para IDs:", ids, "em", apiUrl);
-      const data = await client.request(GET_PRODUCTS_BY_IDS_QUERY, { ids });
-      console.log("fetchProductsByIds: Dados retornados:", JSON.stringify(data, null, 2));
-
-      const products: Product[] = data.nodes
-        .filter((node: any) => node.__typename === "Product")
-        .map((node: any) => {
-          const variants = node.variants.edges.map((variantEdge: any) => ({
-            name: variantEdge.node.title,
-            included: true,
-            price: variantEdge.node.price || node.priceRange?.minVariantPrice?.amount,
-          }));
-
-          const product: Product = {
-            id: node.id,
-            name: node.title,
-            image: node.featuredImage?.url || "/images/placeholder.png",
-            description: node.description || "Sem descrição disponível",
-            specs: variants.length > 0 ? variants : [
-              { name: "Capacidade", included: true },
-              { name: "Potência", included: true },
-              { name: "Peso", included: true },
-            ],
-            buttonText: "Comprar Agora",
-            href: `/checkout/${node.id.split("/").pop()}`,
-            highlighted: node.title.includes("DELTA 2"),
-          };
-
-          return product;
-        });
-
-      console.log("fetchProductsByIds: Produtos retornados:", products);
-      return products;
-    } catch (error) {
-      console.error(`fetchProductsByIds: Erro na requisição com ${apiUrl}:`, error);
-      lastError = error;
+    const filteredNodes = data.nodes.filter((node: ProductNode) => 
+      node.__typename === "Product" || (node.id && node.title)
+    );
+    console.log("fetchProductsByIds: Número de nodos filtrados:", filteredNodes.length);
+    if (filteredNodes.length === 0) {
+      console.warn("fetchProductsByIds: Nenhum nodo válido encontrado. Verifique os IDs ou a resposta da API.");
+    } else {
+      filteredNodes.forEach((node, index) => {
+        console.log(`fetchProductsByIds: Nodo ${index + 1} - ID: ${node.id}, Title: ${node.title || 'Sem título'}, Metafield: ${node.metafield?.value || 'null'}`);
+      });
     }
-  }
 
-  console.error("fetchProductsByIds: Todas as versões da API falharam. Último erro:", lastError);
-  return [];
+    const products: Product[] = filteredNodes.map((node: ProductNode) => {
+      let weight = 0;
+      if (node.metafield?.value) weight = parseFloat(node.metafield.value) || 0;
+
+      const variants = node.variants.edges.map((variantEdge: any, variantIndex) => {
+        let variantWeight = weight;
+        if (variantEdge.node.metafield?.value) variantWeight = parseFloat(variantEdge.node.metafield.value) || 0;
+        console.log(`  Variante ${variantIndex + 1} - Title: ${variantEdge.node.title}, Price: ${variantEdge.node.price}, Weight: ${variantWeight}`);
+        return {
+          name: variantEdge.node.title,
+          included: true,
+          price: variantEdge.node.price ? parseFloat(variantEdge.node.price) : node.priceRange?.minVariantPrice?.amount ? parseFloat(node.priceRange.minVariantPrice.amount) / 100 : 0,
+          weight: variantWeight,
+        };
+      });
+
+      const product: Product = {
+        id: node.id,
+        name: node.title,
+        image: node.featuredImage?.url || "/images/placeholder.png",
+        description: node.description || "Sem descrição disponível",
+        price: node.priceRange?.minVariantPrice?.amount ? parseFloat(node.priceRange.minVariantPrice.amount) / 100 : 0,
+        weight: weight,
+        specs: variants.length > 0 ? variants : [{ name: "Capacidade", included: true }, { name: "Potência", included: true }, { name: "Peso", included: true }],
+        buttonText: "Comprar Agora",
+        href: `/checkout/${node.id.split("/").pop()}`,
+        highlighted: node.title.includes("DELTA 2"),
+      };
+      console.log(`Produto mapeado - ID: ${product.id}, Name: ${product.name}, Price: ${product.price}, Specs length: ${product.specs.length}`);
+
+      return product;
+    });
+
+    console.log("fetchProductsByIds: Produtos mapeados:", JSON.stringify(products, null, 2));
+    return products;
+  } catch (error) {
+    console.error("fetchProductsByIds: Erro na requisição:", error);
+    return [];
+  }
 };

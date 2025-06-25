@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { fetchSubDealersProducts } from "@/services/shopifyService";
 
-// Handler para GET requests
 export async function GET() {
   console.log("API route /api/produtos foi chamada...");
   try {
@@ -10,9 +9,6 @@ export async function GET() {
     return NextResponse.json(products);
   } catch (error) {
     console.error("Erro na API /api/produtos:", error);
-    return NextResponse.json(
-      { error: "Erro ao buscar produtos" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Erro ao buscar produtos" }, { status: 500 });
   }
 }

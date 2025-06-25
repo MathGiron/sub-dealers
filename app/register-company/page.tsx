@@ -42,6 +42,8 @@ export default function RegisterCompany() {
   const { register, handleSubmit, formState: { errors }, setValue } = useForm<RegisterCompanyFormData>();
   const [cnpjInput, setCnpjInput] = useState("");
   const [cepInput, setCepInput] = useState("");
+  const [addressInput, setAddressInput] = useState("");
+  const [numberInput, setNumberInput] = useState("");
   const [contactInput, setContactInput] = useState("");
   const [selectedState, setSelectedState] = useState<string>("AC"); // Default para Acre
 
@@ -83,6 +85,25 @@ export default function RegisterCompany() {
     return formatted;
   };
 
+  const fetchAddressFromCEP = async (cep: string) => {
+    const cleanedCEP = cep.replace(/\D/g, "");
+    if (cleanedCEP.length !== 8) return;
+
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cleanedCEP}/json/`);
+      const data = await response.json();
+      if (!data.erro && data.logradouro) {
+        setAddressInput(data.logradouro);
+        setValue("address", data.logradouro, { shouldValidate: true });
+        console.log("Endereço preenchido automaticamente:", data.logradouro);
+      } else {
+        console.log("CEP não encontrado ou inválido:", cep);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar endereço pelo CEP:", error);
+    }
+  };
+
   const handleCNPJChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
     const formattedValue = formatCNPJ(rawValue);
@@ -95,6 +116,19 @@ export default function RegisterCompany() {
     const formattedValue = formatCEP(rawValue);
     setCepInput(formattedValue);
     setValue("cep", formattedValue, { shouldValidate: true });
+    fetchAddressFromCEP(formattedValue); // Chama a API do ViaCEP
+  };
+
+  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value;
+    setAddressInput(rawValue);
+    setValue("address", rawValue, { shouldValidate: true });
+  };
+
+  const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const rawValue = e.target.value.replace(/\D/g, "").slice(0, 5); // Limita a 5 dígitos
+    setNumberInput(rawValue);
+    setValue("number", rawValue, { shouldValidate: true });
   };
 
   const handleContactChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -111,9 +145,11 @@ export default function RegisterCompany() {
         unsafeMetadata: {
           cnpj: data.cnpj,
           cep: data.cep,
+          address: data.address,
+          number: data.number,
           companyName: data.companyName,
           contactNumber: data.contactNumber,
-          state: selectedState, // Salva o estado selecionado
+          state: selectedState,
           registerCompany: true,
         },
       });
@@ -192,6 +228,43 @@ export default function RegisterCompany() {
                 className="bg-black text-white border-gray-300"
               />
               {errors.cep?.message && <p className="text-red-500 text-sm">{errors.cep.message}</p>}
+            </LabelInputContainer>
+
+            <LabelInputContainer>
+              <div className="flex space-x-4">
+                <div className="flex-1">
+                  <Label htmlFor="address">Endereço</Label>
+                  <Input
+                    id="address"
+                    {...register("address", {
+                      required: "Endereço é obrigatório",
+                    })}
+                    value={addressInput}
+                    onChange={handleAddressChange}
+                    placeholder="Rua Exemplo"
+                    className="bg-black text-white border-gray-300"
+                  />
+                  {errors.address?.message && <p className="text-red-500 text-sm">{errors.address.message}</p>}
+                </div>
+                <div className="w-20">
+                  <Label htmlFor="number">Nº</Label>
+                  <Input
+                    id="number"
+                    {...register("number", {
+                      required: "Número é obrigatório",
+                      pattern: {
+                        value: /^\d{1,5}$/,
+                        message: "Número inválido (máximo 5 dígitos)",
+                      },
+                    })}
+                    value={numberInput}
+                    onChange={handleNumberChange}
+                    placeholder="123"
+                    className="bg-black text-white border-gray-300"
+                  />
+                  {errors.number?.message && <p className="text-red-500 text-sm">{errors.number.message}</p>}
+                </div>
+              </div>
             </LabelInputContainer>
 
             <LabelInputContainer>
