@@ -1,0 +1,1886 @@
+{
+  "RS": [
+    {
+      "Unidade de Atendimento": 9,
+      "Cidade Atendida": "ALEGRETE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1071,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 9,
+      "Cidade Atendida": "MANOEL VIANA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1117,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 9,
+      "Cidade Atendida": "QUARAI",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1189,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 40,
+      "Cidade Atendida": "ACEGUA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1172,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 40,
+      "Cidade Atendida": "BAGE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1110,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 40,
+      "Cidade Atendida": "CANDIOTA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1165,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 40,
+      "Cidade Atendida": "DOM PEDRITO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1191,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 40,
+      "Cidade Atendida": "HULHA NEGRA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1139,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 40,
+      "Cidade Atendida": "PEDRAS ALTAS",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1211,
+      "Faixa de KM": 1400
+    },
+    {
+      "Unidade de Atendimento": 40,
+      "Cidade Atendida": "PINHEIRO MACHADO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1202,
+      "Faixa de KM": 1400
+    },
+    {
+      "Unidade de Atendimento": 107,
+      "Cidade Atendida": "MAMPITUBA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 587,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 113,
+      "Cidade Atendida": "ANTONIO PRADO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 627,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 113,
+      "Cidade Atendida": "CAMBARA DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 708,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 113,
+      "Cidade Atendida": "CAXIAS DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 574,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 113,
+      "Cidade Atendida": "CRIUVA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 619,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 113,
+      "Cidade Atendida": "FARROUPILHA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 592,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 113,
+      "Cidade Atendida": "FAZENDA SOUZA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 595,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 113,
+      "Cidade Atendida": "FLORES DA CUNHA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 598,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 113,
+      "Cidade Atendida": "IPE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 627,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 113,
+      "Cidade Atendida": "NOVA PADUA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 611,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 113,
+      "Cidade Atendida": "NOVA ROMA DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 654,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 113,
+      "Cidade Atendida": "OTAVIO ROCHA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 604,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 113,
+      "Cidade Atendida": "SANTA LUCIA DO PIAI",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 604,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 113,
+      "Cidade Atendida": "SAO MARCOS",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 612,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 113,
+      "Cidade Atendida": "VILA CRISTINA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 600,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 113,
+      "Cidade Atendida": "VILA OLIVA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 619,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 113,
+      "Cidade Atendida": "VILA SECA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 594,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 114,
+      "Cidade Atendida": "AMARAL FERRADOR",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 913,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 114,
+      "Cidade Atendida": "ARAMBARE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 882,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 114,
+      "Cidade Atendida": "BARAO DO TRIUNFO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 940,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 114,
+      "Cidade Atendida": "CAMAQUA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 848,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 114,
+      "Cidade Atendida": "CERRO GRANDE DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 894,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 114,
+      "Cidade Atendida": "CHUVISCA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 878,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 114,
+      "Cidade Atendida": "CRISTAL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 881,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 114,
+      "Cidade Atendida": "DOM FELICIANO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 895,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 114,
+      "Cidade Atendida": "MARIANA PIMENTEL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 928,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 114,
+      "Cidade Atendida": "SENTINELA DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 890,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 114,
+      "Cidade Atendida": "SERTAO SANTANA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 919,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 114,
+      "Cidade Atendida": "TAPES",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 901,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 119,
+      "Cidade Atendida": "ALMIRANTE TAMANDARE DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 627,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 119,
+      "Cidade Atendida": "CARAZINHO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 596,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 119,
+      "Cidade Atendida": "CHAPADA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 644,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 119,
+      "Cidade Atendida": "COQUEIROS DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 627,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 119,
+      "Cidade Atendida": "PINHEIRO MARCADO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 629,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 119,
+      "Cidade Atendida": "SANTO ANTONIO DO PLANALTO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 617,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "ARATIBA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 533,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "AUREA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 515,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "BARAO DE COTEGIPE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 495,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "BARRA DO RIO AZUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 531,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "BENJAMIN CONSTANT DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 545,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "CAMPINAS DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 534,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "CARLOS GOMES",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 521,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "CENTENARIO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 518,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "CRUZALTENSE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 545,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "ENTRE RIOS DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 550,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "EREBANGO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 514,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "ERECHIM",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 480,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "ERVAL GRANDE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 509,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "ESTACAO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 520,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "FAXINALZINHO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 552,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade At |endida": "FLORIANO PEIXOTO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 510,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "GAURAMA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 503,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "GETULIO VARGAS",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 518,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "IPIRANGA DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 526,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "ITATIBA DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 540,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "JACUTINGA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 520,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "MARCELINO RAMOS",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 531,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "MARIANO MORO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 518,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "PAULO BENTO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 510,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "PONTE PRETA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 540,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "QUATRO IRMAOS",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 512,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "SAO VALENTIM",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 531,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "SERTAO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 533,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "SEVERIANO DE ALMEIDA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 518,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "TRES ARROIOS",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 508,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 122,
+      "Cidade Atendida": "VIADUTOS",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 511,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 146,
+      "Cidade Atendida": "ALPESTRE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 694,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 146,
+      "Cidade Atendida": "AMETISTA DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 660,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 146,
+      "Cidade Atendida": "BOA VISTA DAS MISSOES",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 672,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 146,
+      "Cidade Atendida": "CAICARA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 644,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 146,
+      "Cidade Atendida": "CERRO GRANDE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 692,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 146,
+      "Cidade Atendida": "CRISTAL DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 661,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 146,
+      "Cidade Atendida": "DOIS IRMAOS DAS MISSOES",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 681,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 146,
+      "Cidade Atendida": "ERVAL SECO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 666,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 146,
+      "Cidade Atendida": "FREDERICO WESTPHALEN",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 633,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 146,
+      "Cidade Atendida": "IRAI",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 664,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 146,
+      "Cidade Atendida": "JABOTICABA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 677,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 146,
+      "Cidade Atendida": "LAJEADO DO BUGRE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 693,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 146,
+      "Cidade Atendida": "NOVO TIRADENTES",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 681,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 146,
+      "Cidade Atendida": "PALMITINHO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 659,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 146,
+      "Cidade Atendida": "PINHAL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 672,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 146,
+      "Cidade Atendida": "PINHEIRINHO DO VALE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 678,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 146,
+      "Cidade Atendida": "PLANALTO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 683,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 146,
+      "Cidade Atendida": "RODEIO BONITO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 669,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 146,
+      "Cidade Atendida": "SAGRADA FAMILIA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 699,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 146,
+      "Cidade Atendida": "SAO PEDRO DAS MISSOES",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 701,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 146,
+      "Cidade Atendida": "SEBERI",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 649,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 146,
+      "Cidade Atendida": "TAQUARUCU DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 648,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 146,
+      "Cidade Atendida": "VICENTE DUTRA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 662,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 146,
+      "Cidade Atendida": "VISTA ALEGRE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 652,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 200,
+      "Cidade Atendida": "BARAO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 633,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 200,
+      "Cidade Atendida": "BENTO GONCALVES",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 627,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 200,
+      "Cidade Atendida": "BOA VISTA DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 636,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 200,
+      "Cidade Atendida": "CARLOS BARBOSA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 621,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 200,
+      "Cidade Atendida": "CORONEL PILAR",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 633,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 200,
+      "Cidade Atendida": "GARIBALDI",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 614,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 200,
+      "Cidade Atendida": "MONTE BELO DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 636,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 200,
+      "Cidade Atendida": "PINTO BANDEIRA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 644,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 200,
+      "Cidade Atendida": "SALVADOR DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 643,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 200,
+      "Cidade Atendida": "SANTA TEREZA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 648,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 200,
+      "Cidade Atendida": "SAO PEDRO DA SERRA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 640,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "ALTO ALEGRE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 733,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "BARROS CASSAL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 792,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "BOA VISTA DO INCRA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1066,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "CAMPOS BORGES",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 738,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "COLORADO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 707,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "CRUZ ALTA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 736,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "ESPUMOSO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 733,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "ESTRELA VELHA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 789,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "FONTOURA XAVIER",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 762,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "FORTALEZA DOS VALOS",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 718,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "IBIRAPUITA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 750,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "IBIRUBA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 679,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "JACUIZINHO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 761,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "LAGOA DOS TRES CANTOS",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 708,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "MORMACO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 751,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "NAO-ME-TOQUE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 758,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "QUINZE DE NOVEMBRO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 697,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "SALTO DO JACUI",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 784,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "SAO JOSE DO HERVAL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 793,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "SELBACH",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 692,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "SOLEDADE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 776,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "TAPERA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 703,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "TIO HUGO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 736,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "TUNAS",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 777,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 222,
+      "Cidade Atendida": "VICTOR GRAEFF",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 722,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 224,
+      "Cidade Atendida": "ALTO FELIZ",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 732,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 224,
+      "Cidade Atendida": "BOM PRINCIPIO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 716,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 224,
+      "Cidade Atendida": "CANELA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 665,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 224,
+      "Cidade Atendida": "FELIZ",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 728,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 224,
+      "Cidade Atendida": "GRAMADO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 658,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 224,
+      "Cidade Atendida": "HARMONIA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 711,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 224,
+      "Cidade Atendida": "IGREJINHA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 627,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 224,
+      "Cidade Atendida": "NOVA HARTZ",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 654,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 224,
+      "Cidade Atendida": "NOVA PETROPOLIS",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 688,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 224,
+      "Cidade Atendida": "PAROBE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 642,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 224,
+      "Cidade Atendida": "RIOZINHO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 675,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 224,
+      "Cidade Atendida": "ROLANTE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 661,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 224,
+      "Cidade Atendida": "SAO FRANCISCO DE PAULA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 659,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 224,
+      "Cidade Atendida": "SAO SEBASTIAO DO CAI",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 703,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 224,
+      "Cidade Atendida": "SAO VENDELINO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 728,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 224,
+      "Cidade Atendida": "TAQUARA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 639,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 224,
+      "Cidade Atendida": "TRES COROAS",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 634,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 224,
+      "Cidade Atendida": "TUPANDI",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 723,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 224,
+      "Cidade Atendida": "VALE REAL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 716,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "AJURICABA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 784,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "AUGUSTO PESTANA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 757,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "BOA VISTA DO CADEADO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 775,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "BOSSOROCA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 888,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "BOZANO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 759,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "CAIBATE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 844,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "CATUIPE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 764,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "CERRO LARGO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 844,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "CORONEL BARROS",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 759,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "DEZESSEIS DE NOVEMBRO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 866,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "ENTRE-IJUIS",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 779,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "EUGENIO DE CASTRO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 772,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "GARRUCHOS",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 941,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "GUARANI DAS MISSOES",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 804,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "IJUI",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 744,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "JOIA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 784,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "MATO QUEIMADO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 844,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "NOVA RAMADA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 808,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "PEJUCARA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 783,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "ROLADOR",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 869,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "ROQUE GONZALES",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 869,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "SALVADOR DAS MISSOES",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 849,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "SANTO ANGELO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 789,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "SANTO ANTONIO DAS MISSOES",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 871,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "SAO LUIZ GONZAGA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 846,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "SAO MIGUEL DAS MISSOES",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 834,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "SAO NICOLAU",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 914,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "SAO PEDRO DO BUTIA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 859,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "SETE DE SETEMBRO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 799,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 225,
+      "Cidade Atendida": "VITORIA DAS MISSOES",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 819,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 427,
+      "Cidade Atendida": "SANTANA DO LIVRAMENTO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1212,
+      "Faixa de KM": 1400
+    },
+    {
+      "Unidade de Atendimento": 428,
+      "Cidade Atendida": "ROSARIO DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1168,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 428,
+      "Cidade Atendida": "SANTA MARGARIDA DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1134,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 428,
+      "Cidade Atendida": "SAO GABRIEL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1085,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 428,
+      "Cidade Atendida": "VILA NOVA DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1161,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 429,
+      "Cidade Atendida": "CACEQUI",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1018,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 429,
+      "Cidade Atendida": "CAPAO DO CIPO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 966,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 429,
+      "Cidade Atendida": "ITACURUBI",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 973,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 429,
+      "Cidade Atendida": "JAGUARI",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 968,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 429,
+      "Cidade Atendida": "MACAMBARA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1031,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 429,
+      "Cidade Atendida": "NOVA ESPERANCA DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 953,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 429,
+      "Cidade Atendida": "SANTIAGO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 907,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 429,
+      "Cidade Atendida": "SAO BORJA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1043,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 429,
+      "Cidade Atendida": "SAO FRANCISCO DE ASSIS",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 972,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 429,
+      "Cidade Atendida": "SAO VICENTE DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 988,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 429,
+      "Cidade Atendida": "UNISTALDA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 954,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "ARROIO DO SAL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 772,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "BALNEARIO PINHAL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 766,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "CAPAO DA CANOA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 744,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "CAPIVARI DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 735,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "CARAA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 685,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "CIDREIRA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 743,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "DOM PEDRO DE ALCANTARA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 782,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "GLORINHA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 703,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "IMBE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 728,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "ITATI",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 761,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "MAQUINE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 731,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "MARIAPOLIS",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 704,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "MORRINHOS DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 781,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "MOSTARDAS",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 859,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "OSORIO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 704,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "PALMARES DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 750,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "QUINTAO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 750,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "SANTO ANTONIO DA PATRULHA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 674,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "TAVARES",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 887,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "TERRA DE AREIA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 746,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "TORRES",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 795,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "TRAMANDAI",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 723,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "TRES CACHOEIRAS",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 768,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "TRES FORQUILHAS",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 756,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 432,
+      "Cidade Atendida": "XANGRI-LA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 741,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 436,
+      "Cidade Atendida": "BARRA FUNDA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 604,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 436,
+      "Cidade Atendida": "CONSTANTINA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 624,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 436,
+      "Cidade Atendida": "ENGENHO VELHO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 634,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 436,
+      "Cidade Atendida": "GRAMADO DOS LOUREIROS",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 661,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 436,
+      "Cidade Atendida": "LIBERATO SALZANO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 645,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 436,
+      "Cidade Atendida": "NONOAI",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 674,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 436,
+      "Cidade Atendida": "NOVA BOA VISTA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 601,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 436,
+      "Cidade Atendida": "NOVO BARREIRO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 612,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 436,
+      "Cidade Atendida": "NOVO XINGU",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 624,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 436,
+      "Cidade Atendida": "PALMEIRA DAS MISSOES",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 636,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 436,
+      "Cidade Atendida": "PONTAO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 630,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 436,
+      "Cidade Atendida": "RIO DOS INDIOS",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 684,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 436,
+      "Cidade Atendida": "RONDA ALTA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 618,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 436,
+      "Cidade Atendida": "RONDINHA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 605,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 436,
+      "Cidade Atendida": "SAO JOSE DAS MISSOES",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 625,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 436,
+      "Cidade Atendida": "SARANDI",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 591,
+      "Faixa de KM": 600
+    },
+    {
+      "Unidade de Atendimento": 436,
+      "Cidade Atendida": "TRES PALMEIRAS",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 636,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 436,
+      "Cidade Atendida": "TRINDADE DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 648,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 457,
+      "Cidade Atendida": "CONDOR",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 694,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 457,
+      "Cidade Atendida": "PANAMBI",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 681,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 457,
+      "Cidade Atendida": "SALDANHA MARINHO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 717,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 457,
+      "Cidade Atendida": "SANTA BARBARA DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 736,
+      "Faixa de KM": 800
+    },
+    {
+      "Unidade de Atendimento": 487,
+      "Cidade Atendida": "ARROIO DO PADRE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1052,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 487,
+      "Cidade Atendida": "ARROIO GRANDE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1082,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 487,
+      "Cidade Atendida": "CANGUCU",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1052,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 487,
+      "Cidade Atendida": "CAPAO DO LEAO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1012,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 487,
+      "Cidade Atendida": "CERRITO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1052,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 487,
+      "Cidade Atendida": "CHUI",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1292,
+      "Faixa de KM": 1400
+    },
+    {
+      "Unidade de Atendimento": 487,
+      "Cidade Atendida": "HERVAL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1122,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 487,
+      "Cidade Atendida": "JAGUARAO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1152,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 487,
+      "Cidade Atendida": "MORRO REDONDO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1032,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 487,
+      "Cidade Atendida": "PEDRO OSORIO",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1052,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 487,
+      "Cidade Atendida": "PELOTAS",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 992,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 487,
+      "Cidade Atendida": "PIRATINI",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1112,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 487,
+      "Cidade Atendida": "RIO GRANDE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1052,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 487,
+      "Cidade Atendida": "SANTA VITORIA DO PALMAR",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1252,
+      "Faixa de KM": 1400
+    },
+    {
+      "Unidade de Atendimento": 487,
+      "Cidade Atendida": "SAO JOSE DO NORTE",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1072,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 487,
+      "Cidade Atendida": "SAO LOURENCO DO SUL",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1052,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 487,
+      "Cidade Atendida": "TURUCU",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1027,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 583,
+      "Cidade Atendida": "ALECRIM",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 850,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 583,
+      "Cidade Atendida": "ALEGRIA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 872,
+      "Faixa de KM": 1000
+    },
+    {
+      "Unidade de Atendimento": 583,
+      "Cidade Atendida": "BARRA DO GUARITA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 1052,
+      "Faixa de KM": 1200
+    },
+    {
+      "Unidade de Atendimento": 583,
+      "Cidade Atendida": "BOA VISTA DO BURICA",
+      "Trecho Fluvial": "NÃO",
+      "Distancia Exata": 852,
+      "Faixa de KM": 1000
+    }
+]}

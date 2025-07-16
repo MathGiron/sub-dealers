@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Navbar from "@/components/navbar";
+import Navbar from "@/components/ui/navbar";
 
 const totalPages = 15; // Quantidade total de imagens
 

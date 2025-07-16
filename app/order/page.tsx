@@ -1,15 +1,22 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@clerk/nextjs";
-import Navbar from "@/components/navbar";
+import Navbar from "@/components/ui/navbar";
 import { Product, OrderProduct, UserMetadata } from "@/services/index";
 import jsPDF from "jspdf";
 import FreightCalculator from "@/components/FreightCalculator";
 
-// Componente decorativo
+const debounce = (func: (...args: any[]) => void, wait: number) => {
+  let timeout: NodeJS.Timeout | null = null;
+  return (...args: any[]) => {
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(() => func(...args), wait);
+  };
+};
+
 const BottomGradient = () => {
   return (
     <>
@@ -21,9 +28,25 @@ const BottomGradient = () => {
 
 const calculateDistance = (cep: string, metadata?: UserMetadata) => {
   const cleanedCEP = cep.replace(/\D/g, "");
-  if (cleanedCEP.length !== 8) return { distance: 100, state: "SP" }; // Fallback
-  if (metadata?.cep && metadata?.state) return { distance: metadata.distance || 100, state: metadata.state };
-  return { distance: 100, state: "SP" }; // Fallback final
+  if (cleanedCEP.length !== 8) {
+    return { distance: null };
+  }
+  return { distance: metadata?.distance || null };
+};
+
+const getProductVariant = (product: Product, state: string | null) => {
+  if (!state || !product.specs || product.specs.length === 0) {
+    return null;
+  }
+
+  const validStates = ["PR", "MG", "RJ", "SC"];
+  const isValidState = validStates.includes(state);
+
+  const variant = product.specs.find((spec) => spec.name.includes(state));
+  if (variant) return variant;
+
+  const unifiedVariant = product.specs.find((spec) => spec.name.includes("Unificado"));
+  return unifiedVariant || null;
 };
 
 export default function OrderPage() {
@@ -33,12 +56,15 @@ export default function OrderPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [orderDate, setOrderDate] = useState<string>("");
-  const [distance, setDistance] = useState<number>(100);
-  const [state, setState] = useState<string>("SP");
+  const [distance, setDistance] = useState<number | null>(null);
+  const [state, setState] = useState<string | null>(null);
   const [freightCost, setFreightCost] = useState<number>(0);
   const [additionalFees, setAdditionalFees] = useState<number>(0);
 
-  const loadProducts = async () => {
+  const hasLoadedRef = useRef(false);
+
+  const loadProducts = useCallback(async () => {
+    console.log("Chamando loadProducts"); // Log pra debug
     const entries = Object.entries(Object.fromEntries(searchParams.entries())).filter(
       ([key]) => key.startsWith("products[")
     );
@@ -51,6 +77,7 @@ export default function OrderPage() {
 
     const productIds: string[] = [];
     const productQuantities: { [id: string]: number } = {};
+    const productVariants: { [id: string]: any } = {};
 
     for (const [key, value] of entries) {
       const id = key.replace("products[", "").replace("]", "").split("/").pop();
@@ -58,11 +85,13 @@ export default function OrderPage() {
       try {
         parsed = JSON.parse(value);
       } catch (error) {
+        console.error(`Erro ao parsear produto ${id}:`, error);
         continue;
       }
       const quantity = parseInt(parsed.quantity, 10) || 1;
       productIds.push(`gid://shopify/Product/${id}`);
       productQuantities[`gid://shopify/Product/${id}`] = quantity;
+      if (parsed.variant) productVariants[`gid://shopify/Product/${id}`] = parsed.variant;
     }
 
     if (productIds.length === 0) {
@@ -87,7 +116,7 @@ export default function OrderPage() {
       }
 
       const data = await response.json();
-      console.log("Dados retornados pelo proxy:", data); // Log essencial
+      console.log("Dados retornados pelo proxy:", data);
 
       if (!data || !Array.isArray(data) || data.length === 0) {
         setError("Nenhum produto encontrado para os IDs selecionados na collection.");
@@ -100,15 +129,15 @@ export default function OrderPage() {
         name: product.name || `Produto Desconhecido (${product.id.split("/").pop()})`,
         image: product.image || "/images/placeholder.png",
         description: product.description || "Sem descrição disponível",
-        price: product.price || 0,
-        weight: product.weight || 0,
+        price: null,
+        weight: product.weight || null,
         specs: product.specs || [],
         buttonText: "Comprar Agora",
         href: `/checkout/${product.id.split("/").pop()}`,
         highlighted: product.highlighted || product.name?.includes("DELTA 2") || false,
       }));
 
-      console.log("Produtos mapeados:", fetchedProducts); // Log essencial
+      console.log("Produtos mapeados:", fetchedProducts);
       if (fetchedProducts.length === 0) {
         setError("Nenhum produto encontrado para os IDs selecionados na collection.");
         setProducts([]);
@@ -120,64 +149,86 @@ export default function OrderPage() {
       return false;
     }
 
-    const selectedProducts: OrderProduct[] = fetchedProducts.map((product: Product) => ({
-      ...product,
-      quantity: productQuantities[product.id] || 1,
-    }));
+    const userState = (user?.unsafeMetadata?.state as string) || null;
+    const selectedProducts: OrderProduct[] = fetchedProducts.map((product: Product) => {
+      const variantFromParams = productVariants[product.id];
+      const selectedVariant = variantFromParams || getProductVariant(product, userState);
+      if (!selectedVariant) {
+        setError(`Nenhuma variante válida encontrada para o produto ${product.name}.`);
+      }
+      return {
+        ...product,
+        quantity: productQuantities[product.id] || 1,
+        selectedVariant,
+      };
+    });
 
     setProducts(selectedProducts);
     setError(null);
     return true;
-  };
+  }, [searchParams, user]);
 
-  const saveDraft = async (draftProducts: OrderProduct[]) => {
-    if (!user) return;
-    try {
-      await user.update({ unsafeMetadata: { ...user.unsafeMetadata, draftOrder: draftProducts } });
-    } catch (err) {}
-  };
+  const debouncedSaveDraft = useCallback(
+    debounce((draftProducts: OrderProduct[]) => {
+      if (!user) return;
+      try {
+        user.update({ unsafeMetadata: { ...user.unsafeMetadata, draftOrder: draftProducts } });
+      } catch (err) {
+        console.error("Erro ao salvar rascunho:", err);
+      }
+    }, 1000),
+    [user]
+  );
 
-  const loadDraft = () => {
+  const loadDraft = useCallback(() => {
     if (!user || !user.unsafeMetadata?.draftOrder) return;
+    const userState = (user?.unsafeMetadata?.state as string) || null;
     const draftOrder = user.unsafeMetadata.draftOrder as OrderProduct[];
-    if (draftOrder.length > 0 && products.length === 0) setProducts(draftOrder);
-  };
+    if (draftOrder.length > 0 && products.length === 0) {
+      const updatedDraft = draftOrder.map((product) => ({
+        ...product,
+        selectedVariant: product.selectedVariant || getProductVariant(product, userState),
+      }));
+      setProducts(updatedDraft);
+    }
+  }, [user, products.length]);
 
   useEffect(() => {
+    if (!isLoaded || hasLoadedRef.current) return;
+    hasLoadedRef.current = true;
+
     const loadData = async () => {
+      setLoading(true);
+      console.log("Metadata:", user?.unsafeMetadata); // Log pra debug
       const hasProducts = await loadProducts();
+      const metadata = user?.unsafeMetadata as UserMetadata;
       if (user?.unsafeMetadata?.cep) {
-        const metadata = user.unsafeMetadata as UserMetadata;
-        const { distance: calculatedDistance, state: calculatedState } = calculateDistance(user.unsafeMetadata.cep, metadata);
+        const { distance: calculatedDistance } = calculateDistance(user.unsafeMetadata.cep, metadata);
         setDistance(calculatedDistance);
-        setState(calculatedState);
       } else {
-        setDistance(100);
-        setState("SP");
+        setDistance(null);
       }
+      setState(metadata?.state || null);
       const now = new Date();
       setOrderDate(now.toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }));
       setLoading(false);
       loadDraft();
     };
     loadData();
-  }, [searchParams, user]);
+  }, [loadProducts, loadDraft, isLoaded]);
 
   useEffect(() => {
-    if (products.length > 0) saveDraft(products);
-  }, [products]);
+    if (user?.unsafeMetadata?.state) {
+      setState(user.unsafeMetadata.state as string);
+    }
+  }, [user?.unsafeMetadata?.state]);
+
+  useEffect(() => {
+    if (products.length > 0) debouncedSaveDraft(products);
+  }, [products, debouncedSaveDraft]);
 
   const handleSubmit = async () => {
     setLoading(true);
-    const hasProducts = await loadProducts();
-    const now = new Date();
-    setOrderDate(now.toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }));
-
-    if (!hasProducts) {
-      setLoading(false);
-      return;
-    }
-
     const total = calculateTotal(products);
 
     try {
@@ -190,18 +241,27 @@ export default function OrderPage() {
       doc.text(`Contato: ${user?.phoneNumbers?.[0]?.phoneNumber || user?.unsafeMetadata?.contactNumber || "Número de contato não informado"}`, 20, 50);
       doc.text(`Data do Pedido: ${orderDate}`, 20, 60);
       const metadata = user?.unsafeMetadata as UserMetadata;
-      doc.text(`Endereço de Entrega: ${metadata?.address}, ${metadata?.number}, CEP ${metadata?.cep}`, 20, 70);
-      doc.text(`Estado: ${state}`, 20, 80);
+      doc.text(`Endereço de Entrega: ${metadata?.address || "Endereço não informado"}, ${metadata?.number || "Número não informado"}, CEP ${metadata?.cep || "CEP não informado"}`, 20, 70);
+      doc.text(`Estado: ${state || "Estado não informado"}`, 20, 80);
       doc.text(`Frete Estimado: R$ ${freightCost.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`, 20, 90);
       doc.text(`Taxas Adicionais: R$ ${additionalFees.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`, 20, 100);
       doc.text("Itens do Pedido:", 20, 110);
 
       let yPosition = 120;
       products.forEach((product, index) => {
-        doc.text(`${index + 1}. ${product.name}`, 20, yPosition);
+        const variant = product.selectedVariant || { name: "Padrão", price: null, weight: null };
+        doc.text(`${index + 1}. ${product.name} (${variant.name})`, 20, yPosition);
         doc.text(`Quantidade: ${product.quantity}`, 20, yPosition + 5);
-        doc.text(`Preço Unitário: R$ ${getProductPrice(product).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`, 20, yPosition + 10);
-        doc.text(`Total Item: R$ ${calculateItemTotal(product).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`, 20, yPosition + 15);
+        doc.text(
+          `Preço Unitário: R$ ${variant.price ? Number(variant.price).toLocaleString("pt-BR", { minimumFractionDigits: 2 }) : "Consultar"}`,
+          20,
+          yPosition + 10
+        );
+        doc.text(
+          `Total Item: R$ ${calculateItemTotal(product).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`,
+          20,
+          yPosition + 15
+        );
         yPosition += 25;
       });
 
@@ -215,7 +275,11 @@ export default function OrderPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          products,
+          products: products.map((product) => ({
+            ...product,
+            variantName: product.selectedVariant?.name || "Padrão",
+            variantPrice: product.selectedVariant?.price || null,
+          })),
           clientName: user?.fullName || "Cliente não identificado",
           cnpj: (user?.unsafeMetadata?.cnpj as string) || "CNPJ não informado",
           contactNumber: user?.phoneNumbers?.[0]?.phoneNumber || user?.unsafeMetadata?.contactNumber || "Número de contato não informado",
@@ -224,8 +288,8 @@ export default function OrderPage() {
           freightCost,
           additionalFees,
           total,
-          deliveryAddress: `${metadata?.address}, ${metadata?.number}, CEP ${metadata?.cep}`,
-          state,
+          deliveryAddress: `${metadata?.address || "Endereço não informado"}, ${metadata?.number || "Número não informado"}, CEP ${metadata?.cep || "CEP não informado"}`,
+          state: state || "Estado não informado",
         }),
       });
 
@@ -239,14 +303,18 @@ export default function OrderPage() {
       const completedOrders = (user?.unsafeMetadata?.completedOrders || []) as any[];
       const newOrder = {
         id: `order_${Date.now()}`,
-        products,
+        products: products.map((product) => ({
+          ...product,
+          variantName: product.selectedVariant?.name || "Padrão",
+          variantPrice: product.selectedVariant?.price || null,
+        })),
         orderDate,
         status: "success",
         freightCost,
         additionalFees,
         total,
-        deliveryAddress: `${metadata?.address}, ${metadata?.number}, CEP ${metadata?.cep}`,
-        state,
+        deliveryAddress: `${metadata?.address || "Endereço não informado"}, ${metadata?.number || "Número não informado"}, CEP ${metadata?.cep || "CEP não informado"}`,
+        state: state || "Estado não informado",
       };
       await user.update({ unsafeMetadata: { ...user.unsafeMetadata, completedOrders: [...completedOrders, newOrder], draftOrder: [] } });
       setProducts([]);
@@ -258,7 +326,7 @@ export default function OrderPage() {
     }
   };
 
-  const getProductPrice = (product: OrderProduct) => product.price || 0;
+  const getProductPrice = (product: OrderProduct) => product.selectedVariant?.price ? Number(product.selectedVariant.price) : 0;
   const calculateItemTotal = (product: OrderProduct) => getProductPrice(product) * (product.quantity || 1);
   const calculateTotal = (products: OrderProduct[]) => products.reduce((sum, product) => sum + calculateItemTotal(product), 0) + freightCost + additionalFees;
   const totalAmount = products.reduce((sum, product) => sum + calculateItemTotal(product), 0);
@@ -284,8 +352,8 @@ export default function OrderPage() {
             <p className="text-sm text-neutral-300">CNPJ: {cnpj}</p>
             <p className="text-sm text-neutral-300">Contato: {contactNumber}</p>
             <p className="text-sm text-neutral-300">Data do Pedido: {orderDate}</p>
-            <p className="text-sm text-neutral-300">Endereço de Entrega: {metadata?.address}, {metadata?.number}, CEP {metadata?.cep}</p>
-            <p className="text-sm text-neutral-300">Estado: {state}</p>
+            <p className="text-sm text-neutral-300">Endereço de Entrega: {metadata?.address || "Endereço não informado"}, {metadata?.number || "Número não informado"}, CEP {metadata?.cep || "CEP não informado"}</p>
+            <p className="text-sm text-neutral-300">Estado: {state || "Estado não informado"}</p>
             <p className="text-sm text-neutral-300">Frete Estimado: R$ {freightCost.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
             <p className="text-sm text-neutral-300">Taxas Adicionais: R$ {additionalFees.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}</p>
           </div>
@@ -296,10 +364,10 @@ export default function OrderPage() {
                 <ul className="mt-2 space-y-4">
                   {products.map((product) => (
                     <li key={product.id} className="flex flex-col">
-                      <p className="text-sm text-white">{product.name}</p>
+                      <p className="text-sm text-white">{product.name} ({product.selectedVariant?.name || "Padrão"})</p>
                       <p className="text-sm text-neutral-300">Quantidade: {product.quantity}</p>
-                      <p className="text-sm text-neutral-300">Preço Unitário: R$ {getProductPrice(product).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                      <p className="text-sm text-neutral-300">Peso: {(product.weight || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })} kg</p>
+                      <p className="text-sm text-neutral-300">Preço Unitário: R$ {product.selectedVariant?.price ? Number(product.selectedVariant.price).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "Consultar"}</p>
+                      <p className="text-sm text-neutral-300">Peso: {(product.selectedVariant?.weight || product.weight || 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })} kg</p>
                       <p className="text-sm text-neutral-300">Total Item: R$ {calculateItemTotal(product).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                     </li>
                   ))}

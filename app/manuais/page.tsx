@@ -1,5 +1,5 @@
 
-import Navbar from "@/components/navbar"
+import Navbar from "@/components/ui/navbar"
 import { ManualsCarousel } from "@/components/ui/manuais-carousel"
 
 export default function ManualsPage() {

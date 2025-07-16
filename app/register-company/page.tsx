@@ -4,7 +4,7 @@ import { useUser } from "@clerk/nextjs";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
-import Navbar from "@/components/navbar";
+import Navbar from "@/components/ui/navbar";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";

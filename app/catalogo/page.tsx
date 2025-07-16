@@ -1,7 +1,7 @@
-import { ProductDataTable } from "@/components/product-table";
+import ProductTableLazyWrapper from "@/components/ProductTableLazyWrapper";
 import { fetchSubDealersProducts } from "@/services/shopifyService";
 import {Product} from "@/services/index";
-import Navbar from "@/components/navbar"; // Importando a navbar correta
+import Navbar from "@/components/ui/navbar"; // Importando a navbar correta
 
 async function getData(): Promise<Product[]> {
   try {
@@ -18,10 +18,10 @@ export default async function DemoPage() {
   const data = await getData();
 
   return (
-    <div className="min-h-screen bg-black dark:bg-black text-white dark:text-white">
+    <div className="min-h-screen">
       <Navbar />
       <div className="container mx-auto py-20">
-        <ProductDataTable initialData={data} />
+        <ProductTableLazyWrapper initialData={data} />
       </div>
     </div>
   );

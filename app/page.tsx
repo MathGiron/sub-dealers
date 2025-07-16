@@ -1,6 +1,6 @@
 import { ExpandableCardDemo } from "@/components/acertenity/expandable-card-demo-grid";
-import { HeroSection } from "@/components/hero-section";
-import Navbar from "@/components/navbar";
+import { HeroSection } from "@/components/ui/hero-section";
+import Navbar from "@/components/ui/navbar";
 import { Product } from "@/services/shopifyService";
 
 async function fetchProducts(): Promise<Product[]> {

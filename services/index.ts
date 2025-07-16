@@ -7,7 +7,6 @@ export interface RegisterCompanyFormData {
   contactNumber: string;
 }
 
-// Define o tipo completo do unsafeMetadata
 export interface UserMetadata {
   cnpj?: string;
   cep?: string;
@@ -19,7 +18,7 @@ export interface UserMetadata {
   registerCompany?: boolean;
   draftOrder?: OrderProduct[];
   completedOrders?: any[];
-  [key: string]: any; // Permite propriedades adicionais
+  [key: string]: any;
 }
 
 export interface Product {
@@ -27,11 +26,12 @@ export interface Product {
   name: string;
   image: string;
   description: string;
-  price?: number; // Adiciona o campo price
+  price?: number;
   specs: Array<{
     name: string;
     included: boolean;
     price?: string | number;
+    weight?: number;
   }>;
   buttonText: string;
   href: string;
@@ -41,5 +41,10 @@ export interface Product {
 
 export interface OrderProduct extends Product {
   quantity: number;
-  weight?: number; // Adiciona weight pra evitar o erro de Property 'weight' does not exist
+  weight?: number;
+  selectedVariant?: {
+    name: string;
+    price?: string | number;
+    weight?: number;
+  } | null;
 }

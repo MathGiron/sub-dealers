@@ -3,7 +3,7 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { Product } from "@/services/index";
 import Image from "next/image";
-import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignedIn, SignedOut, useUser } from "@clerk/nextjs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
@@ -36,6 +36,20 @@ const QuantityCell = ({ row, onQuantityChange }: { row: Row<Product & { quantity
       />
     </div>
   );
+};
+
+// Função para selecionar a variante correta com base no estado
+const getProductVariant = (product: Product, state: string) => {
+  const validStates = ["PR", "MG", "RJ", "SC"];
+  const isValidState = validStates.includes(state);
+
+  // Procura a variante que corresponde ao estado do usuário
+  const variant = product.specs.find((spec) => spec.name.includes(state));
+  if (variant) return variant;
+
+  // Se não encontrar, retorna a variante "Unificado" ou a primeira disponível
+  const unifiedVariant = product.specs.find((spec) => spec.name.includes("Unificado"));
+  return unifiedVariant || product.specs[0] || { price: product.price, weight: product.weight, name: "Padrão" };
 };
 
 export const columns: ColumnDef<Product & { quantity?: number }>[] = [
@@ -85,12 +99,16 @@ export const columns: ColumnDef<Product & { quantity?: number }>[] = [
       </Button>
     ),
     cell: ({ row }) => {
-      const priceSpec = row.original.specs[0];
-      const price = priceSpec?.price || "Consultar";
+      const { user } = useUser();
+      const state = (user?.unsafeMetadata?.state as string) || "SP"; // Fallback pra SP
+      const priceSpec = getProductVariant(row.original, state);
+      const price = priceSpec?.price
+        ? Number(priceSpec.price).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+        : "Consultar";
       return (
         <div className="text-sm text-white dark:text-white">
           <SignedIn>
-            <span>{price}</span>
+            <span>R$ {price}</span>
           </SignedIn>
           <SignedOut>
             <span className="blur-sm">R$ XXXX</span>
@@ -100,11 +118,13 @@ export const columns: ColumnDef<Product & { quantity?: number }>[] = [
     },
     enableSorting: true,
     sortingFn: (rowA, rowB) => {
-      const priceA = rowA.original.specs[0]?.price
-        ? parseFloat(rowA.original.specs[0].price)
+      const { user } = useUser();
+      const state = (user?.unsafeMetadata?.state as string) || "SP";
+      const priceA = getProductVariant(rowA.original, state)?.price
+        ? Number(getProductVariant(rowA.original, state).price)
         : Infinity;
-      const priceB = rowB.original.specs[0]?.price
-        ? parseFloat(rowB.original.specs[0].price)
+      const priceB = getProductVariant(rowB.original, state)?.price
+        ? Number(getProductVariant(rowB.original, state).price)
         : Infinity;
       return priceA - priceB;
     },

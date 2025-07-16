@@ -20,11 +20,24 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
+import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
 import { DataTable } from "@/components/ui/datatable/data-table";
 import { columns } from "@/components/ui/datatable/columns";
 import { useRouter } from "next/navigation";
-import { Product } from "@/services/index";
+import { Product, UserMetadata } from "@/services/index";
+import { useUser } from "@clerk/nextjs";
+
+// Função para selecionar a variante correta com base no estado
+const getProductVariant = (product: Product, state: string) => {
+  const validStates = ["PR", "MG", "RJ", "SC"];
+  const isValidState = validStates.includes(state);
+
+  const variant = product.specs.find((spec) => spec.name.includes(state));
+  if (variant) return variant;
+
+  const unifiedVariant = product.specs.find((spec) => spec.name.includes("Unificado"));
+  return unifiedVariant || product.specs[0] || { price: product.price, weight: product.weight, name: "Padrão" };
+};
 
 interface ProductDataTableProps<TData> {
   initialData: TData[];
@@ -35,6 +48,8 @@ export function ProductDataTable<TData>({ initialData }: ProductDataTableProps<T
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const { user } = useUser();
+  const state = (user?.unsafeMetadata?.state as string) || "SP"; // Fallback pra SP
 
   const router = useRouter();
 
@@ -65,7 +80,8 @@ export function ProductDataTable<TData>({ initialData }: ProductDataTableProps<T
         selectedRows.map((product) => [
           `products[${product.id}]`,
           JSON.stringify({
-            quantity: product.quantity || 1, // Envia apenas a quantidade
+            quantity: product.quantity || 1,
+            variant: getProductVariant(product, state), // Envia a variante selecionada
           }),
         ])
       ).toString();
@@ -74,30 +90,47 @@ export function ProductDataTable<TData>({ initialData }: ProductDataTableProps<T
   };
 
   return (
-    <div className="w-full  text-white dark:text-white">
-      <div className="flex items-center py-4 ">
+    <div className="w-full">
+      <div className="flex items-center py-4">
         <Input
           placeholder="Filtrar por nome..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm  text-white dark:text-white border-gray-300 dark:border-gray-300 placeholder-gray-400 dark:placeholder-gray-400"
+          className="max-w-sm"
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto bg-black dark:bg-black text-white dark:text-white border-gray-300 dark:border-gray-300 hover:bg-gray-800 dark:hover:bg-gray-800">
-              Colunas <ChevronDown className="ml-2 h-4 w-4 text-white dark:text-white" />
+            <Button
+              variant="outline"
+              className="ml-auto"
+              style={{
+                background: "var(--card)",
+                color: "var(--card-foreground)",
+                border: "1px solid var(--border)",
+                borderRadius: "var(--radius)"
+              }}
+            >
+              Colunas <ChevronDown className="ml-2 h-4 w-4" style={{ color: "var(--card-foreground)" }} />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="bg-black dark:bg-black text-white dark:text-white border-gray-300 dark:border-gray-300">
+          <DropdownMenuContent
+            style={{
+              background: "var(--popover)",
+              color: "var(--popover-foreground)",
+              border: "1px solid var(--border)",
+              borderRadius: "var(--radius)"
+            }}
+          >
             {table
               .getAllColumns()
               .filter((column) => column.getCanHide())
               .map((column) => (
                 <DropdownMenuCheckboxItem
                   key={column.id}
-                  className="capitalize text-white dark:text-white hover:bg-gray-800 dark:hover:bg-gray-800"
+                  className="capitalize hover:bg-[var(--muted)]"
+                  style={{ color: "var(--popover-foreground)" }}
                   checked={column.getIsVisible()}
                   onCheckedChange={(value) => column.toggleVisibility(!!value)}
                 >
@@ -107,37 +140,60 @@ export function ProductDataTable<TData>({ initialData }: ProductDataTableProps<T
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
       <DataTable table={table} />
-      <div className="flex items-center justify-between space-x-2 py-4 ">
-        <div className="flex-1 text-sm text-gray-400 dark:text-gray-400">
-          {table.getFilteredSelectedRowModel().rows.length} de{" "}
-          {table.getFilteredRowModel().rows.length} linha(s) selecionada(s).
-        </div>
-        <div className="space-x-2">
+      <div className="flex items-center justify-between w-full px-4 py-4">
+        <div className="flex items-center gap-x-2">
           <Button
-            variant="outline"
-            size="sm"
+            variant="secondary"
+            size="icon"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="bg-black dark:bg-black text-white dark:text-white border-gray-300 dark:border-gray-300 hover:bg-gray-800 dark:hover:bg-gray-800"
+            style={{
+              background: "transparent",
+              color: "#fff",
+              border: "1px solid rgba(255,255,255,0.8)",
+              borderRadius: "var(--radius)",
+              transition: "background 0.2s"
+            }}
+            onMouseOver={e => e.currentTarget.style.background = "var(--muted)"}
+            onMouseOut={e => e.currentTarget.style.background = "transparent"}
           >
-            Anterior
+            <ArrowLeft/>
           </Button>
           <Button
-            variant="outline"
-            size="sm"
+            variant="secondary"
+            size="icon"
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-            className="bg-black dark:bg-black text-white dark:text-white border-gray-300 dark:border-gray-300 hover:bg-gray-800 dark:hover:bg-gray-800"
+            style={{
+              background: "transparent",
+              color: "#fff",
+              border: "1px solid rgba(255,255,255,0.8)",
+              borderRadius: "var(--radius)",
+              transition: "background 0.2s"
+            }}
+            onMouseOver={e => e.currentTarget.style.background = "var(--muted)"}
+            onMouseOut={e => e.currentTarget.style.background = "transparent"}
           >
-            Próximo
+            <ArrowRight/>
           </Button>
+          <span className="ml-4 text-sm text-gray-400 dark:text-gray-400">
+            {table.getFilteredSelectedRowModel().rows.length} de {table.getFilteredRowModel().rows.length} linha(s) selecionada(s).
+          </span>
+        </div>
+        <div>
           <Button
             variant="default"
             size="sm"
             onClick={handleMakeOrder}
             disabled={selectedRows.length === 0}
-            className="bg-blue-700 dark:bg-blue-700 text-white dark:text-white hover:bg-blue-600 dark:hover:bg-blue-600"
+            className="text-foreground"
+            style={{
+              background: "var(--primary)",
+              color: "var(--primary-foreground)",
+              borderRadius: "var(--radius)"
+            }}
           >
             Fazer Orçamento
           </Button>

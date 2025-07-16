@@ -34,7 +34,7 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [active]);
 
-  useOutsideClick(ref, () => setActive(null));
+  useOutsideClick(ref as React.RefObject<HTMLElement>, () => setActive(null));
 
   // Calcular produtos da página atual
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -57,7 +57,7 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/60 h-full w-full z-10"
+            className="fixed inset-0 bg-[var(--background)]/80 h-full w-full z-10"
           />
         )}
       </AnimatePresence>
@@ -70,7 +70,7 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.05 } }}
-              className="flex absolute top-2 right-2 lg:hidden items-center justify-center bg-neutral-800 dark:bg-neutral-700 rounded-full h-6 w-6"
+              className="flex absolute top-2 right-2 lg:hidden items-center justify-center bg-[var(--card)] rounded-full h-6 w-6"
               onClick={() => setActive(null)}
             >
               <CloseIcon />
@@ -78,7 +78,7 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
             <motion.div
               layoutId={`card-${active.name}-${id}`}
               ref={ref}
-              className="w-full max-w-[500px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-neutral-900 dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
+              className="w-full max-w-[500px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-[var(--card)] sm:rounded-3xl overflow-hidden"
             >
               <motion.div layoutId={`image-${active.name}-${id}`}>
                 <Image
@@ -86,18 +86,18 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
                   height={320}
                   src={active.image}
                   alt={active.name}
-                  className="w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg object-contain bg-neutral-800 dark:bg-neutral-800"
+                  className="w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg object-contain bg-[var(--muted)]"
                 />
               </motion.div>
               <div className="flex flex-col h-full">
                 <div className="p-4">
                   <motion.h3
                     layoutId={`title-${active.name}-${id}`}
-                    className="font-medium text-neutral-200 dark:text-neutral-200 text-base"
+                    className="font-medium text-[var(--card-foreground)] text-base"
                   >
                     {active.name}
                   </motion.h3>
-                  <div className="mt-2 max-h-32 overflow-y-auto text-neutral-400 dark:text-neutral-400 text-base [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]">
+                  <div className="mt-2 max-h-32 overflow-y-auto text-[var(--muted-foreground)] text-base [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]">
                     <motion.p
                       layoutId={`description-${active.description}-${id}`}
                     >
@@ -110,9 +110,9 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="flex-1 overflow-y-auto px-4 pb-10 text-neutral-400 dark:text-neutral-400 text-xs md:text-sm lg:text-base [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
+                  className="flex-1 overflow-y-auto px-4 pb-10 text-[var(--muted-foreground)] text-xs md:text-sm lg:text-base [scrollbar-width:none] [-ms-overflow-style:none] [-webkit-overflow-scrolling:touch]"
                 >
-                  <h4 className="font-medium text-neutral-300 dark:text-neutral-300">Variantes:</h4>
+                  <h4 className="font-medium text-[var(--card-foreground)]">Variantes:</h4>
                   {active.specs.length > 0 ? (
                     <ul className="list-disc pl-5 mt-2">
                       {active.specs.map((spec, index) => (
@@ -128,8 +128,8 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
           </div>
         ) : null}
       </AnimatePresence>
-      <div className="max-w-7xl mx-auto px-4 py-10 dark:bg-neutral-900">
-        <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-left text-neutral-200 dark:text-neutral-200 mb-8">
+      <div className="max-w-7xl mx-auto px-4 py-10 bg-[var(--background)]">
+        <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold text-left text-[var(--card-foreground)] mb-8">
           {"Conheça Nossos Produtos"
             .split(" ")
             .map((word, index) => (
@@ -155,7 +155,7 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.5 }}
                 onClick={() => setActive(product)}
-                className="p-4 flex flex-col hover:border-1 hover:border-white rounded-xl cursor-pointer"
+                className="p-4 flex flex-col hover:border-2 hover:border-[var(--primary)] rounded-xl cursor-pointer bg-[var(--card)] border border-[var(--border)] transition-colors"
               >
                 <div className="flex gap-4 flex-col w-full">
                   <motion.div layoutId={`image-${product.name}-${id}`}>
@@ -164,13 +164,13 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
                       height={240}
                       src={product.image}
                       alt={product.name}
-                      className="h-60 w-full rounded-lg object-contain bg-neutral-800 dark:bg-neutral-800"
+                      className="h-60 w-full rounded-lg object-contain bg-[var(--muted)]"
                     />
                   </motion.div>
                   <div className="flex justify-center items-center flex-col">
                     <motion.h3
                       layoutId={`title-${product.name}-${id}`}
-                      className="font-medium text-neutral-200 dark:text-neutral-200 text-center md:text-left text-base"
+                      className="font-medium text-[var(--card-foreground)] text-center md:text-left text-base"
                     >
                       {product.name}
                     </motion.h3>
@@ -189,7 +189,7 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
             >
               <button
                 onClick={handleShowMore}
-                className="px-6 py-3 bg-neutral-800 text-white rounded-full hover:bg-neutral-700 transition-colors duration-200"
+                className="px-6 py-3 bg-[var(--muted)] text-[var(--muted-foreground)] rounded-full hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)] transition-colors duration-200"
               >
                 Mostrar Mais
               </button>
@@ -203,7 +203,7 @@ export function ExpandableCardDemo({ products }: ExpandableCardDemoProps) {
             >
               <button
                 onClick={handleShowLess}
-                className="px-6 py-3 bg-neutral-800 text-white rounded-full hover:bg-neutral-700 transition-colors duration-200"
+                className="px-6 py-3 bg-[var(--muted)] text-[var(--muted-foreground)] rounded-full hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)] transition-colors duration-200"
               >
                 Mostrar Menos
               </button>
@@ -230,7 +230,7 @@ export function CloseIcon() {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="h-4 w-4 text-white dark:text-white"
+      className="h-4 w-4 text-[var(--card-foreground)]"
     >
       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
       <path d="M18 6l-12 12" />
