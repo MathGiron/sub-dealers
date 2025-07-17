@@ -1,9 +1,11 @@
 "use client"
 
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Carousel, Card } from "@/components/ui/apple-cards-carousel"
 import { Button } from "@/components/ui/button"
 import { Download } from "lucide-react"
+import { getItem, setItem } from "@/lib/indexedDb"
+import { NumberTicker } from "@/components/magicui/number-ticker"
 
 type Manual = {
   category: string
@@ -206,6 +208,30 @@ const data: Manual[] = [
 ]
 
 export function ManualsCarousel() {
+  const [manuals, setManuals] = useState<Manual[] | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let isMounted = true
+    async function loadData() {
+      setLoading(true)
+      // Tenta buscar do cache
+      const cached = await getItem<Manual[]>("manuals-list")
+      if (cached && isMounted) {
+        setManuals(cached)
+        setLoading(false)
+      }
+      // Usa o array data (mock/local)
+      if (isMounted) {
+        setManuals(data)
+        setItem("manuals-list", data)
+        setLoading(false)
+      }
+    }
+    loadData()
+    return () => { isMounted = false }
+  }, [])
+
   const handleDownload = (pdfPath: string, fileName: string) => {
     const link = document.createElement("a")
     link.href = pdfPath
@@ -215,8 +241,16 @@ export function ManualsCarousel() {
     document.body.removeChild(link)
   }
 
+  if (loading || !manuals) {
+    return (
+      <div className="flex justify-center items-center h-96 w-full bg-[var(--background)]">
+        <NumberTicker value={100} startValue={0} className="text-5xl font-bold text-[var(--primary)]" />
+      </div>
+    )
+  }
+
   // Agrupar manuais por categoria (group)
-  const groupedManuals = data.reduce((acc, manual) => {
+  const groupedManuals = manuals.reduce((acc, manual) => {
     const group = manual.group
     if (!acc[group]) {
       acc[group] = []
@@ -230,21 +264,21 @@ export function ManualsCarousel() {
 
   return (
     <div className="w-full h-full py-20">
-      <h2 className="max-w-7xl pl-4 mx-auto text-xl md:text-5xl font-bold text-neutral-200 font-sans mb-10">
+      <h2 className="max-w-7xl pl-4 mx-auto text-xl md:text-5xl font-bold text-[var(--card-foreground)] font-sans mb-10">
         Manuais Disponíveis
       </h2>
       {orderedGroups.map((group) => (
         <section key={group} className="mb-12">
-          <h3 className="text-2xl md:text-3xl font-semibold text-white pl-4 mb-6">
+          <h3 className="text-2xl md:text-3xl font-semibold text-[var(--card-foreground)] pl-4 mb-6">
             {group}
           </h3>
           <Carousel
-            items={groupedManuals[group].map((card, index) => (
+            items={groupedManuals[group]?.map((card, index) => (
               <div key={card.src} className="flex flex-col items-center">
                 <Card card={card} index={index} />
                 <Button
                   onClick={() => handleDownload(card.pdfPath, card.title + ".pdf")}
-                  className="mt-1 bg-gray-800 text-white hover:bg-gray-700 rounded-full"
+                  className="mt-1 bg-[var(--muted)] text-[var(--muted-foreground)] hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)] rounded-full"
                 >
                   <Download className="mr-2 h-4 w-4" /> Baixar PDF
                 </Button>

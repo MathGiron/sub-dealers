@@ -8,6 +8,8 @@ import Navbar from "@/components/ui/navbar";
 import { Product, OrderProduct, UserMetadata } from "@/services/index";
 import jsPDF from "jspdf";
 import FreightCalculator from "@/components/FreightCalculator";
+import { Button as StatefulButton } from "@/components/ui/stateful-button";
+import { NumberTicker } from "@/components/magicui/number-ticker";
 
 const debounce = (func: (...args: any[]) => void, wait: number) => {
   let timeout: NodeJS.Timeout | null = null;
@@ -304,7 +306,8 @@ export default function OrderPage() {
       const newOrder = {
         id: `order_${Date.now()}`,
         products: products.map((product) => ({
-          ...product,
+          name: product.name,
+          quantity: product.quantity,
           variantName: product.selectedVariant?.name || "Padrão",
           variantPrice: product.selectedVariant?.price || null,
         })),
@@ -314,9 +317,10 @@ export default function OrderPage() {
         additionalFees,
         total,
         deliveryAddress: `${metadata?.address || "Endereço não informado"}, ${metadata?.number || "Número não informado"}, CEP ${metadata?.cep || "CEP não informado"}`,
-        state: state || "Estado não informado",
       };
-      await user.update({ unsafeMetadata: { ...user.unsafeMetadata, completedOrders: [...completedOrders, newOrder], draftOrder: [] } });
+      if (user) {
+        await user.update({ unsafeMetadata: { ...user.unsafeMetadata, completedOrders: [...completedOrders, newOrder], draftOrder: [] } });
+      }
       setProducts([]);
       window.open(result.whatsappLink, "_blank");
     } catch (error) {
@@ -331,7 +335,11 @@ export default function OrderPage() {
   const calculateTotal = (products: OrderProduct[]) => products.reduce((sum, product) => sum + calculateItemTotal(product), 0) + freightCost + additionalFees;
   const totalAmount = products.reduce((sum, product) => sum + calculateItemTotal(product), 0);
 
-  if (!isLoaded || loading) return <div className="min-h-screen bg-black text-white flex items-center justify-center">Loading...</div>;
+  if (!isLoaded || loading) return (
+    <div className="min-h-screen flex items-center justify-center bg-black">
+      <NumberTicker value={100} startValue={0} className="text-5xl font-bold text-[var(--primary)]" />
+    </div>
+  );
 
   const clientName = user?.fullName?.toString() || "Cliente não identificado";
   const cnpj = (user?.unsafeMetadata?.cnpj as string | undefined)?.toString() || "CNPJ não informado";
@@ -341,7 +349,7 @@ export default function OrderPage() {
   return (
     <div className="min-h-screen text-white">
       <Navbar />
-      <div className="mx-auto w-full max-w-md p-6 py-40 flex justify-center">
+      <div className="mx-auto w-full max-w-[540px] p-6 py-40 flex justify-center">
         <div className="shadow-input w-full rounded-none bg-black p-4 md:rounded-2xl md:p-8 dark:bg-black border border-gray-300">
           <h1 className="text-xl font-bold text-neutral-200">Nota de Pedido</h1>
           <p className="mt-2 max-w-sm text-sm text-neutral-300">Detalhes do pedido para o time comercial.</p>
@@ -377,15 +385,10 @@ export default function OrderPage() {
                 <p className="text-lg font-bold text-neutral-200">Subtotal (sem frete/taxas): R$ {totalAmount.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                 <p className="text-lg font-bold text-neutral-200">Total com Frete e Taxas: R$ {calculateTotal(products).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
               </div>
-              <div className="mt-6">
-                <Button
-                  onClick={handleSubmit}
-                  disabled={loading}
-                  className="group/btn relative block h-10 w-full rounded-md bg-gradient-to-br from-black to-neutral-600 font-medium text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset]"
-                >
-                  {loading ? "Carregando..." : "Enviar para o Time Comercial"}
-                  <BottomGradient />
-                </Button>
+              <div className="mt-6 flex justify-center w-full">
+                <StatefulButton onClick={handleSubmit} className="w-full sm:w-auto mt-4 h-12 text-md flex items-center justify-center">
+                  <span className="w-full text-center">{loading ? "Carregando..." : "Enviar para o time comercial"}</span>
+                </StatefulButton>
               </div>
             </>
           ) : (

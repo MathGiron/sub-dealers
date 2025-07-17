@@ -1,0 +1,168 @@
+"use client";
+import { cn } from "@/lib/utils";
+import React from "react";
+import { motion, AnimatePresence, useAnimate } from "motion/react";
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  className?: string;
+  children: React.ReactNode;
+}
+
+export const Button = ({ className, children, ...props }: ButtonProps) => {
+  const [scope, animate] = useAnimate();
+
+  const animateLoading = async () => {
+    await animate(
+      ".loader",
+      {
+        width: "20px",
+        scale: 1,
+        display: "block",
+      },
+      {
+        duration: 0.2,
+      },
+    );
+  };
+
+  const animateSuccess = async () => {
+    await animate(
+      ".loader",
+      {
+        width: "0px",
+        scale: 0,
+        display: "none",
+      },
+      {
+        duration: 0.2,
+      },
+    );
+    await animate(
+      ".check",
+      {
+        width: "20px",
+        scale: 1,
+        display: "block",
+      },
+      {
+        duration: 0.2,
+      },
+    );
+
+    await animate(
+      ".check",
+      {
+        width: "0px",
+        scale: 0,
+        display: "none",
+      },
+      {
+        delay: 2,
+        duration: 0.2,
+      },
+    );
+  };
+
+  const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    await animateLoading();
+    await props.onClick?.(event);
+    await animateSuccess();
+  };
+
+  const {
+    onClick,
+    onDrag,
+    onDragStart,
+    onDragEnd,
+    onAnimationStart,
+    onAnimationEnd,
+    ...buttonProps
+  } = props;
+
+  return (
+    <motion.button
+      layout
+      layoutId="button"
+      ref={scope}
+      className={cn(
+        "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-[var(--primary)] text-[var(--primary-foreground)] shadow-xs hover:bg-[var(--primary)/90] min-w-[120px] px-4 py-2 w-full sm:w-auto",
+        className,
+      )}
+      {...buttonProps}
+      onClick={handleClick}
+    >
+      <motion.span layout className="flex-1 text-center">{children}</motion.span>
+      <motion.div layout className="flex items-center gap-2 ml-2">
+        <Loader />
+        <CheckIcon />
+      </motion.div>
+    </motion.button>
+  );
+};
+
+const Loader = () => {
+  return (
+    <motion.svg
+      animate={{
+        rotate: [0, 360],
+      }}
+      initial={{
+        scale: 0,
+        width: 0,
+        display: "none",
+      }}
+      style={{
+        scale: 0.5,
+        display: "none",
+      }}
+      transition={{
+        duration: 0.3,
+        repeat: Infinity,
+        ease: "linear",
+      }}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="loader text-white"
+    >
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3a9 9 0 1 0 9 9" />
+    </motion.svg>
+  );
+};
+
+const CheckIcon = () => {
+  return (
+    <motion.svg
+      initial={{
+        scale: 0,
+        width: 0,
+        display: "none",
+      }}
+      style={{
+        scale: 0.5,
+        display: "none",
+      }}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="check text-white"
+    >
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
+      <path d="M9 12l2 2l4 -4" />
+    </motion.svg>
+  );
+};

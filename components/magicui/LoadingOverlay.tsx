@@ -7,4 +7,4 @@ export default function LoadingOverlay() {
       <NumberTicker value={100} startValue={0} className="text-5xl font-bold text-[var(--primary)]" />
     </div>
   );
-} 
+}
