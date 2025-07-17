@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { isValidCNPJ } from "@/lib/cnpj";
 import { RegisterCompanyFormData } from "@/services/index";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const BottomGradient = () => {

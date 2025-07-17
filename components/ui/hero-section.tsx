@@ -5,21 +5,27 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { useScroll, useTransform } from "framer-motion";
 import { motion, easeInOut } from "framer-motion";
-import { SignInButton, SignedIn, SignedOut, useUser } from "@clerk/nextjs";
+import { SignInButton, useUser } from "@clerk/nextjs";
 import Link from "next/link";
+import { HoverBorderGradient } from "@/components/acertenity/hover-border-gradient";
 
-const HoverBorderGradientDemo = () => {
+type HoverBorderGradientDemoProps = React.ComponentProps<typeof HoverBorderGradient> & {
+  as?: React.ElementType;
+  href?: string;
+};
+
+const HoverBorderGradientDemo = ({ as = "button", href, ...props }: HoverBorderGradientDemoProps) => {
+  const extraProps = as === "a" && href ? { href } : {};
   return (
-    <div className="flex justify-center text-center">
-      <div
-        className="relative inline-flex items-center justify-center rounded-full overflow-hidden p-[1px] focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50"
-      >
-        <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#FFDDB7_0%,#FFB7C5_50%,#B1C5FF_100%)]" />
-        <span className="inline-flex h-full w-full items-center justify-center rounded-full bg-black px-6 py-4 text-sm font-medium text-white backdrop-blur-3xl">
-          <span className="ml-2">QUERO SER UM REVENDEDOR</span>
-        </span>
-      </div>
-    </div>
+    <HoverBorderGradient
+      as={as}
+      className="cursor-pointer select-none px-6 py-4 text-sm font-medium text-white"
+      style={{ minWidth: 220 }}
+      {...extraProps}
+      {...props}
+    >
+      <span className="ml-2">QUERO SER UM REVENDEDOR</span>
+    </HoverBorderGradient>
   );
 };
 
@@ -104,18 +110,7 @@ export function HeroSection() {
             Junte-se a nós na revolução verde e tecnológica.
           </motion.p>
         </div>
-        <div className="mt-4 sm:mt-6 md:mt-8">
-          <SignedOut>
-            <SignInButton mode="modal">
-              <HoverBorderGradientDemo />
-            </SignInButton>
-          </SignedOut>
-          <SignedIn>
-            <Link href={hasRegisteredCompany ? "/catalogo" : "/register-company"}>
-              <HoverBorderGradientDemo />
-            </Link>
-          </SignedIn>
-        </div>
+        {/* Botão de revendedor removido conforme solicitado */}
       </div>
     </div>
   );
