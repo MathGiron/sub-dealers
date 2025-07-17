@@ -1,9 +1,24 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
+type ProductEmail = {
+  name: string;
+  quantity: number;
+  price: number;
+};
+
 export async function POST(request: Request) {
   try {
-    const { clientName, cnpj, contactNumber, orderDate, products, total, whatsappLink, pdfBuffer } = await request.json();
+    const { clientName, cnpj, contactNumber, orderDate, products, total, whatsappLink, pdfBuffer }: {
+      clientName: string;
+      cnpj: string;
+      contactNumber: string;
+      orderDate: string;
+      products: ProductEmail[];
+      total: number;
+      whatsappLink: string;
+      pdfBuffer: string;
+    } = await request.json();
 
     // Configurar o transporte do Nodemailer (exemplo com Gmail)
     const transporter = nodemailer.createTransport({
@@ -33,7 +48,7 @@ export async function POST(request: Request) {
         <p><strong>Data do Pedido:</strong> ${orderDate}</p>
         <h4>Produtos:</h4>
         <ul>
-          ${products.map((product: any) => `
+          ${products.map((product: ProductEmail) => `
             <li>
               ${product.name} - Quantidade: ${product.quantity} - Preço Unitário: R$ ${product.price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} - Total: R$ ${(product.price * product.quantity).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </li>

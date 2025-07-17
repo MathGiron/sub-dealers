@@ -1,8 +1,11 @@
 "use client";
 import React, { Suspense } from "react";
 import { NumberTicker } from "@/components/magicui/number-ticker";
+import dynamic from "next/dynamic";
 
-const ProductDataTable = React.lazy(() => import("@/components/product-table").then(mod => ({ default: mod.ProductDataTable })));
+const ProductDataTable = dynamic(() => import("./product-table"), {
+  ssr: false,
+});
 
 export default function ProductTableLazyWrapper({ initialData }: { initialData: any[] }) {
   return (

@@ -3,7 +3,6 @@ import "./globals.css";
 import ClerkProviderWrapper from "@/components/ClerkProviderWrapper";
 import { Toaster } from "@/components/ui/sonner";
 import Footer from "@/components/ui/footer";
-import { DotPattern } from "@/components/magicui/dot-pattern";
 import { cn } from "@/lib/utils";
 
 const inter = Inter({ subsets: ["latin"] });

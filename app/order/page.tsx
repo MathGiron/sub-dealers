@@ -2,7 +2,6 @@
 
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect, useCallback, useRef } from "react";
-import { Button } from "@/components/ui/button";
 import { useUser } from "@clerk/nextjs";
 import Navbar from "@/components/ui/navbar";
 import { Product, OrderProduct, UserMetadata } from "@/services/index";
@@ -11,22 +10,13 @@ import FreightCalculator from "@/components/FreightCalculator";
 import { Button as StatefulButton } from "@/components/ui/stateful-button";
 import { NumberTicker } from "@/components/magicui/number-ticker";
 
-const debounce = (func: (...args: any[]) => void, wait: number) => {
+function debounce<T extends (...args: unknown[]) => void>(func: T, wait: number) {
   let timeout: NodeJS.Timeout | null = null;
-  return (...args: any[]) => {
+  return (...args: Parameters<T>) => {
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
   };
-};
-
-const BottomGradient = () => {
-  return (
-    <>
-      <span className="absolute inset-x-0 -bottom-px block h-px w-full bg-gradient-to-r from-transparent via-cyan-500 to-transparent opacity-0 transition duration-500 group-hover/btn:opacity-100" />
-      <span className="absolute inset-x-10 -bottom-px mx-auto block h-px w-1/2 bg-gradient-to-r from-transparent via-indigo-500 to-transparent opacity-0 blur-sm transition duration-500 group-hover/btn:opacity-100" />
-    </>
-  );
-};
+}
 
 const calculateDistance = (cep: string, metadata?: UserMetadata) => {
   const cleanedCEP = cep.replace(/\D/g, "");
@@ -41,9 +31,6 @@ const getProductVariant = (product: Product, state: string | null) => {
     return null;
   }
 
-  const validStates = ["PR", "MG", "RJ", "SC"];
-  const isValidState = validStates.includes(state);
-
   const variant = product.specs.find((spec) => spec.name.includes(state));
   if (variant) return variant;
 
@@ -56,7 +43,6 @@ export default function OrderPage() {
   const { user, isLoaded } = useUser();
   const [products, setProducts] = useState<OrderProduct[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [orderDate, setOrderDate] = useState<string>("");
   const [distance, setDistance] = useState<number | null>(null);
   const [state, setState] = useState<string | null>(null);
@@ -72,14 +58,13 @@ export default function OrderPage() {
     );
 
     if (entries.length === 0) {
-      setError("Nenhum produto selecionado.");
       setProducts([]);
       return false;
     }
 
     const productIds: string[] = [];
     const productQuantities: { [id: string]: number } = {};
-    const productVariants: { [id: string]: any } = {};
+    const productVariants: { [id: string]: unknown } = {};
 
     for (const [key, value] of entries) {
       const id = key.replace("products[", "").replace("]", "").split("/").pop();
@@ -97,7 +82,6 @@ export default function OrderPage() {
     }
 
     if (productIds.length === 0) {
-      setError("Nenhum ID de produto válido encontrado.");
       setProducts([]);
       return false;
     }
@@ -112,7 +96,7 @@ export default function OrderPage() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        setError(`Erro ao carregar produtos: ${errorData.error || response.statusText}`);
+        console.error(`Erro ao carregar produtos: ${errorData.error || response.statusText}`);
         setProducts([]);
         return false;
       }
@@ -121,18 +105,17 @@ export default function OrderPage() {
       console.log("Dados retornados pelo proxy:", data);
 
       if (!data || !Array.isArray(data) || data.length === 0) {
-        setError("Nenhum produto encontrado para os IDs selecionados na collection.");
         setProducts([]);
         return false;
       }
 
-      fetchedProducts = data.map((product: any) => ({
+      fetchedProducts = data.map((product: Product) => ({
         id: product.id,
         name: product.name || `Produto Desconhecido (${product.id.split("/").pop()})`,
         image: product.image || "/images/placeholder.png",
         description: product.description || "Sem descrição disponível",
-        price: null,
-        weight: product.weight || null,
+        price: undefined,
+        weight: product.weight ?? 0,
         specs: product.specs || [],
         buttonText: "Comprar Agora",
         href: `/checkout/${product.id.split("/").pop()}`,
@@ -141,12 +124,11 @@ export default function OrderPage() {
 
       console.log("Produtos mapeados:", fetchedProducts);
       if (fetchedProducts.length === 0) {
-        setError("Nenhum produto encontrado para os IDs selecionados na collection.");
         setProducts([]);
         return false;
       }
-    } catch (err) {
-      setError("Erro ao carregar produtos. Verifique sua conexão ou as credenciais da API.");
+    } catch (error) {
+      console.error("Erro ao carregar produtos. Verifique sua conexão ou as credenciais da API.", error);
       setProducts([]);
       return false;
     }
@@ -154,32 +136,42 @@ export default function OrderPage() {
     const userState = (user?.unsafeMetadata?.state as string) || null;
     const selectedProducts: OrderProduct[] = fetchedProducts.map((product: Product) => {
       const variantFromParams = productVariants[product.id];
-      const selectedVariant = variantFromParams || getProductVariant(product, userState);
+      let selectedVariant: { name: string; price?: string | number; weight?: number } | null = null;
+      if (variantFromParams && typeof variantFromParams === 'object' && 'name' in variantFromParams) {
+        selectedVariant = variantFromParams as { name: string; price?: string | number; weight?: number };
+      } else {
+        const variant = getProductVariant(product, userState);
+        if (variant && typeof variant === 'object' && 'name' in variant) {
+          selectedVariant = variant as { name: string; price?: string | number; weight?: number };
+        } else {
+          selectedVariant = null;
+        }
+      }
       if (!selectedVariant) {
-        setError(`Nenhuma variante válida encontrada para o produto ${product.name}.`);
+        console.warn(`Nenhuma variante válida encontrada para o produto ${product.name}.`);
       }
       return {
         ...product,
         quantity: productQuantities[product.id] || 1,
         selectedVariant,
+        weight: product.weight ?? 0,
       };
     });
 
     setProducts(selectedProducts);
-    setError(null);
     return true;
   }, [searchParams, user]);
 
   const debouncedSaveDraft = useCallback(
-    debounce((draftProducts: OrderProduct[]) => {
+    debounce(((draftProducts: OrderProduct[]) => {
       if (!user) return;
       try {
         user.update({ unsafeMetadata: { ...user.unsafeMetadata, draftOrder: draftProducts } });
       } catch (err) {
         console.error("Erro ao salvar rascunho:", err);
       }
-    }, 1000),
-    [user]
+    }) as (...args: unknown[]) => void, 1000),
+    [user, user?.unsafeMetadata]
   );
 
   const loadDraft = useCallback(() => {
@@ -202,22 +194,22 @@ export default function OrderPage() {
     const loadData = async () => {
       setLoading(true);
       console.log("Metadata:", user?.unsafeMetadata); // Log pra debug
-      const hasProducts = await loadProducts();
+      await loadProducts();
       const metadata = user?.unsafeMetadata as UserMetadata;
       if (user?.unsafeMetadata?.cep) {
         const { distance: calculatedDistance } = calculateDistance(user.unsafeMetadata.cep, metadata);
-        setDistance(calculatedDistance);
+        setDistance(calculatedDistance ?? 0);
       } else {
-        setDistance(null);
+        setDistance(0);
       }
-      setState(metadata?.state || null);
+      setState(metadata && typeof metadata.state === 'string' ? metadata.state : '');
       const now = new Date();
       setOrderDate(now.toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }));
       setLoading(false);
       loadDraft();
     };
     loadData();
-  }, [loadProducts, loadDraft, isLoaded]);
+  }, [loadProducts, loadDraft, isLoaded, user?.unsafeMetadata]);
 
   useEffect(() => {
     if (user?.unsafeMetadata?.state) {
@@ -244,7 +236,7 @@ export default function OrderPage() {
       doc.text(`Data do Pedido: ${orderDate}`, 20, 60);
       const metadata = user?.unsafeMetadata as UserMetadata;
       doc.text(`Endereço de Entrega: ${metadata?.address || "Endereço não informado"}, ${metadata?.number || "Número não informado"}, CEP ${metadata?.cep || "CEP não informado"}`, 20, 70);
-      doc.text(`Estado: ${state || "Estado não informado"}`, 20, 80);
+      doc.text(`Estado: ${state ?? "Estado não informado"}`, 20, 80);
       doc.text(`Frete Estimado: R$ ${freightCost.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`, 20, 90);
       doc.text(`Taxas Adicionais: R$ ${additionalFees.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`, 20, 100);
       doc.text("Itens do Pedido:", 20, 110);
@@ -353,7 +345,6 @@ export default function OrderPage() {
         <div className="shadow-input w-full rounded-none bg-black p-4 md:rounded-2xl md:p-8 dark:bg-black border border-gray-300">
           <h1 className="text-xl font-bold text-neutral-200">Nota de Pedido</h1>
           <p className="mt-2 max-w-sm text-sm text-neutral-300">Detalhes do pedido para o time comercial.</p>
-          {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
           <div className="mt-4">
             <h2 className="text-lg font-semibold text-neutral-200">Informações do Cliente</h2>
             <p className="text-sm text-neutral-300">Nome: {clientName}</p>
@@ -395,10 +386,10 @@ export default function OrderPage() {
             <p className="text-center text-neutral-300 mt-4">Nenhum produto no pedido. Verifique os IDs ou a coleção.</p>
           )}
           <FreightCalculator
-            products={products}
-            distance={distance}
-            state={state}
-            totalAmount={totalAmount}
+            products={products.map(p => ({ weight: p.selectedVariant?.weight ?? p.weight ?? 0, quantity: p.quantity ?? 1 }))}
+            distance={distance ?? 0}
+            state={state ?? ""}
+            totalAmount={totalAmount ?? 0}
             onFreightCalculated={(freight, fees) => {
               setFreightCost(freight);
               setAdditionalFees(fees);

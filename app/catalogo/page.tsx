@@ -1,5 +1,4 @@
 import ProductTableLazyWrapper from "@/components/ProductTableLazyWrapper";
-import { fetchSubDealersProducts } from "@/services/shopifyService";
 import {Product} from "@/services/index";
 import Navbar from "@/components/ui/navbar"; // Importando a navbar correta
 

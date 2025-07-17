@@ -107,7 +107,7 @@ export default function ProfilePage() {
 
   const getProductPrice = (product: OrderProduct) => {
     return (
-      Number((product as any).variantPrice) ||
+      Number((product as Record<string, unknown>).variantPrice) ||
       (product.selectedVariant && Number(product.selectedVariant.price)) ||
       Number(product.price) ||
       0

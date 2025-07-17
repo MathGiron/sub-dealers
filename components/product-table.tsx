@@ -24,14 +24,11 @@ import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
 import { DataTable } from "@/components/ui/datatable/data-table";
 import { columns } from "@/components/ui/datatable/columns";
 import { useRouter } from "next/navigation";
-import { Product, UserMetadata } from "@/services/index";
+import { Product } from "@/services/index";
 import { useUser } from "@clerk/nextjs";
 
 // Função para selecionar a variante correta com base no estado
 const getProductVariant = (product: Product, state: string) => {
-  const validStates = ["PR", "MG", "RJ", "SC"];
-  const isValidState = validStates.includes(state);
-
   const variant = product.specs.find((spec) => spec.name.includes(state));
   if (variant) return variant;
 

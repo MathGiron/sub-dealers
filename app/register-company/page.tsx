@@ -72,7 +72,7 @@ export default function RegisterCompany() {
   const formatCEP = (value: string) => {
     const cleaned = value.replace(/\D/g, "");
     const limited = cleaned.slice(0, 8);
-    let formatted = limited;
+    const formatted = limited;
     if (limited.length > 5) formatted = limited.slice(0, 5) + "-" + limited.slice(5);
     return formatted;
   };
@@ -81,7 +81,7 @@ export default function RegisterCompany() {
     const cleaned = value.replace(/\D/g, "");
     const limited = cleaned.slice(0, 13);
     if (limited.length !== 13) return limited;
-    let formatted = limited.slice(0, 2) + " " + limited.slice(2, 4) + " " + limited.slice(4, 9) + "-" + limited.slice(9, 13);
+    const formatted = limited.slice(0, 2) + " " + limited.slice(2, 4) + " " + limited.slice(4, 9) + "-" + limited.slice(9, 13);
     return formatted;
   };
 

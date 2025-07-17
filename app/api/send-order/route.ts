@@ -1,9 +1,22 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
+type ProductOrder = {
+  name: string;
+  quantity: number;
+  price: number | string;
+};
+
 export async function POST(request: Request) {
   try {
-    const { products, clientName, cnpj, contactNumber, orderDate, pdfBuffer } = await request.json();
+    const { products, clientName, cnpj, contactNumber, orderDate, pdfBuffer }: {
+      products: ProductOrder[];
+      clientName: string;
+      cnpj?: string;
+      contactNumber?: string;
+      orderDate: string;
+      pdfBuffer?: string;
+    } = await request.json();
 
     console.log("Dados recebidos:", { products, clientName, cnpj, contactNumber, orderDate, pdfBuffer });
 
@@ -13,7 +26,7 @@ export async function POST(request: Request) {
 
     // Calcular detalhes do pedido
     const orderDetails = products
-      .map((product: any, index: number) => {
+      .map((product: ProductOrder, index: number) => {
         const price = typeof product.price === "number" ? product.price : parseFloat(product.price) || 0;
         const quantity = product.quantity || 1;
         const total = price * quantity;
@@ -28,7 +41,7 @@ export async function POST(request: Request) {
       })
       .join("");
 
-    const totalAmount = products.reduce((sum: number, product: any) => {
+    const totalAmount = products.reduce((sum: number, product: ProductOrder) => {
       const price = typeof product.price === "number" ? product.price : parseFloat(product.price) || 0;
       return sum + price * (product.quantity || 1);
     }, 0);
@@ -58,8 +71,8 @@ export async function POST(request: Request) {
       Contato: ${contactNumber || "Não informado"}
       -------------------
       Itens do Pedido:
-      ${products
-        .map((product: any, index: number) => {
+      ${(products as ProductOrder[])
+        .map((product: ProductOrder, index: number) => {
           const price = typeof product.price === "number" ? product.price : parseFloat(product.price) || 0;
           const quantity = product.quantity || 1;
           const total = price * quantity;
