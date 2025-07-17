@@ -6,10 +6,9 @@ import { SignInButton, SignUpButton, SignedIn, SignedOut, UserButton, useAuth, u
 import React, { useState, useEffect } from "react";
 import { HoverBorderGradient } from "@/components/acertenity/hover-border-gradient";
 import { useRouter } from "next/navigation";
-import { isValidCNPJ } from "@/lib/cnpj";
 
 const Navbar: React.FC = () => {
-  const { isLoaded, userId } = useAuth();
+  const { isLoaded } = useAuth();
   const { user } = useUser();
   const router = useRouter();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);

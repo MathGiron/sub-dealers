@@ -1,12 +1,10 @@
 "use client";
 import { cn } from "@/lib/utils";
 import React from "react";
-import { motion, AnimatePresence, useAnimate } from "motion/react";
+import { motion, HTMLMotionProps } from "framer-motion";
+import { useAnimate } from "motion/react";
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  className?: string;
-  children: React.ReactNode;
-}
+type ButtonProps = HTMLMotionProps<'button'>;
 
 export const Button = ({ className, children, ...props }: ButtonProps) => {
   const [scope, animate] = useAnimate();
@@ -69,33 +67,16 @@ export const Button = ({ className, children, ...props }: ButtonProps) => {
     await animateSuccess();
   };
 
-  const {
-    onClick,
-    onDrag,
-    onDragStart,
-    onDragEnd,
-    onAnimationStart,
-    onAnimationEnd,
-    ...buttonProps
-  } = props;
-
   return (
     <motion.button
-      layout
-      layoutId="button"
-      ref={scope}
       className={cn(
-        "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-[var(--primary)] text-[var(--primary-foreground)] shadow-xs hover:bg-[var(--primary)/90] min-w-[120px] px-4 py-2 w-full sm:w-auto",
-        className,
+        "relative flex items-center justify-center rounded-md px-6 py-3 font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary bg-gradient-to-br from-black to-neutral-600 text-white shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:bg-zinc-800 dark:from-zinc-900 dark:to-zinc-900 dark:shadow-[0px_1px_0px_0px_#27272a_inset,0px_-1px_0px_0px_#27272a_inset]",
+        className
       )}
-      {...buttonProps}
-      onClick={handleClick}
+      whileTap={{ scale: 0.97 }}
+      {...props}
     >
-      <motion.span layout className="flex-1 text-center">{children}</motion.span>
-      <motion.div layout className="flex items-center gap-2 ml-2">
-        <Loader />
-        <CheckIcon />
-      </motion.div>
+      {children}
     </motion.button>
   );
 };

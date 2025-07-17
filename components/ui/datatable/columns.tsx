@@ -40,14 +40,8 @@ const QuantityCell = ({ row, onQuantityChange }: { row: Row<Product & { quantity
 
 // Função para selecionar a variante correta com base no estado
 const getProductVariant = (product: Product, state: string) => {
-  const validStates = ["PR", "MG", "RJ", "SC"];
-  const isValidState = validStates.includes(state);
-
-  // Procura a variante que corresponde ao estado do usuário
   const variant = product.specs.find((spec) => spec.name.includes(state));
   if (variant) return variant;
-
-  // Se não encontrar, retorna a variante "Unificado" ou a primeira disponível
   const unifiedVariant = product.specs.find((spec) => spec.name.includes("Unificado"));
   return unifiedVariant || product.specs[0] || { price: product.price, weight: product.weight, name: "Padrão" };
 };
@@ -98,9 +92,9 @@ export const columns: ColumnDef<Product & { quantity?: number }>[] = [
         <ArrowUpDown className="ml-2 h-4 w-4 text-white dark:text-white" />
       </Button>
     ),
-    cell: ({ row }) => {
-      const { user } = useUser();
-      const state = (user?.unsafeMetadata?.state as string) || "SP"; // Fallback pra SP
+    cell: ({ row, table }) => {
+      // Recebe o estado do usuário via table.options.meta
+      const state = (table.options.meta?.userState as string) || "SP";
       const priceSpec = getProductVariant(row.original, state);
       const price = priceSpec?.price
         ? Number(priceSpec.price).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
@@ -117,9 +111,9 @@ export const columns: ColumnDef<Product & { quantity?: number }>[] = [
       );
     },
     enableSorting: true,
-    sortingFn: (rowA, rowB) => {
-      const { user } = useUser();
-      const state = (user?.unsafeMetadata?.state as string) || "SP";
+    sortingFn: (rowA, rowB, columnId, desc, table) => {
+      // Recebe o estado do usuário via table.options.meta
+      const state = (table.options.meta?.userState as string) || "SP";
       const priceA = getProductVariant(rowA.original, state)?.price
         ? Number(getProductVariant(rowA.original, state).price)
         : Infinity;

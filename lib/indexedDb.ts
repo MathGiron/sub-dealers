@@ -13,12 +13,12 @@ async function getDb() {
   });
 }
 
-export async function setItem<T = any>(key: string, value: T) {
+export async function setItem(key: string, value: unknown) {
   const db = await getDb();
   return db.put(STORE_NAME, value, key);
 }
 
-export async function getItem<T = any>(key: string): Promise<T | undefined> {
+export async function getItem(key: string): Promise<unknown> {
   const db = await getDb();
   return db.get(STORE_NAME, key);
 }
