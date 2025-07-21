@@ -230,15 +230,15 @@ export default function ProfilePage() {
     },
   });
 
-  const renderExpandedRow = (row: any) => {
-    const total = row.original.products.reduce((sum: number, product: OrderProduct) => sum + calculateItemTotal(product), 0);
+  const renderExpandedRow = (row: unknown) => {
+    const total = (row as Order).products.reduce((sum: number, product: OrderProduct) => sum + calculateItemTotal(product), 0);
     return (
       <TableRow className="bg-[var(--card)]">
         <TableCell colSpan={columns.length} className="p-0 w-full">
           <div className="p-4 sm:p-6 w-full">
             <h3 className="text-sm font-medium text-[var(--muted-foreground)]">Produtos do Pedido</h3>
             <ul className="mt-2 space-y-2">
-              {row.original.products.map((product: OrderProduct) => (
+              {(row as Order).products.map((product: OrderProduct) => (
                 <li key={product.id} className="flex flex-col">
                   <p className="text-sm text-[var(--card-foreground)]">{product.name}</p>
                   <p className="text-sm text-[var(--muted-foreground)]">Quantidade: <span className="text-[var(--card-foreground)]">{product.quantity}</span></p>
@@ -250,7 +250,7 @@ export default function ProfilePage() {
             <p className="mt-4 text-sm font-medium text-[var(--muted-foreground)]">
               Total do Pedido: R$ {total.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
-            {row.original.id === "draft" && (
+            {(row as Order).id === "draft" && (
               <div className="mt-4 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
                 <Button
                   onClick={handleContinueOrder}

@@ -139,7 +139,7 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
   )
 }
 
-export const Card = ({ card, index }: { card: Card; index: number }) => {
+export const Card = ({ card }: { card: Card }) => {
   return (
     <div className="relative z-10 flex h-56 w-44 flex-col items-center justify-start overflow-hidden rounded-3xl md:h-[28rem] md:w-72">
       <div className="pointer-events-none absolute inset-x-0 top-0 z-30 h-full bg-gradient-to-b from-black/50 via-transparent to-transparent" />

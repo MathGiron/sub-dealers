@@ -8,7 +8,7 @@ const ProductDataTable = dynamic(
   { ssr: false }
 );
 
-export default function ProductTableLazyWrapper({ initialData }: { initialData: any[] }) {
+export default function ProductTableLazyWrapper({ initialData }: { initialData: unknown[] }) {
   return (
     <Suspense fallback={<div className="flex justify-center items-center h-96 w-full bg-[var(--background)]"><NumberTicker value={100} startValue={0} className="text-5xl font-bold text-[var(--primary)]" /></div>}>
       <ProductDataTable initialData={initialData} />

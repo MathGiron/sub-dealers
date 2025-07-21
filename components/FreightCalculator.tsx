@@ -129,7 +129,7 @@ const FreightCalculator: React.FC<FreightCalculatorProps> = ({ products, distanc
     const freightCost = calculateFreight(totalWeight);
     const additionalFees = calculateAdditionalFees(totalWeight, totalAmount, state);
     onFreightCalculated(freightCost, additionalFees);
-  }, [products, distance, state, totalAmount, onFreightCalculated]);
+  }, [products, distance, state, totalAmount, onFreightCalculated, calculateFreight]);
 
   return null; // Componente não renderiza nada visível, só calcula
 };
