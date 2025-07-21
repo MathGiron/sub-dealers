@@ -1,7 +1,5 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-
 export default function Footer() {
   return (
     <footer className="bg-black text-white py-6 border-t border-gray-700">

@@ -1,12 +1,9 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
-import { cn } from "@/lib/utils";
-import Image from "next/image";
+import React, { useRef } from "react";
 import { useScroll, useTransform } from "framer-motion";
 import { motion, easeInOut } from "framer-motion";
-import { SignInButton, useUser } from "@clerk/nextjs";
-import Link from "next/link";
+import { useUser } from "@clerk/nextjs";
 import { HoverBorderGradient } from "@/components/acertenity/hover-border-gradient";
 
 type HoverBorderGradientDemoProps = React.ComponentProps<typeof HoverBorderGradient> & {
@@ -14,20 +11,7 @@ type HoverBorderGradientDemoProps = React.ComponentProps<typeof HoverBorderGradi
   href?: string;
 };
 
-const HoverBorderGradientDemo = ({ as = "button", href, ...props }: HoverBorderGradientDemoProps) => {
-  const extraProps = as === "a" && href ? { href } : {};
-  return (
-    <HoverBorderGradient
-      as={as}
-      className="cursor-pointer select-none px-6 py-4 text-sm font-medium text-white"
-      style={{ minWidth: 220 }}
-      {...extraProps}
-      {...props}
-    >
-          <span className="ml-2">QUERO SER UM REVENDEDOR</span>
-    </HoverBorderGradient>
-  );
-};
+// (Removido HoverBorderGradientDemo não utilizado)
 
 export function HeroSection() {
   const { user, isLoaded } = useUser();
@@ -39,7 +23,7 @@ export function HeroSection() {
 
   const y = useTransform(scrollYProgress, [0, 0.3], [0, -150], { ease: easeInOut });
 
-  const hasRegisteredCompany = isLoaded && user?.unsafeMetadata?.registerCompany === true;
+  // (Removido hasRegisteredCompany não utilizado)
 
   return (
     <div
