@@ -106,12 +106,16 @@ export default function ProfilePage() {
   };
 
   const getProductPrice = (product: OrderProduct) => {
-    return (
-      Number((product as Record<string, unknown>).variantPrice) ||
-      (product.selectedVariant && Number(product.selectedVariant.price)) ||
-      Number(product.price) ||
-      0
-    );
+    if ('variantPrice' in product && product.variantPrice !== undefined && product.variantPrice !== null) {
+      return Number(product.variantPrice);
+    }
+    if (product.selectedVariant && product.selectedVariant.price !== undefined && product.selectedVariant.price !== null) {
+      return Number(product.selectedVariant.price);
+    }
+    if (product.price !== undefined && product.price !== null) {
+      return Number(product.price);
+    }
+    return 0;
   };
 
   const calculateItemTotal = (product: OrderProduct) => {
