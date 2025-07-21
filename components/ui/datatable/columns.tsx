@@ -51,7 +51,7 @@ const getProductVariant = (product: Product, state: string) => {
   return unifiedVariant || product.specs[0] || { price: product.price, weight: product.weight, name: "Padrão" };
 };
 
-export const columns: ColumnDef<Product & { quantity?: number }, unknown, unknown, ProductTableMeta>[] = [
+export const columns: ColumnDef<Product & { quantity?: number }, unknown>[] = [
   {
     accessorKey: "image",
     header: "Foto",
