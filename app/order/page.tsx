@@ -162,17 +162,15 @@ export default function OrderPage() {
     return true;
   }, [searchParams, user]);
 
-  const debouncedSaveDraft = useCallback(
-    debounce(((draftProducts: OrderProduct[]) => {
-      if (!user) return;
-      try {
-        user.update({ unsafeMetadata: { ...user.unsafeMetadata, draftOrder: draftProducts } });
-      } catch (err) {
-        console.error("Erro ao salvar rascunho:", err);
-      }
-    }) as (...args: unknown[]) => void, 1000),
-    [user, user?.unsafeMetadata]
-  );
+  // Corrigido: função inline para evitar warning do useCallback
+  const debouncedSaveDraft = debounce((draftProducts: OrderProduct[]) => {
+    if (!user) return;
+    try {
+      user.update({ unsafeMetadata: { ...user.unsafeMetadata, draftOrder: draftProducts } });
+    } catch (err) {
+      console.error("Erro ao salvar rascunho:", err);
+    }
+  }, 1000);
 
   const loadDraft = useCallback(() => {
     if (!user || !user.unsafeMetadata?.draftOrder) return;
@@ -296,7 +294,7 @@ export default function OrderPage() {
         return;
       }
 
-      const completedOrders = (user?.unsafeMetadata?.completedOrders || []) as any[];
+      const completedOrders = (user?.unsafeMetadata?.completedOrders || []) as unknown[];
       const newOrder = {
         id: `order_${Date.now()}`,
         products: products.map((product) => ({
@@ -317,7 +315,7 @@ export default function OrderPage() {
       }
       setProducts([]);
       window.open(result.whatsappLink, "_blank");
-    } catch (error) {
+    } catch {
       alert("Erro ao enviar pedido. Tente novamente.");
     } finally {
       setLoading(false);

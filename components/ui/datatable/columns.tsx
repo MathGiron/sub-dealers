@@ -3,7 +3,7 @@
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { Product } from "@/services/index";
 import Image from "next/image";
-import { SignedIn, SignedOut, useUser } from "@clerk/nextjs";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";

@@ -6,15 +6,9 @@ import { motion, easeInOut } from "framer-motion";
 import { useUser } from "@clerk/nextjs";
 import { HoverBorderGradient } from "@/components/acertenity/hover-border-gradient";
 
-type HoverBorderGradientDemoProps = React.ComponentProps<typeof HoverBorderGradient> & {
-  as?: React.ElementType;
-  href?: string;
-};
-
 // (Removido HoverBorderGradientDemo não utilizado)
 
 export function HeroSection() {
-  const { user, isLoaded } = useUser();
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({
     target: ref,
