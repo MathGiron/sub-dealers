@@ -196,7 +196,8 @@ export default function OrderPage() {
       await loadProducts();
       const metadata = user?.unsafeMetadata as UserMetadata;
       if (user?.unsafeMetadata?.cep) {
-        const { distance: calculatedDistance } = calculateDistance(user.unsafeMetadata.cep, metadata);
+        const cep = typeof user.unsafeMetadata.cep === 'string' ? user.unsafeMetadata.cep : '';
+        const { distance: calculatedDistance } = calculateDistance(cep, metadata);
         setDistance(calculatedDistance ?? 0);
       } else {
         setDistance(0);
