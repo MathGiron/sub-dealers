@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 
 // Define tipos para FREIGHT_TABLE
 type DistanceRange = "001-100" | "101-200" | "201-400" | "401-600" | "601-800" | "801-1000" | "1001-1200" | "1201-1400" | "1401-1600" | "1601-1800" | "1801-2000" | "2001-2200" | "2201-2400" | "2401-2600" | "2601-2800" | "2801-3000" | "3001-3200" | "3201-3400" | "3401-3800" | "3801-4200" | "4201-4600" | "4601-5000" | "5001-5400" | "5400+";
@@ -68,7 +68,7 @@ const ADDITIONAL_FEES = {
 };
 
 const FreightCalculator: React.FC<FreightCalculatorProps> = ({ products, distance, state, totalAmount, onFreightCalculated }) => {
-  const calculateFreight = (totalWeight: number) => {
+  const calculateFreight = useCallback(() => {
     let distanceRange: DistanceRange = "001-100";
     if (distance <= 100) distanceRange = "001-100";
     else if (distance <= 200) distanceRange = "101-200";
@@ -106,7 +106,7 @@ const FreightCalculator: React.FC<FreightCalculatorProps> = ({ products, distanc
 
     const baseFreight = FREIGHT_TABLE[distanceRange][weightRange];
     return baseFreight;
-  };
+  }, [distance, totalWeight]);
 
   const calculateAdditionalFees = (totalWeight: number, totalPrice: number, state: string) => {
     const pedagio = Math.ceil(totalWeight / 100) * ADDITIONAL_FEES.pedagio;
