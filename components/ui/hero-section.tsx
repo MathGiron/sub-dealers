@@ -3,8 +3,6 @@
 import React, { useRef } from "react";
 import { useScroll, useTransform } from "framer-motion";
 import { motion, easeInOut } from "framer-motion";
-import { useUser } from "@clerk/nextjs";
-import { HoverBorderGradient } from "@/components/acertenity/hover-border-gradient";
 
 // (Removido HoverBorderGradientDemo não utilizado)
 

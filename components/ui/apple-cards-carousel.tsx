@@ -1,10 +1,10 @@
 "use client"
 
-import React, { useEffect, useRef, useState, createContext, useContext } from "react"
+import React, { useEffect, useState, createContext } from "react"
 import { IconArrowNarrowLeft, IconArrowNarrowRight } from "@tabler/icons-react"
 import { cn } from "@/lib/utils"
 import { motion } from "motion/react"
-import Image, { ImageProps } from "next/image"
+import { Image, ImageProps } from "next/image"
 
 interface CarouselProps {
   items: JSX.Element[]
@@ -151,10 +151,12 @@ export const Card = ({ card, index }: { card: Card; index: number }) => {
           {card.title}
         </p>
       </div>
-      <img
+      <Image
         src={card.src}
         alt={card.title}
-        className="absolute inset-0 z-10 object-contain w-full h-full"
+        width={80}
+        height={80}
+        className="w-20 h-20 object-contain mb-2 rounded border border-[var(--border)]"
       />
     </div>
   )
@@ -163,7 +165,7 @@ export const Card = ({ card, index }: { card: Card; index: number }) => {
 export const BlurImage = ({ height, width, src, className, alt, ...rest }: ImageProps) => {
   const [isLoading, setLoading] = useState(true)
   return (
-    <img
+    <Image
       className={cn(
         "h-full w-full transition duration-300",
         isLoading ? "blur-sm" : "blur-0",
