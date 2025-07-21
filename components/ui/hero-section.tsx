@@ -24,7 +24,7 @@ const HoverBorderGradientDemo = ({ as = "button", href, ...props }: HoverBorderG
       {...extraProps}
       {...props}
     >
-      <span className="ml-2">QUERO SER UM REVENDEDOR</span>
+          <span className="ml-2">QUERO SER UM REVENDEDOR</span>
     </HoverBorderGradient>
   );
 };

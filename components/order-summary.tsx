@@ -25,35 +25,35 @@ export function OrderSummary({ items }: OrderSummaryProps) {
   }, 0);
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4 text-center">
+    <div className="flex justify-center items-center min-h-screen bg-[var(--background)]">
+      <div className="bg-[var(--card)] p-6 rounded-[var(--radius)] shadow-lg w-full max-w-2xl border border-[var(--border)]">
+        <h2 className="text-2xl font-bold text-[var(--card-foreground)] mb-4 text-center">
           Resumo do Pedido
         </h2>
         {items.length === 0 ? (
-          <p className="text-center text-gray-600">Nenhum produto selecionado.</p>
+          <p className="text-center text-[var(--muted-foreground)]">Nenhum produto selecionado.</p>
         ) : (
           <div className="space-y-4">
-            <table className="w-full border-collapse">
+            <table className="w-full border-collapse rounded-[var(--radius)] overflow-hidden">
               <thead>
-                <tr className="bg-gray-200 text-gray-700">
-                  <th className="border p-3 text-left">Nome</th>
-                  <th className="border p-3 text-left">Preço</th>
-                  <th className="border p-3 text-left">Quantidade</th>
-                  <th className="border p-3 text-left">Subtotal</th>
+                <tr className="bg-[var(--muted)] text-[var(--muted-foreground)]">
+                  <th className="border border-[var(--border)] p-3 text-left">Nome</th>
+                  <th className="border border-[var(--border)] p-3 text-left">Preço</th>
+                  <th className="border border-[var(--border)] p-3 text-left">Quantidade</th>
+                  <th className="border border-[var(--border)] p-3 text-left">Subtotal</th>
                 </tr>
               </thead>
               <tbody>
                 {items.map((item) => (
-                  <tr key={item.id} className="border-b">
-                    <td className="border p-3 text-gray-600">{item.name}</td>
-                    <td className="border p-3 text-gray-600">
+                  <tr key={item.id} className="border-b border-[var(--border)]">
+                    <td className="border border-[var(--border)] p-3 text-[var(--card-foreground)]">{item.name}</td>
+                    <td className="border border-[var(--border)] p-3 text-[var(--card-foreground)]">
                       {item.price === "Consultar"
                         ? "Consultar"
                         : `R$ ${parseFloat(item.price).toFixed(2).replace(".", ",")}`}
                     </td>
-                    <td className="border p-3 text-gray-600">{item.quantity}</td>
-                    <td className="border p-3 text-gray-600">
+                    <td className="border border-[var(--border)] p-3 text-[var(--card-foreground)]">{item.quantity}</td>
+                    <td className="border border-[var(--border)] p-3 text-[var(--card-foreground)]">
                       {item.price === "Consultar"
                         ? "Consultar"
                         : `R$ ${calculateSubtotal(item.price, item.quantity)
@@ -65,7 +65,7 @@ export function OrderSummary({ items }: OrderSummaryProps) {
               </tbody>
             </table>
             <div className="flex justify-end mt-4">
-              <div className="text-lg font-semibold text-gray-800">
+              <div className="text-lg font-semibold text-[var(--primary)]">
                 Total: R$ {total.toFixed(2).replace(".", ",")}
               </div>
             </div>

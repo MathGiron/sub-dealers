@@ -7,7 +7,7 @@ import Navbar from "@/components/ui/navbar";
 import { Product, OrderProduct, UserMetadata } from "@/services/index";
 import jsPDF from "jspdf";
 import FreightCalculator from "@/components/FreightCalculator";
-import { Button as StatefulButton } from "@/components/ui/stateful-button";
+import { Button } from "@/components/ui/button";
 import { NumberTicker } from "@/components/magicui/number-ticker";
 
 function debounce<T extends (...args: unknown[]) => void>(func: T, wait: number) {
@@ -202,7 +202,7 @@ export default function OrderPage() {
       } else {
         setDistance(0);
       }
-      setState(metadata && typeof metadata.state === 'string' ? metadata.state : '');
+      setState(typeof metadata?.state === 'string' ? metadata.state : '');
       const now = new Date();
       setOrderDate(now.toLocaleString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }));
       setLoading(false);
@@ -212,8 +212,10 @@ export default function OrderPage() {
   }, [loadProducts, loadDraft, isLoaded, user?.unsafeMetadata]);
 
   useEffect(() => {
-    if (user?.unsafeMetadata?.state) {
-      setState(user.unsafeMetadata.state as string);
+    if (user?.unsafeMetadata?.state && typeof user.unsafeMetadata.state === 'string') {
+      setState(user.unsafeMetadata.state);
+    } else {
+      setState('');
     }
   }, [user?.unsafeMetadata?.state]);
 
@@ -236,7 +238,7 @@ export default function OrderPage() {
       doc.text(`Data do Pedido: ${orderDate}`, 20, 60);
       const metadata = user?.unsafeMetadata as UserMetadata;
       doc.text(`Endereço de Entrega: ${metadata?.address || "Endereço não informado"}, ${metadata?.number || "Número não informado"}, CEP ${metadata?.cep || "CEP não informado"}`, 20, 70);
-      doc.text(`Estado: ${state ?? "Estado não informado"}`, 20, 80);
+      doc.text(`Estado: ${typeof state === 'string' && state ? state : "Estado não informado"}`, 20, 80);
       doc.text(`Frete Estimado: R$ ${freightCost.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`, 20, 90);
       doc.text(`Taxas Adicionais: R$ ${additionalFees.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}`, 20, 100);
       doc.text("Itens do Pedido:", 20, 110);
@@ -283,7 +285,7 @@ export default function OrderPage() {
           additionalFees,
           total,
           deliveryAddress: `${metadata?.address || "Endereço não informado"}, ${metadata?.number || "Número não informado"}, CEP ${metadata?.cep || "CEP não informado"}`,
-          state: state || "Estado não informado",
+          state: typeof state === 'string' && state ? state : "Estado não informado",
         }),
       });
 
@@ -311,7 +313,7 @@ export default function OrderPage() {
         deliveryAddress: `${metadata?.address || "Endereço não informado"}, ${metadata?.number || "Número não informado"}, CEP ${metadata?.cep || "CEP não informado"}`,
       };
       if (user) {
-        await user.update({ unsafeMetadata: { ...user.unsafeMetadata, completedOrders: [...completedOrders, newOrder], draftOrder: [] } });
+      await user.update({ unsafeMetadata: { ...user.unsafeMetadata, completedOrders: [...completedOrders, newOrder], draftOrder: [] } });
       }
       setProducts([]);
       window.open(result.whatsappLink, "_blank");
@@ -377,9 +379,12 @@ export default function OrderPage() {
                 <p className="text-lg font-bold text-neutral-200">Total com Frete e Taxas: R$ {calculateTotal(products).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
               </div>
               <div className="mt-6 flex justify-center w-full">
-                <StatefulButton onClick={handleSubmit} className="w-full sm:w-auto mt-4 h-12 text-md flex items-center justify-center">
-                  <span className="w-full text-center">{loading ? "Carregando..." : "Enviar para o time comercial"}</span>
-                </StatefulButton>
+                <Button
+                  onClick={handleSubmit}
+                  className="w-full sm:w-auto mt-4 h-12 px-8 text-md flex items-center justify-center bg-[var(--primary)] text-[var(--primary-foreground)] rounded-[var(--radius)] shadow transition-colors hover:bg-[var(--primary)]/90 focus:outline-none focus:ring-2 focus:ring-[var(--primary)] focus:ring-offset-2"
+                >
+                  Enviar para o time comercial
+                </Button>
               </div>
             </>
           ) : (
