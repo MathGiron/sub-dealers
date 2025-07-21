@@ -4,7 +4,7 @@ import React, { useEffect, useState, createContext } from "react"
 import { IconArrowNarrowLeft, IconArrowNarrowRight } from "@tabler/icons-react"
 import { cn } from "@/lib/utils"
 import { motion } from "motion/react"
-import { Image, ImageProps } from "next/image"
+import Image, { ImageProps } from "next/image"
 
 interface CarouselProps {
   items: JSX.Element[]
