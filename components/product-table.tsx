@@ -67,6 +67,7 @@ export function ProductDataTable<TData>({ initialData }: ProductDataTableProps<T
       columnVisibility,
       rowSelection,
     },
+    meta: { userState: state },
   });
 
   const selectedRows = table.getSelectedRowModel().rows.map((row) => row.original);
