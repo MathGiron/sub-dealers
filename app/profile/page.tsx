@@ -246,8 +246,8 @@ export default function ProfilePage() {
           <div className="p-4 sm:p-6 w-full">
             <h3 className="text-sm font-medium text-[var(--muted-foreground)]">Produtos do Pedido</h3>
             <ul className="mt-2 space-y-2">
-              {order.products.map((product: OrderProduct) => (
-                <li key={product.id} className="flex flex-col">
+              {order.products.map((product: OrderProduct, idx: number) => (
+                <li key={product.id || idx} className="flex flex-col">
                   <p className="text-sm text-[var(--card-foreground)]">{product.name}</p>
                   <p className="text-sm text-[var(--muted-foreground)]">Quantidade: <span className="text-[var(--card-foreground)]">{product.quantity}</span></p>
                   <p className="text-sm text-[var(--muted-foreground)]">Preço Unitário: <span className="text-[var(--card-foreground)]">R$ {getProductPrice(product).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span></p>
