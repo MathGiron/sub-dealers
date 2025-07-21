@@ -163,7 +163,8 @@ export default function OrderPage() {
   }, [searchParams, user]);
 
   // Corrigido: função inline para evitar warning do useCallback
-  const debouncedSaveDraft = debounce((draftProducts: OrderProduct[]) => {
+  const debouncedSaveDraft = debounce((...args: unknown[]) => {
+    const draftProducts = args[0] as OrderProduct[];
     if (!user) return;
     try {
       user.update({ unsafeMetadata: { ...user.unsafeMetadata, draftOrder: draftProducts } });
