@@ -229,3 +229,5 @@ export const fetchProductsByIds = async (ids: string[]): Promise<Product[]> => {
     return [];
   }
 };
+
+export type { Product } from './index';
