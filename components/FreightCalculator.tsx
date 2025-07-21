@@ -68,7 +68,7 @@ const ADDITIONAL_FEES = {
 };
 
 const FreightCalculator: React.FC<FreightCalculatorProps> = ({ products, distance, state, totalAmount, onFreightCalculated }) => {
-  const calculateFreight = useCallback(() => {
+  const calculateFreight = useCallback((totalWeight: number) => {
     let distanceRange: DistanceRange = "001-100";
     if (distance <= 100) distanceRange = "001-100";
     else if (distance <= 200) distanceRange = "101-200";
