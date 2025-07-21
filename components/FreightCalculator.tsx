@@ -106,7 +106,7 @@ const FreightCalculator: React.FC<FreightCalculatorProps> = ({ products, distanc
 
     const baseFreight = FREIGHT_TABLE[distanceRange][weightRange];
     return baseFreight;
-  }, [distance, totalWeight]);
+  }, [distance]);
 
   const calculateAdditionalFees = (totalWeight: number, totalPrice: number, state: string) => {
     const pedagio = Math.ceil(totalWeight / 100) * ADDITIONAL_FEES.pedagio;

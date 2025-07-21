@@ -13,7 +13,7 @@ import React from "react";
 
 interface DataTableProps<TData> {
   table: ReactTable<TData>;
-  renderExpandedRow?: (row: any) => React.ReactNode;
+  renderExpandedRow?: (row: unknown) => React.ReactNode;
 }
 
 export const DataTable = <TData,>({ table, renderExpandedRow }: DataTableProps<TData>) => {
