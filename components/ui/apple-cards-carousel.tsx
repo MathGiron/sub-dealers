@@ -7,7 +7,7 @@ import { motion } from "motion/react"
 import Image, { ImageProps } from "next/image"
 
 interface CarouselProps {
-  items: JSX.Element[]
+  items: React.ReactNode[]
   initialScroll?: number
 }
 
