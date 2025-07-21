@@ -1,6 +1,6 @@
 "use client";
 
-import { ColumnDef, Row } from "@tanstack/react-table";
+import { ColumnDef, Row, TableMeta } from "@tanstack/react-table";
 import { Product } from "@/services/index";
 import Image from "next/image";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
@@ -9,6 +9,11 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import React, { useState } from "react";
+
+// Tipagem explícita para TableMeta
+type ProductTableMeta = {
+  userState?: string;
+};
 
 const QuantityCell = ({ row, onQuantityChange }: { row: Row<Product & { quantity?: number }>; onQuantityChange: (newQuantity: number) => void }) => {
   const [quantity, setQuantity] = useState(row.original.quantity || 1);
@@ -46,7 +51,7 @@ const getProductVariant = (product: Product, state: string) => {
   return unifiedVariant || product.specs[0] || { price: product.price, weight: product.weight, name: "Padrão" };
 };
 
-export const columns: ColumnDef<Product & { quantity?: number }>[] = [
+export const columns: ColumnDef<Product & { quantity?: number }, unknown, ProductTableMeta>[] = [
   {
     accessorKey: "image",
     header: "Foto",
