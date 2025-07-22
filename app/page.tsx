@@ -5,15 +5,16 @@ import Navbar from "@/components/ui/navbar";
 import { Product } from "@/services/shopifyService";
 import { headers } from "next/headers";
 
-function getBaseUrl() {
+async function getBaseUrl() {
   if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
-  const host = headers().get("host");
+  const h = await headers();
+  const host = h.get("host");
   return host ? `https://${host}` : "http://localhost:3000";
 }
 
 async function fetchProducts(): Promise<Product[]> {
   console.log("Iniciando fetch para /api/produtos...");
-  const baseUrl = getBaseUrl();
+  const baseUrl = await getBaseUrl();
   const res = await fetch(`${baseUrl}/api/produtos`, { cache: "no-store" });
   console.log("Resposta recebida de /api/produtos:", res.status, res.statusText);
 
