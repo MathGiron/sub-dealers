@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { ExpandableCardDemo } from "@/components/acertenity/expandable-card-demo-grid";
 import { HeroSection } from "@/components/ui/hero-section";
 import Navbar from "@/components/ui/navbar";

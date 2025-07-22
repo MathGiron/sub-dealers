@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import ProductTableLazyWrapper from "@/components/ProductTableLazyWrapper";
 import {Product} from "@/services/index";
 import Navbar from "@/components/ui/navbar"; // Importando a navbar correta
