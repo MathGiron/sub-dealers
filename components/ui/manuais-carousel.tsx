@@ -216,7 +216,7 @@ export function ManualsCarousel() {
     async function loadData() {
       setLoading(true)
       // Tenta buscar do cache
-      const cached = await getItem<Manual[]>("manuals-list")
+      const cached = await getItem("manuals-list") as Manual[] | null
       if (cached && isMounted) {
         setManuals(cached)
         setLoading(false)
@@ -273,9 +273,9 @@ export function ManualsCarousel() {
             {group}
           </h3>
           <Carousel
-            items={groupedManuals[group]?.map((card, index) => (
+            items={groupedManuals[group]?.map((card) => (
               <div key={card.src} className="flex flex-col items-center">
-                <Card card={card} index={index} />
+                <Card card={card} />
                 <Button
                   onClick={() => handleDownload(card.pdfPath, card.title + ".pdf")}
                   className="mt-1 bg-[var(--muted)] text-[var(--muted-foreground)] hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)] rounded-full"

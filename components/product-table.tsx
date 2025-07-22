@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import {
-  ColumnDef,
   ColumnFiltersState,
   SortingState,
   VisibilityState,
@@ -22,7 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
 import { DataTable } from "@/components/ui/datatable/data-table";
-import { columns } from "@/components/ui/datatable/columns";
+import { getProductColumns } from "@/components/ui/datatable/columns";
 import { useRouter } from "next/navigation";
 import { Product } from "@/services/index";
 import { useUser } from "@clerk/nextjs";
@@ -52,7 +51,7 @@ export function ProductDataTable<TData>({ initialData }: ProductDataTableProps<T
 
   const table = useReactTable({
     data: initialData as (Product & { quantity?: number })[],
-    columns: columns as ColumnDef<Product & { quantity?: number }, unknown>[],
+    columns: getProductColumns(state),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),

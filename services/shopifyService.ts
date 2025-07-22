@@ -1,5 +1,5 @@
 import { GraphQLClient } from "graphql-request";
-import { ProductSpec, Product } from "./index";
+import { Product } from "./index";
 
 // Interfaces para tipagem
 interface ProductNode {

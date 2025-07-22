@@ -1,5 +1,6 @@
 "use client";
 
+import React, { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useUser } from "@clerk/nextjs";
@@ -38,7 +39,15 @@ const getProductVariant = (product: Product, state: string | null) => {
   return unifiedVariant || null;
 };
 
-export default function OrderPage() {
+export default function OrderPageWrapper() {
+  return (
+    <Suspense fallback={<div className="flex justify-center items-center h-96 w-full bg-[var(--background)]"><NumberTicker value={100} startValue={0} className="text-5xl font-bold text-[var(--primary)]" /></div>}>
+      <OrderPage />
+    </Suspense>
+  );
+}
+
+function OrderPage() {
   const searchParams = useSearchParams();
   const { user, isLoaded } = useUser();
   const [products, setProducts] = useState<OrderProduct[]>([]);
@@ -165,12 +174,12 @@ export default function OrderPage() {
   // Corrigido: função inline para evitar warning do useCallback
   const debouncedSaveDraft = debounce((...args: unknown[]) => {
     const draftProducts = args[0] as OrderProduct[];
-    if (!user) return;
-    try {
-      user.update({ unsafeMetadata: { ...user.unsafeMetadata, draftOrder: draftProducts } });
-    } catch (err) {
-      console.error("Erro ao salvar rascunho:", err);
-    }
+      if (!user) return;
+      try {
+        user.update({ unsafeMetadata: { ...user.unsafeMetadata, draftOrder: draftProducts } });
+      } catch (err) {
+        console.error("Erro ao salvar rascunho:", err);
+      }
   }, 1000);
 
   const loadDraft = useCallback(() => {

@@ -1,4 +1,4 @@
-import { Shopify, shopifyApi } from "@shopify/shopify-api";
+import { Shopify, shopifyApi, ApiVersion } from "@shopify/shopify-api";
 import "@shopify/shopify-api/adapters/node";
 
 // Verificar se as variáveis de ambiente estão definidas
@@ -27,25 +27,22 @@ const shopify = shopifyApi({
   apiSecretKey: "not-needed-for-custom-apps",
   scopes: ["read_products", "write_products"],
   hostName: hostName,
-  apiVersion: "2025-04",
+  apiVersion: ApiVersion.April24,
   isCustomStoreApp: true,
+  isEmbeddedApp: false,
   adminApiAccessToken: adminApiAccessToken,
 });
 
 // Função para criar um cliente GraphQL
 export const createGraphQLClient = () => {
-  const session = {
-    id: `offline_${hostName}`,
-    shop: hostName,
-    accessToken: adminApiAccessToken,
-    state: "offline",
-    isOnline: false,
-    isActive: true,
-    scope: ["read_products", "write_products"],
-    expires: undefined,
-    onlineAccessInfo: undefined,
-    accessTokenExpiresAt: undefined,
-  };
-
-  return new shopify.clients.Graphql({ session });
+  // Usa apenas os campos obrigatórios para evitar erro de tipo
+  return new shopify.clients.Graphql({
+    session: {
+      id: `offline_${hostName}`,
+      shop: hostName,
+      accessToken: adminApiAccessToken,
+      state: "offline",
+      isOnline: false,
+    } as any
+  });
 };

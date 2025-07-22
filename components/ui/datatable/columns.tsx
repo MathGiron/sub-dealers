@@ -1,6 +1,6 @@
 "use client";
 
-import { ColumnDef, Row } from "@tanstack/react-table";
+import { ColumnDef, Row, HeaderContext } from "@tanstack/react-table";
 import { Product } from "@/services/index";
 import Image from "next/image";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
@@ -9,11 +9,6 @@ import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import React, { useState } from "react";
-
-// Tipagem explícita para TableMeta
-type ProductTableMeta = {
-  userState?: string;
-};
 
 const QuantityCell = ({ row, onQuantityChange }: { row: Row<Product & { quantity?: number }>; onQuantityChange: (newQuantity: number) => void }) => {
   const [quantity, setQuantity] = useState(row.original.quantity || 1);
@@ -51,11 +46,12 @@ const getProductVariant = (product: Product, state: string) => {
   return unifiedVariant || product.specs[0] || { price: product.price, weight: product.weight, name: "Padrão" };
 };
 
-export const columns: ColumnDef<Product & { quantity?: number }, unknown>[] = [
+export function getProductColumns(userState: string) {
+  return [
   {
     accessorKey: "image",
     header: "Foto",
-    cell: ({ row }) => (
+      cell: ({ row }: { row: Row<Product & { quantity?: number }> }) => (
       <Image
         src={row.getValue("image")}
         alt={row.original.name}
@@ -69,7 +65,7 @@ export const columns: ColumnDef<Product & { quantity?: number }, unknown>[] = [
   },
   {
     accessorKey: "name",
-    header: ({ column }) => (
+      header: ({ column }: HeaderContext<Product & { quantity?: number }, unknown>) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -79,7 +75,7 @@ export const columns: ColumnDef<Product & { quantity?: number }, unknown>[] = [
         <ArrowUpDown className="ml-2 h-4 w-4 text-white dark:text-white" />
       </Button>
     ),
-    cell: ({ row }) => (
+      cell: ({ row }: { row: Row<Product & { quantity?: number }> }) => (
       <div className="text-sm text-white dark:text-white">
         {row.getValue("name")}
       </div>
@@ -87,7 +83,7 @@ export const columns: ColumnDef<Product & { quantity?: number }, unknown>[] = [
   },
   {
     accessorKey: "price",
-    header: ({ column }) => (
+      header: ({ column }: HeaderContext<Product & { quantity?: number }, unknown>) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -97,10 +93,8 @@ export const columns: ColumnDef<Product & { quantity?: number }, unknown>[] = [
         <ArrowUpDown className="ml-2 h-4 w-4 text-white dark:text-white" />
       </Button>
     ),
-    cell: ({ row, table }) => {
-      // Recebe o estado do usuário via table.options.meta
-      const state = (table.options.meta?.userState as string) || "SP";
-      const priceSpec = getProductVariant(row.original, state);
+      cell: ({ row }: { row: Row<Product & { quantity?: number }> }) => {
+        const priceSpec = getProductVariant(row.original, userState);
       const price = priceSpec?.price
         ? Number(priceSpec.price).toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
         : "Consultar";
@@ -116,21 +110,19 @@ export const columns: ColumnDef<Product & { quantity?: number }, unknown>[] = [
       );
     },
     enableSorting: true,
-    sortingFn: (rowA, rowB, columnId, desc, table) => {
-      // Recebe o estado do usuário via table.options.meta
-      const state = (table.options.meta?.userState as string) || "SP";
-      const priceA = getProductVariant(rowA.original, state)?.price
-        ? Number(getProductVariant(rowA.original, state).price)
+      sortingFn: (rowA: Row<Product & { quantity?: number }>, rowB: Row<Product & { quantity?: number }>) => {
+        const priceA = getProductVariant(rowA.original, userState)?.price
+          ? Number(getProductVariant(rowA.original, userState).price)
         : Infinity;
-      const priceB = getProductVariant(rowB.original, state)?.price
-        ? Number(getProductVariant(rowB.original, state).price)
+        const priceB = getProductVariant(rowB.original, userState)?.price
+          ? Number(getProductVariant(rowB.original, userState).price)
         : Infinity;
       return priceA - priceB;
     },
   },
   {
     id: "select",
-    header: ({ table }) => (
+      header: ({ table }: HeaderContext<Product & { quantity?: number }, unknown>) => (
       <div className="flex items-center space-x-2">
         <Checkbox
           checked={
@@ -143,7 +135,7 @@ export const columns: ColumnDef<Product & { quantity?: number }, unknown>[] = [
         <span className="text-white dark:text-white">Selecionados</span>
       </div>
     ),
-    cell: ({ row }) => (
+      cell: ({ row }: { row: Row<Product & { quantity?: number }> }) => (
       <QuantityCell
         row={row}
         onQuantityChange={(newQuantity) => {
@@ -154,4 +146,5 @@ export const columns: ColumnDef<Product & { quantity?: number }, unknown>[] = [
     enableSorting: false,
     enableHiding: false,
   },
-];
+  ] as ColumnDef<Product & { quantity?: number }, unknown>[];
+}
