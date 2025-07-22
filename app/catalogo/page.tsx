@@ -4,19 +4,21 @@ import {Product} from "@/services/index";
 import Navbar from "@/components/ui/navbar"; // Importando a navbar correta
 import { headers } from "next/headers";
 
-async function getBaseUrl() {
-  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
-  const h = await headers();
-  const host = h.get("host");
-  return host ? `https://${host}` : "http://localhost:3000";
-}
-
 async function getData(): Promise<Product[]> {
   try {
     const body = { collectionId: "gid://shopify/Collection/498546704664", productIds: [] };
     console.log("Frontend: Enviando para /api/shopify-products", body);
-    const baseUrl = await getBaseUrl();
-    const res = await fetch(`${baseUrl}/api/shopify-products`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    let baseUrl = "";
+    if (typeof window === "undefined") {
+      // SSR
+      const h = await headers();
+      const host = h.get("host");
+      baseUrl = host ? `http://${host}` : "http://localhost:3000";
+    }
+    const res = await fetch(
+      baseUrl ? `${baseUrl}/api/shopify-products` : "/api/shopify-products",
+      { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }
+    );
     const products = await res.json();
     console.log("Produtos retornados:", products); // Log para depuração
     return products;

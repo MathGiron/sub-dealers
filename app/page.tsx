@@ -5,24 +5,24 @@ import Navbar from "@/components/ui/navbar";
 import { Product } from "@/services/shopifyService";
 import { headers } from "next/headers";
 
-async function getBaseUrl() {
-  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
-  const h = await headers();
-  const host = h.get("host");
-  return host ? `https://${host}` : "http://localhost:3000";
-}
-
 async function fetchProducts(): Promise<Product[]> {
   console.log("Iniciando fetch para /api/produtos...");
-  const baseUrl = await getBaseUrl();
-  const res = await fetch(`${baseUrl}/api/produtos`, { cache: "no-store" });
+  let baseUrl = "";
+  if (typeof window === "undefined") {
+    // SSR
+    const h = await headers();
+    const host = h.get("host");
+    baseUrl = host ? `http://${host}` : "http://localhost:3000";
+  }
+  const res = await fetch(
+    baseUrl ? `${baseUrl}/api/produtos` : "/api/produtos",
+    { cache: "no-store" }
+  );
   console.log("Resposta recebida de /api/produtos:", res.status, res.statusText);
-
   if (!res.ok) {
     console.error("Erro ao buscar produtos:", res.statusText);
     throw new Error("Erro ao buscar produtos");
   }
-
   const data = await res.json();
   console.log("Dados recebidos de /api/produtos:", data);
   return data;
