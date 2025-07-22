@@ -6,9 +6,7 @@ import { Product } from "@/services/shopifyService";
 
 async function fetchProducts(): Promise<Product[]> {
   console.log("Iniciando fetch para /api/produtos...");
-  const res = await fetch("http://localhost:3000/api/produtos", {
-    cache: "no-store",
-  });
+  const res = await fetch("/api/produtos", { cache: "no-store" });
   console.log("Resposta recebida de /api/produtos:", res.status, res.statusText);
 
   if (!res.ok) {
