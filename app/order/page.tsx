@@ -308,22 +308,23 @@ function OrderPage() {
 
       const completedOrders = (user?.unsafeMetadata?.completedOrders || []) as unknown[];
       const newOrder = {
-        id: `order_${Date.now()}`,
-        products: products.map((product) => ({
-          name: product.name,
-          quantity: product.quantity,
-          variantName: product.selectedVariant?.name || "Padrão",
-          variantPrice: product.selectedVariant?.price || null,
+        idPedido: `pedido_${Date.now()}`,
+        produtos: products.map((product) => ({
+          nome: product.name,
+          quantidade: product.quantity,
+          variante: product.selectedVariant?.name || "Padrão",
+          precoVariante: product.selectedVariant?.price || null,
         })),
-        orderDate,
-        status: "success",
-        freightCost,
-        additionalFees,
-        total,
-        deliveryAddress: `${metadata?.address || "Endereço não informado"}, ${metadata?.number || "Número não informado"}, CEP ${metadata?.cep || "CEP não informado"}`,
+        status: "sucesso",
+        frete: freightCost,
+        taxasAdicionais: additionalFees,
+        total: total,
+        enderecoEntrega: `${metadata?.address || "Endereço não informado"}, ${metadata?.number || "Número não informado"}, CEP ${metadata?.cep || "CEP não informado"}`,
+        dataPedido: orderDate,
+        estado: typeof state === 'string' && state ? state : "Estado não informado",
       };
       if (user) {
-      await user.update({ unsafeMetadata: { ...user.unsafeMetadata, completedOrders: [...completedOrders, newOrder], draftOrder: [] } });
+        await user.update({ unsafeMetadata: { ...user.unsafeMetadata, completedOrders: [...completedOrders, newOrder], draftOrder: [] } });
       }
       setProducts([]);
       window.open(result.whatsappLink, "_blank");
