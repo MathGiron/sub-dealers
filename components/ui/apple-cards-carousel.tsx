@@ -141,7 +141,7 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
 
 export const Card = ({ card }: { card: Card }) => {
   return (
-    <div className="relative z-10 flex h-56 w-44 flex-col items-center justify-start overflow-hidden rounded-3xl md:h-[28rem] md:w-72">
+    <div className="relative z-10 flex h-56 w-44 flex-col items-center justify-start overflow-hidden rounded-3xl md:h-[28rem] md:w-72 bg-[var(--card)]">
       <div className="pointer-events-none absolute inset-x-0 top-0 z-30 h-full bg-gradient-to-b from-black/50 via-transparent to-transparent" />
       <div className="relative z-40 p-4 text-center">
         <p className="text-left font-sans text-sm font-medium text-white md:text-base">
@@ -151,13 +151,15 @@ export const Card = ({ card }: { card: Card }) => {
           {card.title}
         </p>
       </div>
-      <Image
-        src={card.src}
-        alt={card.title}
-        width={80}
-        height={80}
-        className="w-20 h-20 object-contain mb-2 rounded border border-[var(--border)]"
-      />
+      <div className="flex-1 w-full flex items-center justify-center pb-2">
+        <Image
+          src={card.src}
+          alt={card.title}
+          fill
+          className="object-contain w-full h-full rounded border border-[var(--border)]"
+          sizes="(max-width: 768px) 176px, 288px"
+        />
+      </div>
     </div>
   )
 }
