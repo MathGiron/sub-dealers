@@ -45,10 +45,10 @@ const data: Manual[] = [
     group: "River",
   },
   {
-    category: "",
+    category: "Manual",
     title: "River 3 Plus",
-    src: "/manuais/river/EF River 3 PlUS - Capa.png",
-    pdfPath: "/manuais/river/EF River 3 Plus - manual.pdf",
+    src: "/manuais/river/EF River 3 Plus - Capa.png",
+    pdfPath: "/manuais/river/EF River 3 Plus - Manual.pdf",
     group: "River",
   },
   {
@@ -68,15 +68,15 @@ const data: Manual[] = [
   {
     category: "Manual",
     title: "Delta Pro ULTRA",
-    src: "/manuais/delta/EcoFlow Delta Pro ULTRA - Capa.png",
-    pdfPath: "/manuais/delta/EcoFlow Delta Pro ULTRA - manual.pdf",
+    src: "/manuais/delta/EcoFlow DELTA PRO ULTRA - Capa.png",
+    pdfPath: "/manuais/delta/EcoFlow DELTA PRO ULTRA - Manual.pdf",
     group: "Delta",
   },
   {
     category: "Manual",
     title: "Delta Pro ULTRA Bateria",
-    src: "/manuais/delta/EcoFlow Delta Pro ULTRA Bateria - Capa.png",
-    pdfPath: "/manuais/delta/EcoFlow Delta Pro ULTRA Bateria - manual.pdf",
+    src: "/manuais/delta/Ecoflow Delta PRO ULTRA Bateria - Capa.png",
+    pdfPath: "/manuais/delta/EcoFlow DELTA PRO ULTRA Bateria - Manual.pdf",
     group: "Delta",
   },
   {
