@@ -1,15 +1,10 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import puppeteer from "puppeteer";
-
-type ProductOrder = {
-  name: string;
-  quantity: number;
-  price: number | string;
-};
+import type { PedidoData } from "@/types/api";
 
 // Função para montar o HTML do pedido usando o template completo
-function gerarHtmlPedido(pedido: any) {
+function gerarHtmlPedido(pedido: PedidoData) {
   // Dados da empresa (fixos para Rodoparaná)
   const dadosEmpresa = {
     empresa: "RODOPARANA IMPLEMENTOS RODOVIARIOS LTDA",
@@ -31,7 +26,7 @@ function gerarHtmlPedido(pedido: any) {
   };
 
   // Calcular totais dos produtos
-  const subtotal = pedido.products?.reduce((sum: number, product: any) => {
+  const subtotal = pedido.products?.reduce((sum: number, product) => {
     const price = product.variantPrice || product.selectedVariant?.price || product.price || 0;
     return sum + (Number(price) * product.quantity);
   }, 0) || 0;
@@ -74,9 +69,7 @@ function gerarHtmlPedido(pedido: any) {
         margin: auto;
         background-color: #ffffff;
         padding: 15px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        border: 1px solid #ddd;
+        
       }
 
       section {
@@ -185,7 +178,7 @@ function gerarHtmlPedido(pedido: any) {
             </tr>
           </thead>
           <tbody>
-            ${Array.isArray(pedido.products) ? pedido.products.map((product: any, idx: number) => {
+            ${Array.isArray(pedido.products) ? pedido.products.map((product, idx: number) => {
               const price = product.variantPrice || product.selectedVariant?.price || product.price || 0;
               const total = Number(price) * product.quantity;
               return `
@@ -262,7 +255,7 @@ export async function POST(request: Request) {
     await transporter.sendMail({
       from: 'EcoFlow <matheus.giron@grupotimber.com.br>',
       to: email,
-      subject: 'Nota de Pedido - EcoFlow',
+      subject: `Nota de Pedido - EcoFlow - ${pedido.idPedido || `pedido_${Date.now()}`}`,
       text: 'Segue em anexo a nota de pedido.',
       attachments: [
         {
@@ -273,7 +266,16 @@ export async function POST(request: Request) {
       ],
     });
     console.log('[SEND-ORDER] E-mail enviado com sucesso!');
-    return NextResponse.json({ ok: true });
+    
+    // Gerar link do WhatsApp
+    const whatsappMessage = `Oi tudo bem? Realizei o pedido ${pedido.idPedido || `pedido_${Date.now()}`}, gostaria de ser um revendedor!`;
+    const whatsappLink = `https://wa.me/5541996698959?text=${encodeURIComponent(whatsappMessage)}`;
+    
+    return NextResponse.json({ 
+      success: true, 
+      whatsappLink,
+      idPedido: pedido.idPedido || `pedido_${Date.now()}`
+    });
   } catch (error) {
     console.error('[SEND-ORDER] Erro ao gerar e enviar PDF:', error);
     return NextResponse.json({ error: 'Erro ao gerar e enviar PDF', detalhe: (error as Error)?.message }, { status: 500 });

@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useUser } from "@clerk/nextjs";
 import Navbar from "@/components/ui/navbar";
-import { Product, OrderProduct, UserMetadata } from "@/services/index";
+import { Product, OrderProduct, UserMetadata } from "@/types/business";
 import jsPDF from "jspdf";
 import FreightCalculator from "@/components/FreightCalculator";
 import { Button } from "@/components/ui/button";
@@ -296,7 +296,7 @@ function OrderPage() {
           total,
           deliveryAddress: `${metadata?.address || "Endereço não informado"}, ${metadata?.number || "Número não informado"}, CEP ${metadata?.cep || "CEP não informado"}`,
           state: typeof state === 'string' && state ? state : "Estado não informado",
-          email: user?.primaryEmailAddress?.emailAddress || user?.email || "seu@email.com",
+          email: user?.primaryEmailAddress?.emailAddress || "seu@email.com",
         }),
       });
 
@@ -309,7 +309,7 @@ function OrderPage() {
 
       const completedOrders = (user?.unsafeMetadata?.completedOrders || []) as unknown[];
       const newOrder = {
-        idPedido: `pedido_${Date.now()}`,
+        idPedido: result.idPedido || `pedido_${Date.now()}`,
         produtos: products.map((product) => ({
           nome: product.name,
           quantidade: product.quantity,
@@ -328,7 +328,10 @@ function OrderPage() {
         await user.update({ unsafeMetadata: { ...user.unsafeMetadata, completedOrders: [...completedOrders, newOrder], draftOrder: [] } });
       }
       setProducts([]);
+      
+      // Abrir WhatsApp e redirecionar para homepage
       window.open(result.whatsappLink, "_blank");
+      window.location.href = "/";
     } catch {
       alert("Erro ao enviar pedido. Tente novamente.");
     } finally {
@@ -403,7 +406,12 @@ function OrderPage() {
             <p className="text-center text-neutral-300 mt-4">Nenhum produto no pedido. Verifique os IDs ou a coleção.</p>
           )}
           <FreightCalculator
-            products={products.map(p => ({ weight: p.selectedVariant?.weight ?? p.weight ?? 0, quantity: p.quantity ?? 1 }))}
+            products={products.map(p => ({ 
+              id: p.id, 
+              name: p.name, 
+              weight: p.selectedVariant?.weight ?? p.weight ?? 0, 
+              quantity: p.quantity ?? 1 
+            }))}
             distance={distance ?? 0}
             state={state ?? ""}
             totalAmount={totalAmount ?? 0}

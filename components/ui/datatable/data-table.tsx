@@ -10,11 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/datatable/table";
 import React from "react";
-
-interface DataTableProps<TData> {
-  table: ReactTable<TData>;
-  renderExpandedRow?: (row: unknown) => React.ReactNode;
-}
+import type { DataTableProps } from "@/types/components";
 
 export const DataTable = <TData,>({ table, renderExpandedRow }: DataTableProps<TData>) => {
   return (

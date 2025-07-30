@@ -1,20 +1,11 @@
 import React, { useEffect, useCallback } from "react";
+import type { DistanceRange, WeightRange, FreightProduct, FreightCalculatorProps } from "@/types/business";
 
 // Define tipos para FREIGHT_TABLE
-type DistanceRange = "001-100" | "101-200" | "201-400" | "401-600" | "601-800" | "801-1000" | "1001-1200" | "1201-1400" | "1401-1600" | "1601-1800" | "1801-2000" | "2001-2200" | "2201-2400" | "2401-2600" | "2601-2800" | "2801-3000" | "3001-3200" | "3201-3400" | "3401-3800" | "3801-4200" | "4201-4600" | "4601-5000" | "5001-5400" | "5400+";
-type WeightRange = "0-5" | "5-10" | "11-20" | "21-40" | "41-60" | "61-100" | "100+";
 
 type Product = {
   weight: number;
   quantity: number;
-};
-
-type FreightCalculatorProps = {
-  products: Product[];
-  distance: number;
-  state: string;
-  totalAmount: number;
-  onFreightCalculated: (freight: number, additionalFees: number) => void;
 };
 
 const FREIGHT_TABLE: Record<DistanceRange, Record<WeightRange, number>> = {

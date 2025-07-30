@@ -1,11 +1,6 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
-
-type ProductEmail = {
-  name: string;
-  quantity: number;
-  price: number;
-};
+import type { ProductEmail } from "@/types/api";
 
 export async function POST(request: Request) {
   try {
@@ -35,9 +30,14 @@ export async function POST(request: Request) {
     });
 
     // Montar o corpo do e-mail
+    const email = request.headers.get('email');
+    if (!email) {
+      return NextResponse.json({ success: false, error: "Email não fornecido no cabeçalho." }, { status: 400 });
+    }
+
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: request.headers.get('email'), // Usa o email do cabeçalho
+      to: email,
       subject: "Novo Pedido Recebido",
       html: `
         <h2>Novo Pedido Recebido</h2>
@@ -55,7 +55,7 @@ export async function POST(request: Request) {
         <ul>
           ${products.map((product: ProductEmail) => `
             <li>
-              ${product.name} - Quantidade: ${product.quantity} - Preço Unitário: R$ ${product.price.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} - Total: R$ ${(product.price * product.quantity).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              ${product.name} - Quantidade: ${product.quantity} - Preço Unitário: R$ ${Number(product.price).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} - Total: R$ ${(Number(product.price) * product.quantity).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </li>
           `).join('')}
         </ul>

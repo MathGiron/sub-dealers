@@ -1,15 +1,19 @@
 "use client";
 
-import * as React from "react";
+import React, { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import {
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
+  ColumnDef,
+  flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
   useReactTable,
+  getSortedRowModel,
+  SortingState,
+  getFilteredRowModel,
+  ColumnFiltersState,
+  getPaginationRowModel,
+  ExpandedState,
+  getExpandedRowModel,
 } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,12 +23,20 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ArrowLeft, ArrowRight, ChevronDown } from "lucide-react";
-import { DataTable } from "@/components/ui/datatable/data-table";
-import { getProductColumns } from "@/components/ui/datatable/columns";
-import { useRouter } from "next/navigation";
-import { Product } from "@/services/index";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/datatable/table";
+import { ChevronDown, ChevronUp, ArrowUpDown, ArrowLeft, ArrowRight } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
+import { Product, OrderProduct } from "@/types/business";
+import type { ProductDataTableProps } from "@/types/components";
+import { getProductColumns } from "@/components/ui/datatable/columns";
+import { DataTable } from "@/components/ui/datatable/data-table";
 
 // Função para selecionar a variante correta com base no estado
 const getProductVariant = (product: Product, state: string) => {
@@ -35,14 +47,10 @@ const getProductVariant = (product: Product, state: string) => {
   return unifiedVariant || product.specs[0] || { price: product.price, weight: product.weight, name: "Padrão" };
 };
 
-interface ProductDataTableProps<TData> {
-  initialData: TData[];
-}
-
 export function ProductDataTable<TData>({ initialData }: ProductDataTableProps<TData>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = React.useState({});
   const [rowSelection, setRowSelection] = React.useState({});
   const { user } = useUser();
   const state = (user?.unsafeMetadata?.state as string) || "SP"; // Fallback pra SP

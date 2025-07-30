@@ -24,7 +24,7 @@ import {
   TableCell,
 } from "@/components/ui/datatable/table";
 import { ArrowUpDown, ChevronDown, ChevronUp } from "lucide-react";
-import { OrderProduct } from "@/services/index";
+import { OrderProduct } from "@/types/business";
 
 interface Order {
   id: string;
@@ -61,7 +61,33 @@ export default function ProfilePage() {
     }
 
     const draft = (user.unsafeMetadata?.draftOrder || []) as OrderProduct[];
-    const completed = (user.unsafeMetadata?.completedOrders || []) as Order[];
+    const completedRaw = (user.unsafeMetadata?.completedOrders || []) as any[];
+    
+    // Converter dados do completedOrders para o formato Order
+    const completed: Order[] = completedRaw.map((order: any, index: number) => ({
+      id: order.idPedido || order.id || `order_${index}_${Date.now()}`,
+      products: order.produtos?.map((prod: any, prodIndex: number) => ({
+        id: prod.id || `product_${index}_${prodIndex}_${Date.now()}`,
+        name: prod.nome || prod.name,
+        quantity: prod.quantidade || prod.quantity || 1,
+        price: prod.precoVariante || prod.price,
+        selectedVariant: {
+          name: prod.variante || prod.variantName,
+          price: prod.precoVariante || prod.price,
+        },
+        variantPrice: prod.precoVariante || prod.price,
+        image: prod.image || "",
+        description: prod.description || "",
+        specs: prod.specs || [],
+        buttonText: prod.buttonText || "",
+        href: prod.href || "",
+        highlighted: prod.highlighted || false,
+        weight: prod.weight || 0,
+      })) || [],
+      orderDate: order.dataPedido || order.orderDate || new Date().toLocaleString("pt-BR"),
+      status: order.status === "sucesso" ? "success" : "pending",
+      total: order.total || 0,
+    }));
 
     const draftAsOrder: Order[] = draft.length > 0
       ? [{

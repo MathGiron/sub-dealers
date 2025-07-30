@@ -6,14 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Download } from "lucide-react"
 import { getItem, setItem } from "@/lib/indexedDb"
 import { NumberTicker } from "@/components/magicui/number-ticker"
-
-type Manual = {
-  category: string
-  title: string
-  src: string
-  pdfPath: string
-  group: string
-}
+import type { Manual } from "@/types/business"
 
 const data: Manual[] = [
   {

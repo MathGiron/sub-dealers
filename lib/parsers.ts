@@ -1,5 +1,4 @@
-export type FilterItemSchema = {
-  id: string;
-  value: unknown;
-  operator?: string;
-}; 
+import type { FilterItemSchema } from "@/types/utils";
+
+// Mantém compatibilidade com código existente
+export type { FilterItemSchema }; 

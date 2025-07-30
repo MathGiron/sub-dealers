@@ -1,5 +1,8 @@
 import { GraphQLClient } from "graphql-request";
-import { Product } from "./index";
+import type { Product } from "@/types/business";
+
+// Re-exportação do tipo Product
+export type { Product } from "@/types/business";
 
 // Interfaces para tipagem
 interface ProductNode {
@@ -229,5 +232,3 @@ export const fetchProductsByIds = async (ids: string[]): Promise<Product[]> => {
     return [];
   }
 };
-
-export type { Product } from './index';
