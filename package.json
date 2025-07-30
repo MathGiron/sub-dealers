@@ -45,6 +45,7 @@
     "nodemailer": "^7.0.3",
     "nuqs": "^2.4.3",
     "pizzip": "^3.2.0",
+    "puppeteer": "^24.15.0",
     "react": "^19.1.0",
     "react-day-picker": "8.10.1",
     "react-dom": "^19.1.0",

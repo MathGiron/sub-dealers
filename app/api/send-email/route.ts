@@ -20,6 +20,11 @@ export async function POST(request: Request) {
       pdfBuffer: string;
     } = await request.json();
 
+    // Valida se o campo `email` está presente
+    if (!request.headers.get('email')) {
+      return NextResponse.json({ success: false, error: "Campo 'email' não encontrado no corpo da requisição." }, { status: 400 });
+    }
+
     // Configurar o transporte do Nodemailer (exemplo com Gmail)
     const transporter = nodemailer.createTransport({
       service: "gmail",
@@ -32,11 +37,11 @@ export async function POST(request: Request) {
     // Montar o corpo do e-mail
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: "matheus.giron@grupotimber.com.br",
+      to: request.headers.get('email'), // Usa o email do cabeçalho
       subject: "Novo Pedido Recebido",
       html: `
         <h2>Novo Pedido Recebido</h2>
-        <p>Olá, Matheus!</p>
+        <p>Olá, ${clientName}!</p>
         <p>Agradecemos pelo seu pedido! Nossa equipe comercial entrará em contato em breve para dar continuidade.</p>
         <p><strong>QUERO SER UM REVENDEDOR!!</strong></p>
         <p>Você pode continuar a conversa diretamente no WhatsApp clicando no link abaixo:</p>

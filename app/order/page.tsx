@@ -296,6 +296,7 @@ function OrderPage() {
           total,
           deliveryAddress: `${metadata?.address || "Endereço não informado"}, ${metadata?.number || "Número não informado"}, CEP ${metadata?.cep || "CEP não informado"}`,
           state: typeof state === 'string' && state ? state : "Estado não informado",
+          email: user?.primaryEmailAddress?.emailAddress || user?.email || "seu@email.com",
         }),
       });
 
