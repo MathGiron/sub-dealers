@@ -228,44 +228,62 @@ export async function POST(request: Request) {
     console.log('[SEND-ORDER] Início do processamento do pedido');
     const pedido = await request.json();
     console.log('[SEND-ORDER] Dados do pedido recebidos:', JSON.stringify(pedido, null, 2));
+    
     // 1. Montar o HTML preenchido
     const html = gerarHtmlPedido(pedido);
     console.log('[SEND-ORDER] HTML do pedido gerado com sucesso');
+    
     // 2. Gerar o PDF com puppeteer
-    const browser = await puppeteer.launch({ args: ["--no-sandbox", "--disable-setuid-sandbox"] });
-    const page = await browser.newPage();
-    await page.setContent(html, { waitUntil: 'networkidle0' });
-    const pdfBuffer = await page.pdf({ format: 'A4' });
-    await browser.close();
-    console.log('[SEND-ORDER] PDF gerado com sucesso, tamanho:', pdfBuffer.length);
-    // 3. Enviar o e-mail com o PDF em anexo (exemplo básico)
-    const email = pedido.email || pedido.clientEmail;
-    if (!email) {
-      console.error('[SEND-ORDER] Campo email não informado no pedido!');
-      return NextResponse.json({ error: 'Campo email é obrigatório.' }, { status: 400 });
+    let pdfBuffer: Buffer = Buffer.from('');
+    try {
+      const browser = await puppeteer.launch({ 
+        args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+        headless: true
+      });
+      const page = await browser.newPage();
+      await page.setContent(html, { waitUntil: 'networkidle0' });
+      const pdfData = await page.pdf({ format: 'A4' });
+      pdfBuffer = Buffer.from(pdfData);
+      await browser.close();
+      console.log('[SEND-ORDER] PDF gerado com sucesso, tamanho:', pdfBuffer.length);
+    } catch (pdfError) {
+      console.error('[SEND-ORDER] Erro ao gerar PDF:', pdfError);
+      // Se falhar o PDF, continuar sem ele
     }
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-    console.log('[SEND-ORDER] Iniciando envio de e-mail para:', email);
-    await transporter.sendMail({
-      from: 'EcoFlow <matheus.giron@grupotimber.com.br>',
-      to: email,
-      subject: `Nota de Pedido - EcoFlow - ${pedido.idPedido || `pedido_${Date.now()}`}`,
-      text: 'Segue em anexo a nota de pedido.',
-      attachments: [
-        {
-          filename: `${pedido.idPedido ? pedido.idPedido : 'nota-pedido'}.pdf`,
-          content: Buffer.from(pdfBuffer),
-          contentType: 'application/pdf',
-        },
-      ],
-    });
-    console.log('[SEND-ORDER] E-mail enviado com sucesso!');
+    
+    // 3. Tentar enviar o e-mail (opcional)
+    const email = pedido.email || pedido.clientEmail;
+    if (email && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+      try {
+        const transporter = nodemailer.createTransport({
+          service: "gmail",
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+          },
+        });
+        console.log('[SEND-ORDER] Iniciando envio de e-mail para:', email);
+        await transporter.sendMail({
+          from: 'EcoFlow <matheus.giron@grupotimber.com.br>',
+          to: email,
+          subject: `Nota de Pedido - EcoFlow - ${pedido.idPedido || `pedido_${Date.now()}`}`,
+          text: 'Segue em anexo a nota de pedido.',
+          attachments: pdfBuffer.length > 0 ? [
+            {
+              filename: `${pedido.idPedido ? pedido.idPedido : 'nota-pedido'}.pdf`,
+              content: pdfBuffer,
+              contentType: 'application/pdf',
+            },
+          ] : [],
+        });
+        console.log('[SEND-ORDER] E-mail enviado com sucesso!');
+      } catch (emailError) {
+        console.error('[SEND-ORDER] Erro ao enviar e-mail:', emailError);
+        // Continuar mesmo se o email falhar
+      }
+    } else {
+      console.log('[SEND-ORDER] Configurações de email não encontradas, pulando envio de email');
+    }
     
     // Gerar link do WhatsApp
     const whatsappMessage = `Oi tudo bem? Realizei o pedido ${pedido.idPedido || `pedido_${Date.now()}`}, gostaria de ser um revendedor!`;
@@ -277,7 +295,10 @@ export async function POST(request: Request) {
       idPedido: pedido.idPedido || `pedido_${Date.now()}`
     });
   } catch (error) {
-    console.error('[SEND-ORDER] Erro ao gerar e enviar PDF:', error);
-    return NextResponse.json({ error: 'Erro ao gerar e enviar PDF', detalhe: (error as Error)?.message }, { status: 500 });
+    console.error('[SEND-ORDER] Erro ao processar pedido:', error);
+    return NextResponse.json({ 
+      error: 'Erro ao processar pedido', 
+      detalhe: (error as Error)?.message 
+    }, { status: 500 });
   }
 }

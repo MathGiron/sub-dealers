@@ -329,9 +329,8 @@ function OrderPage() {
       }
       setProducts([]);
       
-      // Abrir WhatsApp e redirecionar para homepage
+      // Abrir WhatsApp
       window.open(result.whatsappLink, "_blank");
-      window.location.href = "/";
     } catch {
       alert("Erro ao enviar pedido. Tente novamente.");
     } finally {
