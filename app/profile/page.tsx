@@ -61,32 +61,32 @@ export default function ProfilePage() {
     }
 
     const draft = (user.unsafeMetadata?.draftOrder || []) as OrderProduct[];
-    const completedRaw = (user.unsafeMetadata?.completedOrders || []) as any[];
+    const completedRaw = (user.unsafeMetadata?.completedOrders || []) as Record<string, unknown>[];
     
     // Converter dados do completedOrders para o formato Order
-    const completed: Order[] = completedRaw.map((order: any, index: number) => ({
-      id: order.idPedido || order.id || `order_${index}_${Date.now()}`,
-      products: order.produtos?.map((prod: any, prodIndex: number) => ({
-        id: prod.id || `product_${index}_${prodIndex}_${Date.now()}`,
-        name: prod.nome || prod.name,
-        quantity: prod.quantidade || prod.quantity || 1,
-        price: prod.precoVariante || prod.price,
+    const completed: Order[] = completedRaw.map((order: Record<string, unknown>, index: number) => ({
+      id: (order.idPedido as string) || (order.id as string) || `order_${index}_${Date.now()}`,
+      products: ((order.produtos as Record<string, unknown>[]) || []).map((prod: Record<string, unknown>, prodIndex: number) => ({
+        id: (prod.id as string) || `product_${index}_${prodIndex}_${Date.now()}`,
+        name: (prod.nome as string) || (prod.name as string) || "",
+        quantity: (prod.quantidade as number) || (prod.quantity as number) || 1,
+        price: (prod.precoVariante as number) || (prod.price as number) || 0,
         selectedVariant: {
-          name: prod.variante || prod.variantName,
-          price: prod.precoVariante || prod.price,
+          name: (prod.variante as string) || (prod.variantName as string) || "",
+          price: (prod.precoVariante as number) || (prod.price as number) || 0,
         },
-        variantPrice: prod.precoVariante || prod.price,
-        image: prod.image || "",
-        description: prod.description || "",
-        specs: prod.specs || [],
-        buttonText: prod.buttonText || "",
-        href: prod.href || "",
-        highlighted: prod.highlighted || false,
-        weight: prod.weight || 0,
+        variantPrice: (prod.precoVariante as number) || (prod.price as number) || 0,
+        image: (prod.image as string) || "",
+        description: (prod.description as string) || "",
+        specs: (prod.specs as Array<{ name: string; included: boolean; price?: string | number; weight?: number }>) || [],
+        buttonText: (prod.buttonText as string) || "",
+        href: (prod.href as string) || "",
+        highlighted: (prod.highlighted as boolean) || false,
+        weight: (prod.weight as number) || 0,
       })) || [],
-      orderDate: order.dataPedido || order.orderDate || new Date().toLocaleString("pt-BR"),
-      status: order.status === "sucesso" ? "success" : "pending",
-      total: order.total || 0,
+      orderDate: (order.dataPedido as string) || (order.orderDate as string) || new Date().toLocaleString("pt-BR"),
+      status: (order.status as string) === "sucesso" ? "success" : "pending",
+      total: (order.total as number) || 0,
     }));
 
     const draftAsOrder: Order[] = draft.length > 0

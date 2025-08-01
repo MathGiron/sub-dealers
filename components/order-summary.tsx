@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import type { OrderItem, OrderSummaryProps } from "@/types/business";
+import type { OrderSummaryProps } from "@/types/business";
 
 export function OrderSummary({ items }: OrderSummaryProps) {
   // Calcular o subtotal de cada item e o total geral

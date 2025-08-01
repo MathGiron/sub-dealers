@@ -1,8 +1,10 @@
 // Tipos relacionados aos componentes
+import type { Table } from "@tanstack/react-table";
+import type { ComponentPropsWithoutRef } from "react";
 
 // Data Table
 export interface DataTableProps<TData> {
-  table: ReactTable<TData>;
+  table: Table<TData>;
   renderExpandedRow?: (row: unknown) => React.ReactNode;
 }
 

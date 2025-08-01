@@ -1,10 +1,8 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import {
-  ColumnDef,
-  flexRender,
   getCoreRowModel,
   useReactTable,
   getSortedRowModel,
@@ -12,8 +10,6 @@ import {
   getFilteredRowModel,
   ColumnFiltersState,
   getPaginationRowModel,
-  ExpandedState,
-  getExpandedRowModel,
 } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,17 +19,9 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/datatable/table";
-import { ChevronDown, ChevronUp, ArrowUpDown, ArrowLeft, ArrowRight } from "lucide-react";
+import { ChevronDown, ArrowLeft, ArrowRight } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
-import { Product, OrderProduct } from "@/types/business";
+import { Product } from "@/types/business";
 import type { ProductDataTableProps } from "@/types/components";
 import { getProductColumns } from "@/components/ui/datatable/columns";
 import { DataTable } from "@/components/ui/datatable/data-table";

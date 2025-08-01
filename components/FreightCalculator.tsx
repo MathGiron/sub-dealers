@@ -1,12 +1,7 @@
 import React, { useEffect, useCallback } from "react";
-import type { DistanceRange, WeightRange, FreightProduct, FreightCalculatorProps } from "@/types/business";
+import type { DistanceRange, WeightRange, FreightCalculatorProps } from "@/types/business";
 
 // Define tipos para FREIGHT_TABLE
-
-type Product = {
-  weight: number;
-  quantity: number;
-};
 
 const FREIGHT_TABLE: Record<DistanceRange, Record<WeightRange, number>> = {
   "001-100": { "0-5": 27.05, "5-10": 33.81, "11-20": 42.85, "21-40": 53.04, "41-60": 65.31, "61-100": 78.31, "100+": 1.22 },

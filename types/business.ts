@@ -48,6 +48,7 @@ export interface RegisterCompanyFormData {
   cep: string;
   address: string;
   number: string;
+  companyName: string;
   contactNumber: string;
 }
 

@@ -1,7 +1,7 @@
 // Tipos relacionados aos componentes UI
 
 import type { ColumnSort, Row, RowData } from "@tanstack/react-table";
-import type { DataTableConfig } from "@/config/data-table";
+import type { DataTableConfig } from "@/types/utils";
 import type { FilterItemSchema } from "@/lib/parsers";
 
 // Data Table UI
@@ -17,7 +17,7 @@ declare module "@tanstack/react-table" {
   }
 }
 
-export interface Product {
+export interface UIProduct {
   id: string;
   name: string;
   image?: string;
@@ -40,7 +40,7 @@ export interface ExtendedColumnSort<TData> extends Omit<ColumnSort, "id"> {
   id: keyof TData;
 }
 
-export interface ExtendedColumnFilter<TData> extends FilterItemSchema {
+export interface ExtendedColumnFilter<TData> extends Omit<FilterItemSchema, 'id'> {
   id: keyof TData;
 }
 
