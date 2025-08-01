@@ -269,7 +269,7 @@ export async function POST(request: Request) {
     
     // Gerar link do WhatsApp
     const whatsappMessage = `Oi tudo bem? Realizei o pedido ${pedido.idPedido || `pedido_${Date.now()}`}, gostaria de ser um revendedor!`;
-    const whatsappLink = `https://wa.me/5541996698959?text=${encodeURIComponent(whatsappMessage)}`;
+    const whatsappLink = `https://wa.me/554191596957?text=${encodeURIComponent(whatsappMessage)}`;
     
     return NextResponse.json({ 
       success: true, 
