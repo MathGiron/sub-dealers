@@ -348,7 +348,7 @@ export async function POST(request: Request) {
               <p><strong>Endereço:</strong> ${pedido.deliveryAddress || 'Endereço não informado'}</p>
               <p><strong>Estado:</strong> ${pedido.state || 'Estado não informado'}</p>
               <p><strong>Data do Pedido:</strong> ${new Date().toLocaleDateString('pt-BR') + ', ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</p>
-              <p><strong>Total do Pedido:</strong> R$ ${((pedido.products?.reduce((sum: number, product: any) => {
+              <p><strong>Total do Pedido:</strong> R$ ${((pedido.products?.reduce((sum: number, product: { variantPrice?: number; selectedVariant?: { price?: number }; price?: number; quantity: number }) => {
                 const price = product.variantPrice || product.selectedVariant?.price || product.price || 0;
                 return sum + (Number(price) * product.quantity);
               }, 0) || 0) + (pedido.freightCost || 0) + (pedido.additionalFees || 0)).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
