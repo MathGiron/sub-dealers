@@ -244,12 +244,9 @@ export async function POST(request: Request) {
           "--disable-dev-shm-usage",
           "--disable-gpu",
           "--no-first-run",
-          "--no-zygote",
-          "--single-process",
           "--disable-extensions"
         ],
-        headless: true,
-        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined
+        headless: true
       });
       console.log('[SEND-ORDER] Browser iniciado');
       
@@ -264,8 +261,8 @@ export async function POST(request: Request) {
       console.log('[SEND-ORDER] Conteúdo HTML definido');
       
       // Aguardar um pouco para garantir que o conteúdo seja renderizado
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      console.log('[SEND-ORDER] Aguardou 3 segundos para renderização');
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      console.log('[SEND-ORDER] Aguardou 2 segundos para renderização');
       
       const pdfData = await page.pdf({ 
         format: 'A4',
@@ -277,9 +274,13 @@ export async function POST(request: Request) {
           left: '20px'
         }
       });
+      
       pdfBuffer = Buffer.from(pdfData);
-      await browser.close();
       console.log('[SEND-ORDER] PDF gerado com sucesso, tamanho:', pdfBuffer.length);
+      
+      // Fechar browser APÓS gerar o PDF
+      await browser.close();
+      console.log('[SEND-ORDER] Browser fechado');
       
       // Verificar se o PDF tem conteúdo
       if (pdfBuffer.length === 0) {
