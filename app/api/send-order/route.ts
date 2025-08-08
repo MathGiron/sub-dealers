@@ -235,6 +235,8 @@ export async function POST(request: Request) {
     
     // 2. Gerar o PDF com puppeteer
     let pdfBuffer: Buffer = Buffer.from('');
+    let pdfGenerated = false;
+    
     try {
       console.log('[SEND-ORDER] Iniciando geração do PDF...');
       const browser = await puppeteer.launch({ 
@@ -287,6 +289,7 @@ export async function POST(request: Request) {
         console.error('[SEND-ORDER] ERRO: PDF gerado está vazio!');
       } else {
         console.log('[SEND-ORDER] PDF tem conteúdo válido');
+        pdfGenerated = true;
       }
     } catch (pdfError) {
       console.error('[SEND-ORDER] Erro ao gerar PDF:', pdfError);
@@ -337,6 +340,20 @@ export async function POST(request: Request) {
               <p>Olá ${pedido.clientName || 'Cliente'}!</p>
               <p>Segue em anexo a nota de pedido com todos os detalhes.</p>
               <p>Obrigado por escolher a EcoFlow!</p>
+              ${!pdfGenerated ? `
+                <hr>
+                <h3>Detalhes do Pedido:</h3>
+                <p><strong>Cliente:</strong> ${pedido.clientName || 'Cliente não identificado'}</p>
+                <p><strong>CNPJ/CPF:</strong> ${pedido.cnpj || 'CNPJ não informado'}</p>
+                <p><strong>Contato:</strong> ${pedido.contactNumber || 'Número de contato não informado'}</p>
+                <p><strong>Endereço:</strong> ${pedido.deliveryAddress || 'Endereço não informado'}</p>
+                <p><strong>Estado:</strong> ${pedido.state || 'Estado não informado'}</p>
+                <p><strong>Data do Pedido:</strong> ${new Date().toLocaleDateString('pt-BR') + ', ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</p>
+                <p><strong>Total do Pedido:</strong> R$ ${((pedido.products?.reduce((sum: number, product: { variantPrice?: number; selectedVariant?: { price?: number }; price?: number; quantity: number }) => {
+                  const price = product.variantPrice || product.selectedVariant?.price || product.price || 0;
+                  return sum + (Number(price) * product.quantity);
+                }, 0) || 0) + (pedido.freightCost || 0) + (pedido.additionalFees || 0)).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+              ` : ''}
             `,
             attachments: pdfAttachment,
           });
@@ -364,7 +381,7 @@ export async function POST(request: Request) {
                 return sum + (Number(price) * product.quantity);
               }, 0) || 0) + (pedido.freightCost || 0) + (pedido.additionalFees || 0)).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
               <p>Segue em anexo a nota de pedido completa.</p>
-              ${pdfBuffer.length === 0 ? '<p><strong>Nota:</strong> PDF não foi gerado devido a limitações do servidor.</p>' : ''}
+              ${!pdfGenerated ? '<p><strong>Nota:</strong> PDF não foi gerado devido a limitações do servidor. Detalhes incluídos no email.</p>' : ''}
             `,
             attachments: pdfAttachment,
           });
