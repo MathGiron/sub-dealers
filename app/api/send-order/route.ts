@@ -238,7 +238,16 @@ export async function POST(request: Request) {
     try {
       console.log('[SEND-ORDER] Iniciando geração do PDF...');
       const browser = await puppeteer.launch({ 
-        args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+        args: [
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-dev-shm-usage",
+          "--disable-gpu",
+          "--no-first-run",
+          "--no-zygote",
+          "--single-process",
+          "--disable-extensions"
+        ],
         headless: true,
         executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined
       });
@@ -255,8 +264,8 @@ export async function POST(request: Request) {
       console.log('[SEND-ORDER] Conteúdo HTML definido');
       
       // Aguardar um pouco para garantir que o conteúdo seja renderizado
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log('[SEND-ORDER] Aguardou 2 segundos para renderização');
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      console.log('[SEND-ORDER] Aguardou 3 segundos para renderização');
       
       const pdfData = await page.pdf({ 
         format: 'A4',
@@ -280,6 +289,7 @@ export async function POST(request: Request) {
       }
     } catch (pdfError) {
       console.error('[SEND-ORDER] Erro ao gerar PDF:', pdfError);
+      console.log('[SEND-ORDER] Continuando sem PDF...');
       // Se falhar o PDF, continuar sem ele
     }
     
@@ -332,8 +342,8 @@ export async function POST(request: Request) {
           console.log('[SEND-ORDER] E-mail enviado com sucesso para o usuário!');
         }
         
-        // Enviar cópia para o remetente (email que está enviando) - SÓ SE TIVER PDF
-        if (senderEmail && pdfBuffer.length > 0) {
+        // Enviar cópia para o remetente (email que está enviando) - SEMPRE ENVIAR
+        if (senderEmail) {
           console.log('[SEND-ORDER] Iniciando envio de cópia para remetente:', senderEmail);
           await transporter.sendMail({
             from: `EcoFlow <${senderEmail}>`,
@@ -353,6 +363,7 @@ export async function POST(request: Request) {
                 return sum + (Number(price) * product.quantity);
               }, 0) || 0) + (pedido.freightCost || 0) + (pedido.additionalFees || 0)).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
               <p>Segue em anexo a nota de pedido completa.</p>
+              ${pdfBuffer.length === 0 ? '<p><strong>Nota:</strong> PDF não foi gerado devido a limitações do servidor.</p>' : ''}
             `,
             attachments: pdfAttachment,
           });
