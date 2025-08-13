@@ -231,10 +231,13 @@ export async function POST(request: Request) {
     
     // 1. Verificar se já temos um PDF enviado pelo cliente
     let pdfBuffer: Buffer = Buffer.from('');
+    let pdfGenerated = false;
+    
     if (pedido.pdfBuffer) {
       try {
         pdfBuffer = Buffer.from(pedido.pdfBuffer, 'base64');
         console.log('[SEND-ORDER] PDF recebido do cliente, tamanho:', pdfBuffer.length);
+        pdfGenerated = true;
       } catch (pdfError) {
         console.error('[SEND-ORDER] Erro ao decodificar PDF do cliente:', pdfError);
       }
@@ -247,25 +250,76 @@ export async function POST(request: Request) {
       console.log('[SEND-ORDER] HTML do pedido gerado com sucesso');
       
       try {
+        console.log('[SEND-ORDER] Iniciando geração do PDF...');
         const browser = await puppeteer.launch({ 
-          args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+          args: [
+            "--no-sandbox",
+            "--disable-setuid-sandbox",
+            "--disable-dev-shm-usage",
+            "--disable-gpu",
+            "--no-first-run",
+            "--disable-extensions"
+          ],
           headless: true
         });
+        console.log('[SEND-ORDER] Browser iniciado');
+        
         const page = await browser.newPage();
+        console.log('[SEND-ORDER] Nova página criada');
+        
+        // Configurar viewport
+        await page.setViewport({ width: 1200, height: 800 });
+        console.log('[SEND-ORDER] Viewport configurado');
+        
         await page.setContent(html, { waitUntil: 'networkidle0' });
-        const pdfData = await page.pdf({ format: 'A4' });
+        console.log('[SEND-ORDER] Conteúdo HTML definido');
+        
+        // Aguardar um pouco para garantir que o conteúdo seja renderizado
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        console.log('[SEND-ORDER] Aguardou 2 segundos para renderização');
+        
+        const pdfData = await page.pdf({ 
+          format: 'A4',
+          printBackground: true,
+          margin: {
+            top: '20px',
+            right: '20px',
+            bottom: '20px',
+            left: '20px'
+          }
+        });
+        
         pdfBuffer = Buffer.from(pdfData);
-        await browser.close();
         console.log('[SEND-ORDER] PDF gerado com sucesso, tamanho:', pdfBuffer.length);
+        
+        // Fechar browser APÓS gerar o PDF
+        await browser.close();
+        console.log('[SEND-ORDER] Browser fechado');
+        
+        // Verificar se o PDF tem conteúdo
+        if (pdfBuffer.length === 0) {
+          console.error('[SEND-ORDER] ERRO: PDF gerado está vazio!');
+        } else {
+          console.log('[SEND-ORDER] PDF tem conteúdo válido');
+          pdfGenerated = true;
+        }
       } catch (pdfError) {
         console.error('[SEND-ORDER] Erro ao gerar PDF:', pdfError);
+        console.log('[SEND-ORDER] Continuando sem PDF...');
         // Se falhar o PDF, continuar sem ele
       }
     }
     
-    // 3. Tentar enviar o e-mail (opcional)
+    // 3. Enviar e-mails para usuário e remetente
     const email = pedido.email || pedido.clientEmail;
-    if (email && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+    const senderEmail = process.env.EMAIL_USER; // Email do remetente
+    
+    console.log('[SEND-ORDER] Email do usuário:', email);
+    console.log('[SEND-ORDER] Email do remetente:', senderEmail);
+    console.log('[SEND-ORDER] EMAIL_USER configurado:', !!process.env.EMAIL_USER);
+    console.log('[SEND-ORDER] EMAIL_PASS configurado:', !!process.env.EMAIL_PASS);
+    
+    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
       try {
         const transporter = nodemailer.createTransport({
           service: "gmail",
@@ -274,32 +328,78 @@ export async function POST(request: Request) {
             pass: process.env.EMAIL_PASS,
           },
         });
-        console.log('[SEND-ORDER] Iniciando envio de e-mail para:', email);
-        console.log('[SEND-ORDER] PDF buffer length:', pdfBuffer.length);
         
-        const mailOptions = {
-          from: 'EcoFlow <matheus.giron@grupotimber.com.br>',
-          to: email,
-          subject: `Nota de Pedido - EcoFlow - ${pedido.idPedido || `pedido_${Date.now()}`}`,
-          text: 'Segue em anexo a nota de pedido.',
-          attachments: pdfBuffer.length > 0 ? [
-            {
-              filename: `${pedido.idPedido ? pedido.idPedido : 'nota-pedido'}.pdf`,
-              content: pdfBuffer,
-              contentType: 'application/pdf',
-            },
-          ] : [],
-        };
+        // Preparar anexo do PDF - SÓ ENVIAR SE TIVER CONTEÚDO
+        const pdfAttachment = pdfBuffer.length > 0 ? [
+          {
+            filename: `nota-pedido-${pedido.idPedido || `pedido_${Date.now()}`}.pdf`,
+            content: pdfBuffer,
+            contentType: 'application/pdf',
+          },
+        ] : [];
         
-        console.log('[SEND-ORDER] Mail options:', {
-          to: mailOptions.to,
-          subject: mailOptions.subject,
-          hasAttachments: mailOptions.attachments.length > 0,
-          attachmentSize: pdfBuffer.length
-        });
+        console.log('[SEND-ORDER] Anexo preparado, tamanho:', pdfAttachment.length);
+        console.log('[SEND-ORDER] PDF buffer tamanho:', pdfBuffer.length);
         
-        await transporter.sendMail(mailOptions);
-        console.log('[SEND-ORDER] E-mail enviado com sucesso!');
+        // Enviar email para o usuário (destinatário)
+        if (email) {
+          console.log('[SEND-ORDER] Iniciando envio de e-mail para usuário:', email);
+          await transporter.sendMail({
+            from: `EcoFlow <${senderEmail}>`,
+            to: email,
+            subject: `Nota de Pedido - EcoFlow - ${pedido.idPedido || `pedido_${Date.now()}`}`,
+            html: `
+              <h2>Nota de Pedido - EcoFlow</h2>
+              <p>Olá ${pedido.clientName || 'Cliente'}!</p>
+              <p>Segue em anexo a nota de pedido com todos os detalhes.</p>
+              <p>Obrigado por escolher a EcoFlow!</p>
+              ${!pdfGenerated ? `
+                <hr>
+                <h3>Detalhes do Pedido:</h3>
+                <p><strong>Cliente:</strong> ${pedido.clientName || 'Cliente não identificado'}</p>
+                <p><strong>CNPJ/CPF:</strong> ${pedido.cnpj || 'CNPJ não informado'}</p>
+                <p><strong>Contato:</strong> ${pedido.contactNumber || 'Número de contato não informado'}</p>
+                <p><strong>Endereço:</strong> ${pedido.deliveryAddress || 'Endereço não informado'}</p>
+                <p><strong>Estado:</strong> ${pedido.state || 'Estado não informado'}</p>
+                <p><strong>Data do Pedido:</strong> ${new Date().toLocaleDateString('pt-BR') + ', ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</p>
+                <p><strong>Total do Pedido:</strong> R$ ${((pedido.products?.reduce((sum: number, product: { variantPrice?: number; selectedVariant?: { price?: number }; price?: number; quantity: number }) => {
+                  const price = product.variantPrice || product.selectedVariant?.price || product.price || 0;
+                  return sum + (Number(price) * product.quantity);
+                }, 0) || 0) + (pedido.freightCost || 0) + (pedido.additionalFees || 0)).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+              ` : ''}
+            `,
+            attachments: pdfAttachment,
+          });
+          console.log('[SEND-ORDER] E-mail enviado com sucesso para o usuário!');
+        }
+        
+        // Enviar cópia para o remetente (email que está enviando) - SEMPRE ENVIAR
+        if (senderEmail) {
+          console.log('[SEND-ORDER] Iniciando envio de cópia para remetente:', senderEmail);
+          await transporter.sendMail({
+            from: `EcoFlow <${senderEmail}>`,
+            to: senderEmail,
+            subject: `Cópia - Novo Pedido Recebido - ${pedido.clientName || 'Cliente'} - ${pedido.idPedido || `pedido_${Date.now()}`}`,
+            html: `
+              <h2>Cópia - Novo Pedido Recebido</h2>
+              <p><strong>Cliente:</strong> ${pedido.clientName || 'Cliente não identificado'}</p>
+              <p><strong>CNPJ/CPF:</strong> ${pedido.cnpj || 'CNPJ não informado'}</p>
+              <p><strong>Contato:</strong> ${pedido.contactNumber || 'Número de contato não informado'}</p>
+              <p><strong>Email:</strong> ${email || 'Email não informado'}</p>
+              <p><strong>Endereço:</strong> ${pedido.deliveryAddress || 'Endereço não informado'}</p>
+              <p><strong>Estado:</strong> ${pedido.state || 'Estado não informado'}</p>
+              <p><strong>Data do Pedido:</strong> ${new Date().toLocaleDateString('pt-BR') + ', ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</p>
+              <p><strong>Total do Pedido:</strong> R$ ${((pedido.products?.reduce((sum: number, product: { variantPrice?: number; selectedVariant?: { price?: number }; price?: number; quantity: number }) => {
+                const price = product.variantPrice || product.selectedVariant?.price || product.price || 0;
+                return sum + (Number(price) * product.quantity);
+              }, 0) || 0) + (pedido.freightCost || 0) + (pedido.additionalFees || 0)).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+              <p>Segue em anexo a nota de pedido completa.</p>
+              ${!pdfGenerated ? '<p><strong>Nota:</strong> PDF não foi gerado devido a limitações do servidor. Detalhes incluídos no email.</p>' : ''}
+            `,
+            attachments: pdfAttachment,
+          });
+          console.log('[SEND-ORDER] Cópia enviada com sucesso para o remetente!');
+        }
       } catch (emailError) {
         console.error('[SEND-ORDER] Erro ao enviar e-mail:', emailError);
         console.error('[SEND-ORDER] Detalhes do erro:', {
