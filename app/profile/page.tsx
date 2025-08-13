@@ -34,6 +34,52 @@ interface Order {
   total?: number;
 }
 
+interface CompletedOrderRaw {
+  idPedido?: string;
+  id?: string;
+  produtos?: Array<{
+    id?: string;
+    nome?: string;
+    name?: string;
+    quantidade?: number;
+    quantity?: number;
+    precoVariante?: number;
+    price?: number;
+    variante?: string;
+    variantName?: string;
+    image?: string;
+    description?: string;
+    specs?: Array<{ name: string; included: boolean; price?: string | number; weight?: number }>;
+    buttonText?: string;
+    href?: string;
+    highlighted?: boolean;
+    weight?: number;
+  }>;
+  dataPedido?: string;
+  orderDate?: string;
+  status?: string;
+  total?: number;
+}
+
+interface ProductRaw {
+  id?: string;
+  nome?: string;
+  name?: string;
+  quantidade?: number;
+  quantity?: number;
+  precoVariante?: number;
+  price?: number;
+  variante?: string;
+  variantName?: string;
+  image?: string;
+  description?: string;
+  specs?: Array<{ name: string; included: boolean; price?: string | number; weight?: number }>;
+  buttonText?: string;
+  href?: string;
+  highlighted?: boolean;
+  weight?: number;
+}
+
 const BottomGradient = () => {
   return (
     <>
@@ -61,12 +107,12 @@ export default function ProfilePage() {
     }
 
     const draft = (user.unsafeMetadata?.draftOrder || []) as OrderProduct[];
-    const completedRaw = (user.unsafeMetadata?.completedOrders || []) as Record<string, unknown>[];
+    const completedRaw = (user.unsafeMetadata?.completedOrders || []) as CompletedOrderRaw[];
     
     // Converter dados do completedOrders para o formato Order
-    const completed: Order[] = completedRaw.map((order: Record<string, unknown>, index: number) => ({
+    const completed: Order[] = completedRaw.map((order: CompletedOrderRaw, index: number) => ({
       id: (order.idPedido as string) || (order.id as string) || `order_${index}_${Date.now()}`,
-      products: ((order.produtos as Record<string, unknown>[]) || []).map((prod: Record<string, unknown>, prodIndex: number) => ({
+      products: ((order.produtos as ProductRaw[]) || []).map((prod: ProductRaw, prodIndex: number) => ({
         id: (prod.id as string) || `product_${index}_${prodIndex}_${Date.now()}`,
         name: (prod.nome as string) || (prod.name as string) || "",
         quantity: (prod.quantidade as number) || (prod.quantity as number) || 1,

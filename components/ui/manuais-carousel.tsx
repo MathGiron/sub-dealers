@@ -234,6 +234,13 @@ export function ManualsCarousel() {
     document.body.removeChild(link)
   }
 
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
   if (loading || !manuals) {
     return (
       <div className="flex justify-center items-center h-96 w-full bg-[var(--background)]">
@@ -256,30 +263,66 @@ export function ManualsCarousel() {
   const orderedGroups = ["River", "Delta", "Wave e Glacier", "Painéis Solares", "Outros"]
 
   return (
-    <div className="w-full h-full py-20">
-      <h2 className="max-w-7xl pl-4 mx-auto text-xl md:text-5xl font-bold text-[var(--card-foreground)] font-sans mb-10">
-        Manuais Disponíveis
-      </h2>
-      {orderedGroups.map((group) => (
-        <section key={group} className="mb-12">
-          <h3 className="text-2xl md:text-3xl font-semibold text-[var(--card-foreground)] pl-4 mb-6">
-            {group}
-          </h3>
-          <Carousel
-            items={groupedManuals[group]?.map((card) => (
-              <div key={card.src} className="flex flex-col items-center">
-                <Card card={card} />
-                <Button
-                  onClick={() => handleDownload(card.pdfPath, card.title + ".pdf")}
-                  className="mt-1 bg-[var(--muted)] text-[var(--muted-foreground)] hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)] rounded-full"
+    <div className="w-full min-h-screen">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="py-12 sm:py-16 lg:py-20">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold text-[var(--card-foreground)] font-sans text-center">
+            Manuais Disponíveis
+          </h2>
+        </div>
+        
+        {/* Menu de Navegação */}
+        <div className="mb-12 lg:mb-16">
+          <div className="bg-[var(--card)] rounded-xl p-6 lg:p-8 shadow-lg border border-[var(--border)]">
+            <h3 className="text-lg lg:text-xl font-semibold text-[var(--card-foreground)] mb-6 text-center">
+              Navegação Rápida
+            </h3>
+            <div className="flex flex-wrap gap-3 justify-center">
+              {orderedGroups.map((group) => (
+                <button
+                  key={group}
+                  onClick={() => scrollToSection(`section-${group.replace(/\s+/g, '-')}`)}
+                  className="px-4 py-2 bg-[var(--muted)] text-[var(--muted-foreground)] hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)] rounded-full text-sm transition-colors duration-200 font-medium"
                 >
-                  <Download className="mr-2 h-4 w-4" /> Baixar PDF
-                </Button>
-              </div>
-            ))}
-          />
-        </section>
-      ))}
+                  {group}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Seções de Conteúdo */}
+        {orderedGroups.map((group) => (
+          <section 
+            key={group} 
+            id={`section-${group.replace(/\s+/g, '-')}`}
+            className="mb-16 lg:mb-20 scroll-mt-24"
+          >
+            <div className="mb-8 lg:mb-12">
+              <h3 className="text-xl sm:text-2xl lg:text-3xl font-semibold text-[var(--card-foreground)] text-center">
+                {group}
+              </h3>
+            </div>
+            
+            <div className="w-full">
+              <Carousel
+                items={groupedManuals[group]?.map((card) => (
+                  <div key={card.src} className="flex flex-col items-center w-full">
+                    <Card card={card} />
+                    <Button
+                      onClick={() => handleDownload(card.pdfPath, card.title + ".pdf")}
+                      className="mt-4 bg-[var(--muted)] text-[var(--muted-foreground)] hover:bg-[var(--primary)] hover:text-[var(--primary-foreground)] rounded-full px-4 py-2 h-10"
+                    >
+                      <Download className="mr-2 h-4 w-4" /> Baixar PDF
+                    </Button>
+                  </div>
+                ))}
+              />
+            </div>
+          </section>
+        ))}
+      </div>
     </div>
   )
 }

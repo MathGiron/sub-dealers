@@ -39,6 +39,13 @@ const Navbar: React.FC = () => {
               <span>Manuais</span>
             </HoverBorderGradient>
           </Link>
+          <Link href="/faqs" className="relative">
+            <HoverBorderGradient
+              className="px-2 sm:px-4 py-1 sm:py-2 rounded-full transition duration-200 hover:bg-gray-700 active:bg-gray-700 text-sm sm:text-base"
+            >
+              <span>FAQs</span>
+            </HoverBorderGradient>
+          </Link>
           <Link href="/apresentacao" className="relative">
             <HoverBorderGradient
               className="px-2 sm:px-4 py-1 sm:py-2 rounded-full transition duration-200 hover:bg-gray-700 active:bg-gray-700 text-sm sm:text-base"
@@ -159,6 +166,13 @@ const Navbar: React.FC = () => {
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Manuais
+              </Link>
+              <Link
+                href="/faqs"
+                className="block text-white py-1 text-sm"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                FAQs
               </Link>
               <Link
                 href="/apresentacao"

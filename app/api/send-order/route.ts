@@ -229,26 +229,38 @@ export async function POST(request: Request) {
     const pedido = await request.json();
     console.log('[SEND-ORDER] Dados do pedido recebidos:', JSON.stringify(pedido, null, 2));
     
-    // 1. Montar o HTML preenchido
-    const html = gerarHtmlPedido(pedido);
-    console.log('[SEND-ORDER] HTML do pedido gerado com sucesso');
-    
-    // 2. Gerar o PDF com puppeteer
+    // 1. Verificar se já temos um PDF enviado pelo cliente
     let pdfBuffer: Buffer = Buffer.from('');
-    try {
-      const browser = await puppeteer.launch({ 
-        args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
-        headless: true
-      });
-      const page = await browser.newPage();
-      await page.setContent(html, { waitUntil: 'networkidle0' });
-      const pdfData = await page.pdf({ format: 'A4' });
-      pdfBuffer = Buffer.from(pdfData);
-      await browser.close();
-      console.log('[SEND-ORDER] PDF gerado com sucesso, tamanho:', pdfBuffer.length);
-    } catch (pdfError) {
-      console.error('[SEND-ORDER] Erro ao gerar PDF:', pdfError);
-      // Se falhar o PDF, continuar sem ele
+    if (pedido.pdfBuffer) {
+      try {
+        pdfBuffer = Buffer.from(pedido.pdfBuffer, 'base64');
+        console.log('[SEND-ORDER] PDF recebido do cliente, tamanho:', pdfBuffer.length);
+      } catch (pdfError) {
+        console.error('[SEND-ORDER] Erro ao decodificar PDF do cliente:', pdfError);
+      }
+    }
+    
+    // 2. Se não temos PDF do cliente, gerar um novo com puppeteer
+    if (pdfBuffer.length === 0) {
+      console.log('[SEND-ORDER] Gerando PDF com puppeteer...');
+      const html = gerarHtmlPedido(pedido);
+      console.log('[SEND-ORDER] HTML do pedido gerado com sucesso');
+      
+      try {
+        const browser = await puppeteer.launch({ 
+          args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-dev-shm-usage"],
+          headless: true
+        });
+        const page = await browser.newPage();
+        await page.setContent(html, { waitUntil: 'networkidle0' });
+        const pdfData = await page.pdf({ format: 'A4' });
+        pdfBuffer = Buffer.from(pdfData);
+        await browser.close();
+        console.log('[SEND-ORDER] PDF gerado com sucesso, tamanho:', pdfBuffer.length);
+      } catch (pdfError) {
+        console.error('[SEND-ORDER] Erro ao gerar PDF:', pdfError);
+        // Se falhar o PDF, continuar sem ele
+      }
     }
     
     // 3. Tentar enviar o e-mail (opcional)
@@ -263,7 +275,9 @@ export async function POST(request: Request) {
           },
         });
         console.log('[SEND-ORDER] Iniciando envio de e-mail para:', email);
-        await transporter.sendMail({
+        console.log('[SEND-ORDER] PDF buffer length:', pdfBuffer.length);
+        
+        const mailOptions = {
           from: 'EcoFlow <matheus.giron@grupotimber.com.br>',
           to: email,
           subject: `Nota de Pedido - EcoFlow - ${pedido.idPedido || `pedido_${Date.now()}`}`,
@@ -275,14 +289,30 @@ export async function POST(request: Request) {
               contentType: 'application/pdf',
             },
           ] : [],
+        };
+        
+        console.log('[SEND-ORDER] Mail options:', {
+          to: mailOptions.to,
+          subject: mailOptions.subject,
+          hasAttachments: mailOptions.attachments.length > 0,
+          attachmentSize: pdfBuffer.length
         });
+        
+        await transporter.sendMail(mailOptions);
         console.log('[SEND-ORDER] E-mail enviado com sucesso!');
       } catch (emailError) {
         console.error('[SEND-ORDER] Erro ao enviar e-mail:', emailError);
+        console.error('[SEND-ORDER] Detalhes do erro:', {
+          message: (emailError as Error).message,
+          stack: (emailError as Error).stack
+        });
         // Continuar mesmo se o email falhar
       }
     } else {
       console.log('[SEND-ORDER] Configurações de email não encontradas, pulando envio de email');
+      console.log('[SEND-ORDER] Email:', email);
+      console.log('[SEND-ORDER] EMAIL_USER:', !!process.env.EMAIL_USER);
+      console.log('[SEND-ORDER] EMAIL_PASS:', !!process.env.EMAIL_PASS);
     }
     
     // Gerar link do WhatsApp

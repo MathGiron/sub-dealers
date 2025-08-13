@@ -42,19 +42,25 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
     if (carouselRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current
       setCanScrollLeft(scrollLeft > 0)
-      setCanScrollRight(scrollLeft < scrollWidth - clientWidth)
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1)
     }
   }
 
   const scrollLeft = () => {
     if (carouselRef.current) {
-      carouselRef.current.scrollBy({ left: -400, behavior: "smooth" })
+      const cardWidth = isMobile() ? 230 : 384
+      const gap = isMobile() ? 16 : 24
+      const scrollAmount = Math.max(cardWidth + gap, 400)
+      carouselRef.current.scrollBy({ left: -scrollAmount, behavior: "smooth" })
     }
   }
 
   const scrollRight = () => {
     if (carouselRef.current) {
-      carouselRef.current.scrollBy({ left: 400, behavior: "smooth" })
+      const cardWidth = isMobile() ? 230 : 384
+      const gap = isMobile() ? 16 : 24
+      const scrollAmount = Math.max(cardWidth + gap, 400)
+      carouselRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" })
     }
   }
 
@@ -77,22 +83,34 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
 
   return (
     <CarouselContext.Provider value={{ onCardClose: handleCardClose, currentIndex }}>
-      <div className="relative w-full">
+      <div className="relative w-full group">
+        {/* Container principal do carrossel */}
         <div
           className="flex w-full overflow-x-scroll overscroll-x-auto scroll-smooth py-10 [scrollbar-width:none] md:py-20"
           ref={carouselRef}
           onScroll={checkScrollability}
         >
+          {/* Gradiente esquerdo para indicar mais conteúdo */}
           <div
             className={cn(
-              "absolute right-0 z-[1000] h-auto w-[5%] overflow-hidden bg-gradient-to-l from-black to-transparent"
+              "absolute left-0 top-0 z-10 h-full w-16 md:w-24 bg-gradient-to-r from-[var(--background)] via-[var(--background)]/80 to-transparent pointer-events-none",
+              canScrollLeft ? "opacity-100" : "opacity-0"
             )}
-          ></div>
+          />
 
+          {/* Gradiente direito para indicar mais conteúdo */}
+          <div
+            className={cn(
+              "absolute right-0 top-0 z-10 h-full w-16 md:w-24 bg-gradient-to-l from-[var(--background)] via-[var(--background)]/80 to-transparent pointer-events-none",
+              canScrollRight ? "opacity-100" : "opacity-0"
+            )}
+          />
+
+          {/* Conteúdo dos cards */}
           <div
             className={cn(
               "flex flex-row justify-start gap-6 pl-4",
-              "mx-auto max-w-7xl"
+              "mx-auto max-w-7xl w-full"
             )}
           >
             {items.map((item, index) => (
@@ -109,31 +127,67 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
                   },
                 }}
                 key={"card" + index}
-                className="rounded-3xl last:pr-[5%] md:last:pr-[33%]"
+                className="rounded-3xl last:pr-4 md:last:pr-8"
               >
                 {item}
               </motion.div>
             ))}
           </div>
-
-          {/* Botões de navegação ajustados para ficarem logo acima dos cards */}
-          <div className="absolute top-10 right-10 z-50 flex gap-2">
-            <button
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 disabled:opacity-50"
-              onClick={scrollLeft}
-              disabled={!canScrollLeft}
-            >
-              <IconArrowNarrowLeft className="h-6 w-6 text-gray-500" />
-            </button>
-            <button
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 disabled:opacity-50"
-              onClick={scrollRight}
-              disabled={!canScrollRight}
-            >
-              <IconArrowNarrowRight className="h-6 w-6 text-gray-500" />
-            </button>
-          </div>
         </div>
+
+        {/* Botões de navegação - posicionados de forma funcional e responsiva */}
+        <div className="absolute inset-y-0 left-4 md:left-8 z-20 flex items-center">
+          <button
+            className={cn(
+              "flex h-12 w-12 md:h-14 md:w-14 items-center justify-center rounded-full",
+              "bg-[var(--card)]/90 backdrop-blur-sm border border-[var(--border)]",
+              "text-[var(--foreground)] shadow-lg transition-all duration-200",
+              "hover:bg-[var(--card)] hover:scale-105 hover:shadow-xl",
+              "disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:scale-100",
+              "group-hover:opacity-100 opacity-0 md:opacity-100"
+            )}
+            onClick={scrollLeft}
+            disabled={!canScrollLeft}
+            aria-label="Rolar para esquerda"
+          >
+            <IconArrowNarrowLeft className="h-5 w-5 md:h-6 md:w-6" />
+          </button>
+        </div>
+
+        <div className="absolute inset-y-0 right-4 md:right-8 z-20 flex items-center">
+          <button
+            className={cn(
+              "flex h-12 w-12 md:h-14 md:w-14 items-center justify-center rounded-full",
+              "bg-[var(--card)]/90 backdrop-blur-sm border border-[var(--border)]",
+              "text-[var(--foreground)] shadow-lg transition-all duration-200",
+              "hover:bg-[var(--card)] hover:scale-105 hover:shadow-xl",
+              "disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:scale-100",
+              "group-hover:opacity-100 opacity-0 md:opacity-100"
+            )}
+            onClick={scrollRight}
+            disabled={!canScrollRight}
+            aria-label="Rolar para direita"
+          >
+            <IconArrowNarrowRight className="h-5 w-5 md:h-6 md:w-6" />
+          </button>
+        </div>
+
+        {/* Indicadores de scroll - opcional para melhor UX */}
+        {items.length > 3 && (
+          <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 z-20 flex gap-2">
+            {Array.from({ length: Math.ceil(items.length / 3) }).map((_, index) => (
+              <div
+                key={index}
+                className={cn(
+                  "h-2 w-2 rounded-full transition-all duration-200",
+                  currentIndex === index 
+                    ? "bg-[var(--primary)] w-6" 
+                    : "bg-[var(--muted)] hover:bg-[var(--muted-foreground)]"
+                )}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </CarouselContext.Provider>
   )
@@ -141,7 +195,7 @@ export const Carousel = ({ items, initialScroll = 0 }: CarouselProps) => {
 
 export const Card = ({ card }: { card: Card }) => {
   return (
-    <div className="relative z-10 flex h-56 w-44 flex-col items-center justify-start overflow-hidden rounded-3xl md:h-[28rem] md:w-72 bg-[var(--card)]">
+    <div className="relative z-10 flex h-56 w-44 flex-col items-center justify-start overflow-hidden rounded-3xl md:h-[28rem] md:w-72 bg-[var(--card)] border border-[var(--border)] shadow-lg hover:shadow-xl transition-shadow duration-200">
       <div className="pointer-events-none absolute inset-x-0 top-0 z-30 h-full bg-gradient-to-b from-black/50 via-transparent to-transparent" />
       <div className="relative z-40 p-4 text-center">
         <p className="text-left font-sans text-sm font-medium text-white md:text-base">
