@@ -243,13 +243,20 @@ export async function POST(request: Request) {
       }
     }
     
-    // 2. Se não temos PDF do cliente, gerar um novo com puppeteer
-    if (pdfBuffer.length === 0) {
-      console.log('[SEND-ORDER] Gerando PDF com puppeteer...');
-      const html = gerarHtmlPedido(pedido);
-      console.log('[SEND-ORDER] HTML do pedido gerado com sucesso');
-      
-      try {
+         // 2. Se não temos PDF do cliente, gerar um novo com puppeteer
+     if (pdfBuffer.length === 0) {
+       console.log('[SEND-ORDER] Gerando PDF com puppeteer...');
+       const html = gerarHtmlPedido(pedido);
+       console.log('[SEND-ORDER] HTML do pedido gerado com sucesso');
+       console.log('[SEND-ORDER] Tamanho do HTML gerado:', html.length);
+       
+       // Verificar se o HTML foi gerado corretamente
+       if (!html || html.length < 100) {
+         console.error('[SEND-ORDER] ERRO: HTML gerado está vazio ou muito pequeno!');
+         throw new Error('HTML inválido gerado');
+       }
+       
+       try {
         console.log('[SEND-ORDER] Iniciando geração do PDF...');
         const browser = await puppeteer.launch({ 
           args: [
@@ -271,22 +278,35 @@ export async function POST(request: Request) {
         await page.setViewport({ width: 1200, height: 800 });
         console.log('[SEND-ORDER] Viewport configurado');
         
+        // Definir o conteúdo HTML da página
         await page.setContent(html, { waitUntil: 'networkidle0' });
         console.log('[SEND-ORDER] Conteúdo HTML definido');
         
         // Aguardar um pouco para garantir que o conteúdo seja renderizado
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        console.log('[SEND-ORDER] Aguardou 2 segundos para renderização');
+        await new Promise(resolve => setTimeout(resolve, 3000));
+        console.log('[SEND-ORDER] Aguardou 3 segundos para renderização');
         
+        // Verificar se o conteúdo foi carregado corretamente
+        const pageContent = await page.content();
+        console.log('[SEND-ORDER] Tamanho do conteúdo da página:', pageContent.length);
+        
+        // Aguardar que as fontes sejam carregadas
+        await page.evaluateHandle('document.fonts.ready');
+        console.log('[SEND-ORDER] Fontes carregadas');
+        
+        // Configurações mais robustas para geração do PDF
         const pdfData = await page.pdf({ 
           format: 'A4',
           printBackground: true,
+          preferCSSPageSize: false,
           margin: {
             top: '20px',
             right: '20px',
             bottom: '20px',
             left: '20px'
-          }
+          },
+          displayHeaderFooter: false,
+          scale: 1.0
         });
         
         pdfBuffer = Buffer.from(pdfData);
