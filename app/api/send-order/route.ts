@@ -3,6 +3,14 @@ import nodemailer from "nodemailer";
 import puppeteer from "puppeteer";
 import type { PedidoData } from "@/types/api";
 
+// Tentar importar chrome-aws-lambda para produção
+let chrome: any = null;
+try {
+  chrome = require('chrome-aws-lambda');
+} catch (e) {
+  console.log('[SEND-ORDER] chrome-aws-lambda não disponível, usando puppeteer padrão');
+}
+
 // Função para montar o HTML do pedido usando o template completo
 function gerarHtmlPedido(pedido: PedidoData) {
   // Dados da empresa (fixos para Rodoparaná)
@@ -243,90 +251,207 @@ export async function POST(request: Request) {
       }
     }
     
-         // 2. Se não temos PDF do cliente, gerar um novo com puppeteer
-     if (pdfBuffer.length === 0) {
-       console.log('[SEND-ORDER] Gerando PDF com puppeteer...');
-       const html = gerarHtmlPedido(pedido);
-       console.log('[SEND-ORDER] HTML do pedido gerado com sucesso');
-       console.log('[SEND-ORDER] Tamanho do HTML gerado:', html.length);
-       
-       // Verificar se o HTML foi gerado corretamente
-       if (!html || html.length < 100) {
-         console.error('[SEND-ORDER] ERRO: HTML gerado está vazio ou muito pequeno!');
-         throw new Error('HTML inválido gerado');
-       }
-       
-       try {
-        console.log('[SEND-ORDER] Iniciando geração do PDF...');
-        const browser = await puppeteer.launch({ 
-          args: [
-            "--no-sandbox",
-            "--disable-setuid-sandbox",
-            "--disable-dev-shm-usage",
-            "--disable-gpu",
-            "--no-first-run",
-            "--disable-extensions"
-          ],
-          headless: true
-        });
-        console.log('[SEND-ORDER] Browser iniciado');
-        
-        const page = await browser.newPage();
-        console.log('[SEND-ORDER] Nova página criada');
-        
-        // Configurar viewport
-        await page.setViewport({ width: 1200, height: 800 });
-        console.log('[SEND-ORDER] Viewport configurado');
-        
-        // Definir o conteúdo HTML da página
-        await page.setContent(html, { waitUntil: 'networkidle0' });
-        console.log('[SEND-ORDER] Conteúdo HTML definido');
-        
-        // Aguardar um pouco para garantir que o conteúdo seja renderizado
-        await new Promise(resolve => setTimeout(resolve, 3000));
-        console.log('[SEND-ORDER] Aguardou 3 segundos para renderização');
-        
-        // Verificar se o conteúdo foi carregado corretamente
-        const pageContent = await page.content();
-        console.log('[SEND-ORDER] Tamanho do conteúdo da página:', pageContent.length);
-        
-        // Aguardar que as fontes sejam carregadas
-        await page.evaluateHandle('document.fonts.ready');
-        console.log('[SEND-ORDER] Fontes carregadas');
-        
-        // Configurações mais robustas para geração do PDF
-        const pdfData = await page.pdf({ 
-          format: 'A4',
-          printBackground: true,
-          preferCSSPageSize: false,
-          margin: {
-            top: '20px',
-            right: '20px',
-            bottom: '20px',
-            left: '20px'
-          },
-          displayHeaderFooter: false,
-          scale: 1.0
-        });
-        
-        pdfBuffer = Buffer.from(pdfData);
-        console.log('[SEND-ORDER] PDF gerado com sucesso, tamanho:', pdfBuffer.length);
-        
-        // Fechar browser APÓS gerar o PDF
-        await browser.close();
-        console.log('[SEND-ORDER] Browser fechado');
-        
-        // Verificar se o PDF tem conteúdo
-        if (pdfBuffer.length === 0) {
-          console.error('[SEND-ORDER] ERRO: PDF gerado está vazio!');
-        } else {
-          console.log('[SEND-ORDER] PDF tem conteúdo válido');
-          pdfGenerated = true;
+    // 2. Se não temos PDF do cliente, gerar um novo com puppeteer
+    if (pdfBuffer.length === 0) {
+      console.log('[SEND-ORDER] Gerando PDF com puppeteer...');
+      const html = gerarHtmlPedido(pedido);
+      console.log('[SEND-ORDER] HTML do pedido gerado com sucesso');
+      
+      // Tentar diferentes abordagens para gerar PDF
+      let pdfSuccess = false;
+      
+      // Abordagem 1: Puppeteer padrão (funciona em desenvolvimento)
+      if (!pdfSuccess) {
+        try {
+          console.log('[SEND-ORDER] Tentativa 1: Puppeteer padrão...');
+          const browser = await puppeteer.launch({ 
+            args: [
+              "--no-sandbox",
+              "--disable-setuid-sandbox",
+              "--disable-dev-shm-usage",
+              "--disable-gpu",
+              "--no-first-run",
+              "--disable-extensions"
+            ],
+            headless: true
+          });
+          console.log('[SEND-ORDER] Browser iniciado');
+          
+          const page = await browser.newPage();
+          console.log('[SEND-ORDER] Nova página criada');
+          
+          // Configurar viewport
+          await page.setViewport({ width: 1200, height: 800 });
+          console.log('[SEND-ORDER] Viewport configurado');
+          
+          await page.setContent(html, { waitUntil: 'networkidle0' });
+          console.log('[SEND-ORDER] Conteúdo HTML definido');
+          
+          // Aguardar um pouco para garantir que o conteúdo seja renderizado
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          console.log('[SEND-ORDER] Aguardou 2 segundos para renderização');
+          
+          const pdfData = await page.pdf({ 
+            format: 'A4',
+            printBackground: true,
+            margin: {
+              top: '20px',
+              right: '20px',
+              bottom: '20px',
+              left: '20px'
+            }
+          });
+          
+          pdfBuffer = Buffer.from(pdfData);
+          console.log('[SEND-ORDER] PDF gerado com sucesso (Puppeteer padrão), tamanho:', pdfBuffer.length);
+          
+          // Fechar browser APÓS gerar o PDF
+          await browser.close();
+          console.log('[SEND-ORDER] Browser fechado');
+          
+          // Verificar se o PDF tem conteúdo
+          if (pdfBuffer.length > 0) {
+            console.log('[SEND-ORDER] PDF tem conteúdo válido');
+            pdfGenerated = true;
+            pdfSuccess = true;
+          } else {
+            console.error('[SEND-ORDER] ERRO: PDF gerado está vazio!');
+          }
+        } catch (pdfError) {
+          console.error('[SEND-ORDER] Erro com Puppeteer padrão:', pdfError);
+          console.log('[SEND-ORDER] Tentando próxima abordagem...');
         }
-      } catch (pdfError) {
-        console.error('[SEND-ORDER] Erro ao gerar PDF:', pdfError);
-        console.log('[SEND-ORDER] Continuando sem PDF...');
-        // Se falhar o PDF, continuar sem ele
+      }
+      
+      // Abordagem 2: Puppeteer com configurações específicas para produção
+      if (!pdfSuccess) {
+        try {
+          console.log('[SEND-ORDER] Tentativa 2: Puppeteer para produção...');
+          
+          let browser;
+          if (chrome && chrome.puppeteer) {
+            // Usar chrome-aws-lambda se disponível (melhor para produção)
+            console.log('[SEND-ORDER] Usando chrome-aws-lambda...');
+            browser = await chrome.puppeteer.launch({
+              args: chrome.args,
+              defaultViewport: chrome.defaultViewport,
+              executablePath: await chrome.executablePath,
+              headless: chrome.headless,
+            });
+          } else {
+            // Fallback para puppeteer padrão com configurações otimizadas
+            console.log('[SEND-ORDER] Usando puppeteer padrão com configurações otimizadas...');
+            browser = await puppeteer.launch({ 
+              args: [
+                "--no-sandbox",
+                "--disable-setuid-sandbox",
+                "--disable-dev-shm-usage",
+                "--disable-gpu",
+                "--no-first-run",
+                "--disable-extensions",
+                "--single-process",
+                "--no-zygote"
+              ],
+              headless: true,
+              executablePath: process.env.CHROME_BIN || undefined
+            });
+          }
+          
+          console.log('[SEND-ORDER] Browser para produção iniciado');
+          
+          const page = await browser.newPage();
+          await page.setViewport({ width: 1200, height: 800 });
+          await page.setContent(html, { waitUntil: 'networkidle0' });
+          
+          // Aguardar renderização
+          await new Promise(resolve => setTimeout(resolve, 3000));
+          
+          const pdfData = await page.pdf({ 
+            format: 'A4',
+            printBackground: true,
+            margin: { top: '20px', right: '20px', bottom: '20px', left: '20px' }
+          });
+          
+          pdfBuffer = Buffer.from(pdfData);
+          await browser.close();
+          
+          if (pdfBuffer.length > 0) {
+            console.log('[SEND-ORDER] PDF gerado com sucesso (Puppeteer produção), tamanho:', pdfBuffer.length);
+            pdfGenerated = true;
+            pdfSuccess = true;
+          }
+        } catch (pdfError) {
+          console.error('[SEND-ORDER] Erro com Puppeteer para produção:', pdfError);
+          console.log('[SEND-ORDER] Tentando próxima abordagem...');
+        }
+      }
+      
+      // Abordagem 3: Tentar com configurações mínimas (última tentativa)
+      if (!pdfSuccess) {
+        try {
+          console.log('[SEND-ORDER] Tentativa 3: Configurações mínimas...');
+          const browser = await puppeteer.launch({ 
+            args: ["--no-sandbox"],
+            headless: true
+          });
+          
+          const page = await browser.newPage();
+          await page.setContent(html);
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+          const pdfData = await page.pdf({ format: 'A4' });
+          pdfBuffer = Buffer.from(pdfData);
+          await browser.close();
+          
+          if (pdfBuffer.length > 0) {
+            console.log('[SEND-ORDER] PDF gerado com sucesso (configurações mínimas), tamanho:', pdfBuffer.length);
+            pdfGenerated = true;
+            pdfSuccess = true;
+          }
+        } catch (pdfError) {
+          console.error('[SEND-ORDER] Erro com configurações mínimas:', pdfError);
+          console.log('[SEND-ORDER] Tentando próxima abordagem...');
+        }
+      }
+      
+      // Abordagem 4: Tentar com puppeteer-core se disponível
+      if (!pdfSuccess) {
+        try {
+          console.log('[SEND-ORDER] Tentativa 4: Puppeteer-core...');
+          const puppeteerCore = require('puppeteer-core');
+          const browser = await puppeteerCore.launch({
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
+            headless: true,
+            executablePath: process.env.CHROME_BIN || '/usr/bin/google-chrome'
+          });
+          
+          const page = await browser.newPage();
+          await page.setContent(html);
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          
+          const pdfData = await page.pdf({ format: 'A4' });
+          pdfBuffer = Buffer.from(pdfData);
+          await browser.close();
+          
+          if (pdfBuffer.length > 0) {
+            console.log('[SEND-ORDER] PDF gerado com sucesso (puppeteer-core), tamanho:', pdfBuffer.length);
+            pdfGenerated = true;
+            pdfSuccess = true;
+          }
+        } catch (pdfError) {
+          console.error('[SEND-ORDER] Erro com puppeteer-core:', pdfError);
+          console.log('[SEND-ORDER] Todas as tentativas falharam...');
+        }
+      }
+      
+      // Log final do status do PDF
+      if (pdfGenerated) {
+        console.log('[SEND-ORDER] ✅ PDF gerado com sucesso!');
+        console.log('[SEND-ORDER] 📄 Tamanho do PDF:', pdfBuffer.length, 'bytes');
+      } else {
+        console.log('[SEND-ORDER] ❌ PDF não foi gerado, usando HTML como fallback');
+        console.log('[SEND-ORDER] HTML gerado com sucesso e será incluído no email');
+        console.log('[SEND-ORDER] 🔍 Verifique os logs acima para identificar o problema');
       }
     }
     

@@ -1,12 +1,15 @@
 {
   "functions": {
     "app/api/send-order/route.ts": {
-      "maxDuration": 30
+      "maxDuration": 60
     }
   },
   "build": {
     "env": {
-      "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD": "true"
+      "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD": "false"
     }
+  },
+  "env": {
+    "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD": "false"
   }
 }
