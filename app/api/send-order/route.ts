@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import puppeteer from "puppeteer";
+import { jsPDF } from "jspdf";
 import type { PedidoData } from "@/types/api";
 
 // Função para montar o HTML do pedido usando o template completo
@@ -223,6 +224,130 @@ function gerarHtmlPedido(pedido: PedidoData) {
   `;
 }
 
+// Função para gerar PDF usando jsPDF (fallback para produção)
+function gerarPdfComJsPDF(pedido: PedidoData): Buffer {
+  try {
+    console.log('[SEND-ORDER] Gerando PDF com jsPDF...');
+    
+    const doc = new jsPDF();
+    
+    // Dados da empresa
+    doc.setFontSize(20);
+    doc.text('Nota de Pedido - Ecoflow', 105, 20, { align: 'center' });
+    
+    doc.setFontSize(12);
+    doc.text('Dados da Empresa', 20, 40);
+    doc.setFontSize(10);
+    doc.text('Emitente: RODOPARANA IMPLEMENTOS RODOVIARIOS LTDA', 20, 50);
+    doc.text('CNPJ: 97.467.856/0010-02', 20, 57);
+    doc.text('Endereço: AV JUSCELINO KUBITSCHEK DE OLIVEIRA, 3.545, Curitiba - PR', 20, 64);
+    doc.text('Contato: (41) 99999-9999 | Vendedor: Equipe Comercial Rodoparaná', 20, 71);
+    
+    // Dados do cliente
+    doc.setFontSize(12);
+    doc.text('Dados do Cliente', 20, 85);
+    doc.setFontSize(10);
+    doc.text(`Nome: ${pedido.clientName || 'Cliente não identificado'}`, 20, 95);
+    doc.text(`CNPJ/CPF: ${pedido.cnpj || 'CNPJ não informado'}`, 20, 102);
+    doc.text(`Contato: ${pedido.contactNumber || 'Número de contato não informado'}`, 20, 109);
+    doc.text(`Endereço: ${pedido.deliveryAddress || 'Endereço não informado'}`, 20, 116);
+    doc.text(`Estado: ${pedido.state || 'Estado não informado'}`, 20, 123);
+    doc.text(`Data: ${new Date().toLocaleDateString('pt-BR') + ', ' + new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`, 20, 130);
+    
+    // Itens do pedido
+    doc.setFontSize(12);
+    doc.text('Itens do Pedido', 20, 145);
+    doc.setFontSize(10);
+    
+    let yPosition = 155;
+    if (Array.isArray(pedido.products) && pedido.products.length > 0) {
+      pedido.products.forEach((product, idx) => {
+        const price = product.variantPrice || product.selectedVariant?.price || product.price || 0;
+        const total = Number(price) * product.quantity;
+        
+        if (yPosition > 250) {
+          doc.addPage();
+          yPosition = 20;
+        }
+        
+        doc.text(`${idx + 1}. ${product.name}`, 20, yPosition);
+        doc.text(`Qtd: ${product.quantity} | Preço: R$ ${Number(price).toLocaleString('pt-BR', { minimumFractionDigits: 2 })} | Total: R$ ${total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 25, yPosition + 7);
+        yPosition += 15;
+      });
+    } else {
+      doc.text('Nenhum item informado', 20, yPosition);
+      yPosition += 15;
+    }
+    
+    // Totais
+    const subtotal = pedido.products?.reduce((sum: number, product) => {
+      const price = product.variantPrice || product.selectedVariant?.price || product.price || 0;
+      return sum + (Number(price) * product.quantity);
+    }, 0) || 0;
+    const frete = pedido.freightCost || 0;
+    const taxas = pedido.additionalFees || 0;
+    const totalCompleto = subtotal + frete + taxas;
+    
+    if (yPosition > 250) {
+      doc.addPage();
+      yPosition = 20;
+    }
+    
+    doc.setFontSize(12);
+    doc.text('Totais', 20, yPosition);
+    doc.setFontSize(10);
+    doc.text(`Subtotal: R$ ${subtotal.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 20, yPosition + 10);
+    doc.text(`Frete: R$ ${frete.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 20, yPosition + 17);
+    doc.text(`Taxas: R$ ${taxas.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 20, yPosition + 24);
+    doc.setFontSize(12);
+    doc.text(`Total: R$ ${totalCompleto.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`, 20, yPosition + 35);
+    
+    // Dados bancários
+    if (yPosition + 50 > 250) {
+      doc.addPage();
+      yPosition = 20;
+    }
+    
+    doc.setFontSize(12);
+    doc.text('Dados Bancários', 20, yPosition + 50);
+    doc.setFontSize(10);
+    doc.text('Favorecido: Rodoparaná Implementos Rodoviários LTDA', 20, yPosition + 60);
+    doc.text('Banco: Bradesco | Agência: 3645-5 | Conta: 888-5', 20, yPosition + 67);
+    doc.text('CNPJ: 97.467.856/0001-03 | PIX: pix@rodoparana.com.br', 20, yPosition + 74);
+    
+    // Garantias
+    if (yPosition + 90 > 250) {
+      doc.addPage();
+      yPosition = 20;
+    }
+    
+    doc.setFontSize(12);
+    doc.text('Garantias', 20, yPosition + 90);
+    doc.setFontSize(10);
+    doc.text('Painéis Solares: 12 Meses | Linha Delta e River: 24 Meses', 20, yPosition + 100);
+    doc.text('Ar Condicionado Wave 2: 12 Meses | Geladeira Glacier: 12 Meses', 20, yPosition + 107);
+    doc.text('Gerador Dual Fuel: 12 Meses', 20, yPosition + 114);
+    
+    // Observações
+    if (yPosition + 130 > 250) {
+      doc.addPage();
+      yPosition = 20;
+    }
+    
+    doc.setFontSize(10);
+    doc.text('Validade: 02 dias a contar da data de envio', 20, yPosition + 130);
+    doc.text('Impostos: PIS/COFINS, ICMS e IPI inclusos', 20, yPosition + 137);
+    
+    const pdfBuffer = Buffer.from(doc.output('arraybuffer'));
+    console.log('[SEND-ORDER] PDF gerado com jsPDF, tamanho:', pdfBuffer.length);
+    
+    return pdfBuffer;
+  } catch (error) {
+    console.error('[SEND-ORDER] Erro ao gerar PDF com jsPDF:', error);
+    return Buffer.from('');
+  }
+}
+
 export async function POST(request: Request) {
   try {
     console.log('[SEND-ORDER] Início do processamento do pedido');
@@ -243,122 +368,71 @@ export async function POST(request: Request) {
       }
     }
     
-    // 2. Se não temos PDF do cliente, gerar um novo com puppeteer
+    // 2. Se não temos PDF do cliente, tentar gerar um
     if (pdfBuffer.length === 0) {
-      console.log('[SEND-ORDER] Gerando PDF com puppeteer...');
-      const html = gerarHtmlPedido(pedido);
-      console.log('[SEND-ORDER] HTML do pedido gerado com sucesso');
+      console.log('[SEND-ORDER] Tentando gerar PDF...');
       
-      try {
-        console.log('[SEND-ORDER] Iniciando geração do PDF...');
-        console.log('[SEND-ORDER] HTML gerado, tamanho:', html.length);
-        console.log('[SEND-ORDER] Primeiros 200 caracteres do HTML:', html.substring(0, 200));
-        
-        const browser = await puppeteer.launch({ 
-          args: [
-            "--no-sandbox",
-            "--disable-setuid-sandbox",
-            "--disable-dev-shm-usage",
-            "--disable-gpu",
-            "--no-first-run",
-            "--disable-extensions"
-          ],
-          headless: true
-        });
-        console.log('[SEND-ORDER] Browser iniciado');
-        
-        const page = await browser.newPage();
-        console.log('[SEND-ORDER] Nova página criada');
-        
-        // Configurar viewport
-        await page.setViewport({ width: 1200, height: 800 });
-        console.log('[SEND-ORDER] Viewport configurado');
-        
-        // Definir o conteúdo HTML da página
-        await page.setContent(html, { waitUntil: 'networkidle0' });
-        console.log('[SEND-ORDER] Conteúdo HTML definido');
-        
-        // Aguardar um pouco para garantir que o conteúdo seja renderizado
-        await new Promise(resolve => setTimeout(resolve, 3000));
-        console.log('[SEND-ORDER] Aguardou 3 segundos para renderização');
-        
-        // Verificar se o conteúdo foi renderizado corretamente
-        const pageContent = await page.content();
-        console.log('[SEND-ORDER] Conteúdo da página verificado, tamanho:', pageContent.length);
-        
-        // Verificar se o HTML foi renderizado corretamente
-        const hasContent = await page.evaluate(() => {
-          const body = document.body;
-          return body.innerHTML.length > 0 && body.textContent && body.textContent.trim().length > 0;
-        });
-        console.log('[SEND-ORDER] Página tem conteúdo válido:', hasContent);
-        
-        if (!hasContent) {
-          console.error('[SEND-ORDER] ERRO: Página não tem conteúdo válido!');
-          throw new Error('Página não tem conteúdo válido');
-        }
-        
-        const pdfData = await page.pdf({ 
-          format: 'A4',
-          printBackground: true,
-          margin: {
-            top: '20px',
-            right: '20px',
-            bottom: '20px',
-            left: '20px'
-          }
-        });
-        
-        pdfBuffer = Buffer.from(pdfData);
-        console.log('[SEND-ORDER] PDF gerado com sucesso, tamanho:', pdfBuffer.length);
-        
-        // Fechar browser APÓS gerar o PDF
-        await browser.close();
-        console.log('[SEND-ORDER] Browser fechado');
-        
-        // Verificar se o PDF tem conteúdo
-        if (pdfBuffer.length === 0) {
-          console.error('[SEND-ORDER] ERRO: PDF gerado está vazio!');
-        } else {
-          console.log('[SEND-ORDER] PDF tem conteúdo válido');
-          pdfGenerated = true;
-        }
-      } catch (pdfError) {
-        console.error('[SEND-ORDER] Erro ao gerar PDF com Puppeteer:', pdfError);
-        console.log('[SEND-ORDER] Tentando método alternativo...');
-        
-        // Método alternativo: tentar gerar PDF com configurações mais básicas
+      // Primeiro, tentar com Puppeteer (funciona em desenvolvimento)
+      if (process.env.NODE_ENV === 'development') {
         try {
-          console.log('[SEND-ORDER] Tentando método alternativo de geração de PDF...');
+          console.log('[SEND-ORDER] Ambiente de desenvolvimento detectado, tentando Puppeteer...');
+          const html = gerarHtmlPedido(pedido);
+          
           const browser = await puppeteer.launch({ 
-            args: ["--no-sandbox", "--disable-setuid-sandbox"],
+            args: [
+              "--no-sandbox",
+              "--disable-setuid-sandbox",
+              "--disable-dev-shm-usage",
+              "--disable-gpu",
+              "--no-first-run",
+              "--disable-extensions"
+            ],
             headless: true
           });
           
           const page = await browser.newPage();
-          await page.setContent(html);
-          await new Promise(resolve => setTimeout(resolve, 1000));
+          await page.setViewport({ width: 1200, height: 800 });
+          await page.setContent(html, { waitUntil: 'networkidle0' });
+          await new Promise(resolve => setTimeout(resolve, 2000));
           
-          const pdfData = await page.pdf({ format: 'A4' });
+          const pdfData = await page.pdf({ 
+            format: 'A4',
+            printBackground: true,
+            margin: {
+              top: '20px',
+              right: '20px',
+              bottom: '20px',
+              left: '20px'
+            }
+          });
+          
           pdfBuffer = Buffer.from(pdfData);
           await browser.close();
           
           if (pdfBuffer.length > 0) {
-            console.log('[SEND-ORDER] PDF gerado com método alternativo, tamanho:', pdfBuffer.length);
+            console.log('[SEND-ORDER] PDF gerado com Puppeteer, tamanho:', pdfBuffer.length);
             pdfGenerated = true;
-          } else {
-            console.error('[SEND-ORDER] Método alternativo também falhou');
           }
-        } catch (fallbackError) {
-          console.error('[SEND-ORDER] Método alternativo também falhou:', fallbackError);
-          console.log('[SEND-ORDER] Continuando sem PDF...');
+        } catch (puppeteerError) {
+          console.error('[SEND-ORDER] Puppeteer falhou, tentando jsPDF...', puppeteerError);
+        }
+      }
+      
+      // Se Puppeteer falhou ou estamos em produção, usar jsPDF
+      if (pdfBuffer.length === 0) {
+        console.log('[SEND-ORDER] Usando jsPDF como fallback...');
+        pdfBuffer = gerarPdfComJsPDF(pedido);
+        
+        if (pdfBuffer.length > 0) {
+          console.log('[SEND-ORDER] PDF gerado com jsPDF, tamanho:', pdfBuffer.length);
+          pdfGenerated = true;
         }
       }
     }
     
     // 3. Enviar e-mails para usuário e remetente
     const email = pedido.email || pedido.clientEmail;
-    const senderEmail = process.env.EMAIL_USER; // Email do remetente
+    const senderEmail = process.env.EMAIL_USER;
     
     console.log('[SEND-ORDER] Email do usuário:', email);
     console.log('[SEND-ORDER] Email do remetente:', senderEmail);
@@ -468,7 +542,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ 
       success: true, 
       whatsappLink,
-      idPedido: pedido.idPedido || `pedido_${Date.now()}`
+      idPedido: pedido.idPedido || `pedido_${Date.now()}`,
+      pdfGenerated: pdfGenerated
     });
   } catch (error) {
     console.error('[SEND-ORDER] Erro ao processar pedido:', error);
