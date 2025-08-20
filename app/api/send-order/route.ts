@@ -44,110 +44,130 @@ function gerarHtmlPedido(pedido: PedidoData) {
   <html lang="pt-br">
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nota de Pedido - EcoFlow</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
     <style>
-      body {
-        background-color: #ffffff;
-        color: #000;
-        font-family: 'Montserrat', sans-serif;
-        padding: 20px 15px;
+      * {
+        box-sizing: border-box;
         margin: 0;
-        font-size: 10px;
-        line-height: 1.3;
+        padding: 0;
+      }
+      
+      body {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        padding: 20px 15px !important;
+        margin: 0 !important;
+        font-size: 10px !important;
+        line-height: 1.3 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
       }
 
       h2 {
-        text-align: center;
-        font-size: 18px;
-        margin-bottom: 12px;
-        color: #000;
-        margin-top: 0;
+        text-align: center !important;
+        font-size: 18px !important;
+        margin-bottom: 12px !important;
+        color: #000000 !important;
+        margin-top: 0 !important;
+        font-weight: bold !important;
       }
 
       .container {
-        max-width: 95%;
-        margin: auto;
-        background-color: #ffffff;
-        padding: 15px;
-        
+        max-width: 95% !important;
+        margin: auto !important;
+        background-color: #ffffff !important;
+        padding: 15px !important;
       }
 
       section {
-        margin-bottom: 12px;
+        margin-bottom: 12px !important;
+        page-break-inside: avoid !important;
       }
 
       h3 {
-        font-size: 14px;
-        color: #000;
-        border-bottom: 1px solid #333;
-        padding-bottom: 4px;
-        margin-bottom: 8px;
-        margin-top: 0;
+        font-size: 14px !important;
+        color: #000000 !important;
+        border-bottom: 1px solid #333333 !important;
+        padding-bottom: 4px !important;
+        margin-bottom: 8px !important;
+        margin-top: 0 !important;
+        font-weight: bold !important;
       }
 
       p {
-        margin: 3px 0;
-        font-size: 10px;
-        color: #000;
+        margin: 3px 0 !important;
+        font-size: 10px !important;
+        color: #000000 !important;
+        display: block !important;
       }
 
       label {
-        display: block;
-        margin-bottom: 3px;
-        font-weight: 600;
-        font-size: 10px;
-        color: #000;
+        display: inline !important;
+        margin-right: 5px !important;
+        font-weight: bold !important;
+        font-size: 10px !important;
+        color: #000000 !important;
       }
 
       .item-pedido {
-        padding: 10px;
-        background-color: #f8f8f8;
-        border-radius: 6px;
-        margin-bottom: 10px;
-        border-left: 2px solid #007acc;
+        padding: 10px !important;
+        background-color: #f8f8f8 !important;
+        border-radius: 6px !important;
+        margin-bottom: 10px !important;
+        border-left: 2px solid #007acc !important;
       }
 
       table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 9px;
-        margin-top: 4px;
+        width: 100% !important;
+        border-collapse: collapse !important;
+        font-size: 9px !important;
+        margin-top: 4px !important;
+        border: 1px solid #333333 !important;
       }
 
       th, td {
-        border: 1px solid #333;
-        padding: 4px;
-        text-align: left;
-        color: #000;
+        border: 1px solid #333333 !important;
+        padding: 4px !important;
+        text-align: left !important;
+        color: #000000 !important;
+        background-color: #ffffff !important;
       }
 
       th {
-        background-color: #f0f0f0;
-        color: #000;
-        font-weight: 600;
+        background-color: #f0f0f0 !important;
+        color: #000000 !important;
+        font-weight: bold !important;
       }
 
       .totais td {
-        font-weight: bold;
-        color: #000;
+        font-weight: bold !important;
+        color: #000000 !important;
       }
 
       .bold {
-        font-weight: 600;
-        color: #000;
+        font-weight: bold !important;
+        color: #000000 !important;
       }
 
       .observacao {
-        font-size: 9px;
-        color: #666;
-        margin-top: 8px;
+        font-size: 9px !important;
+        color: #666666 !important;
+        margin-top: 8px !important;
       }
 
       .observacao p {
-        margin: 2px 0;
-        font-size: 9px;
-        color: #666;
+        margin: 2px 0 !important;
+        font-size: 9px !important;
+        color: #666666 !important;
+      }
+      
+      @media print {
+        body {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
       }
     </style>
   </head>
@@ -156,15 +176,15 @@ function gerarHtmlPedido(pedido: PedidoData) {
     <div class="container">
       <section>
         <h3>Dados da Empresa</h3>
-        <p><span class="bold">Emitente:</span> ${dadosEmpresa.empresa} | <span class="bold">CNPJ:</span> ${dadosEmpresa.cnpj_empresa}</p>
-        <p><span class="bold">Endereço:</span> ${dadosEmpresa.endereco_empresa}, ${dadosEmpresa.cidade} – ${dadosEmpresa.uf_empresa}</p>
-        <p><span class="bold">Contato:</span> ${dadosEmpresa.contato_empresa} | <span class="bold">Vendedor:</span> ${dadosEmpresa.vendedor}</p>
+        <p><label>Emitente:</label> ${dadosEmpresa.empresa} | <label>CNPJ:</label> ${dadosEmpresa.cnpj_empresa}</p>
+        <p><label>Endereço:</label> ${dadosEmpresa.endereco_empresa}, ${dadosEmpresa.cidade} – ${dadosEmpresa.uf_empresa}</p>
+        <p><label>Contato:</label> ${dadosEmpresa.contato_empresa} | <label>Vendedor:</label> ${dadosEmpresa.vendedor}</p>
       </section>
       <section>
         <h3>Dados do Cliente</h3>
-        <p><span class="bold">Nome:</span> ${pedido.clientName || 'Cliente não identificado'} | <span class="bold">CNPJ/CPF:</span> ${pedido.cnpj || 'CNPJ não informado'}</p>
-        <p><span class="bold">Contato:</span> ${pedido.contactNumber || 'Número de contato não informado'} | <span class="bold">Data:</span> ${dataPedido}</p>
-        <p><span class="bold">Endereço:</span> ${pedido.deliveryAddress || 'Endereço não informado'} | <span class="bold">Estado:</span> ${pedido.state || 'Estado não informado'}</p>
+        <p><label>Nome:</label> ${pedido.clientName || 'Cliente não identificado'} | <label>CNPJ/CPF:</label> ${pedido.cnpj || 'CNPJ não informado'}</p>
+        <p><label>Contato:</label> ${pedido.contactNumber || 'Número de contato não informado'} | <label>Data:</label> ${dataPedido}</p>
+        <p><label>Endereço:</label> ${pedido.deliveryAddress || 'Endereço não informado'} | <label>Estado:</label> ${pedido.state || 'Estado não informado'}</p>
       </section>
       <section>
         <h3>Itens do Pedido</h3>
@@ -206,17 +226,17 @@ function gerarHtmlPedido(pedido: PedidoData) {
       </section>
       <section>
         <h3>Dados Bancários</h3>
-        <p><span class="bold">Favorecido:</span> ${dadosBancarios.favorecido} | <span class="bold">Banco:</span> ${dadosBancarios.banco}</p>
-        <p><span class="bold">Agência e Conta:</span> ${dadosBancarios.agencia_conta} | <span class="bold">CNPJ:</span> ${dadosBancarios.cnpj_banco}</p>
-        <p><span class="bold">PIX:</span> ${dadosBancarios.pix}</p>
+        <p><label>Favorecido:</label> ${dadosBancarios.favorecido} | <label>Banco:</label> ${dadosBancarios.banco}</p>
+        <p><label>Agência e Conta:</label> ${dadosBancarios.agencia_conta} | <label>CNPJ:</label> ${dadosBancarios.cnpj_banco}</p>
+        <p><label>PIX:</label> ${dadosBancarios.pix}</p>
       </section>
       <section>
         <h3>Garantias</h3>
-        <p><span class="bold">Painéis Solares:</span> 12 Meses | <span class="bold">Linha Delta e River:</span> 24 Meses | <span class="bold">Ar Condicionado Wave 2:</span> 12 Meses</p>
-        <p><span class="bold">Geladeira Portátil Glacier:</span> 12 Meses | <span class="bold">Gerador Dual Fuel:</span> 12 Meses</p>
+        <p><label>Painéis Solares:</label> 12 Meses | <label>Linha Delta e River:</label> 24 Meses | <label>Ar Condicionado Wave 2:</label> 12 Meses</p>
+        <p><label>Geladeira Portátil Glacier:</label> 12 Meses | <label>Gerador Dual Fuel:</label> 12 Meses</p>
       </section>
       <div class="observacao">
-        <p><span class="bold">Validade:</span> 02 dias a contar da data de envio | <span class="bold">Impostos:</span> PIS/COFINS, ICMS e IPI inclusos. Impostos de carga líquida ou diferença de ICMS, se for cobrado, será por conta do cliente.</p>
+        <p><label>Validade:</label> 02 dias a contar da data de envio | <label>Impostos:</label> PIS/COFINS, ICMS e IPI inclusos. Impostos de carga líquida ou diferença de ICMS, se for cobrado, será por conta do cliente.</p>
       </div>
     </div>
   </body>
@@ -372,12 +392,31 @@ export async function POST(request: Request) {
     if (pdfBuffer.length === 0) {
       console.log('[SEND-ORDER] Tentando gerar PDF...');
       
-      // Primeiro, tentar com Puppeteer (funciona em desenvolvimento)
-      if (process.env.NODE_ENV === 'development') {
+      // Em produção (Vercel), Puppeteer não funciona - usar jsPDF diretamente
+      if (process.env.NODE_ENV === 'production' || process.env.VERCEL === '1') {
+        console.log('[SEND-ORDER] 🚫 Ambiente de produção detectado - Puppeteer não funciona aqui');
+        console.log('[SEND-ORDER] 🔄 Usando jsPDF diretamente (única opção viável em produção)');
+        
+        pdfBuffer = gerarPdfComJsPDF(pedido);
+        
+        if (pdfBuffer.length > 0) {
+          console.log('[SEND-ORDER] ✅ PDF gerado com jsPDF para produção, tamanho:', pdfBuffer.length, 'bytes');
+          pdfGenerated = true;
+        } else {
+          console.log('[SEND-ORDER] ❌ jsPDF falhou em produção');
+        }
+      } else {
+        // Em desenvolvimento, tentar Puppeteer primeiro
         try {
-          console.log('[SEND-ORDER] Ambiente de desenvolvimento detectado, tentando Puppeteer...');
+          console.log('[SEND-ORDER] 🚀 Ambiente de desenvolvimento - tentando Puppeteer...');
           const html = gerarHtmlPedido(pedido);
           
+          // Log do HTML gerado para debug
+          console.log('[SEND-ORDER] HTML gerado (primeiros 500 chars):', html.substring(0, 500));
+          console.log('[SEND-ORDER] Tamanho do HTML:', html.length);
+          
+          // Usar Puppeteer com configurações otimizadas para ambos os ambientes
+          console.log('[SEND-ORDER] Iniciando Puppeteer com configurações otimizadas...');
           const browser = await puppeteer.launch({ 
             args: [
               "--no-sandbox",
@@ -385,52 +424,119 @@ export async function POST(request: Request) {
               "--disable-dev-shm-usage",
               "--disable-gpu",
               "--no-first-run",
-              "--disable-extensions"
+              "--disable-extensions",
+              "--disable-web-security",
+              "--allow-running-insecure-content",
+              "--disable-background-timer-throttling",
+              "--disable-backgrounding-occluded-windows",
+              "--disable-renderer-backgrounding"
             ],
-            headless: true
+            headless: true,
+            timeout: 30000
           });
           
           const page = await browser.newPage();
           await page.setViewport({ width: 1200, height: 800 });
-          await page.setContent(html, { waitUntil: 'networkidle0' });
-          await new Promise(resolve => setTimeout(resolve, 2000));
           
-          const pdfData = await page.pdf({ 
-            format: 'A4',
-            printBackground: true,
-            margin: {
-              top: '20px',
-              right: '20px',
-              bottom: '20px',
-              left: '20px'
-            }
+          // Aguardar o conteúdo ser carregado completamente
+          await page.setContent(html, { waitUntil: 'networkidle0' });
+          
+          // Aguardar um pouco mais para garantir que o CSS seja aplicado
+          await new Promise(resolve => setTimeout(resolve, 5000));
+          
+          // Verificar se o conteúdo está visível
+          const contentVisible = await page.evaluate(() => {
+            const body = document.body;
+            const hasText = body && body.textContent && body.textContent.trim().length > 0;
+            const hasElements = body && body.children && body.children.length > 0;
+            const title = document.title;
+            const h2Text = document.querySelector('h2')?.textContent;
+            const sections = document.querySelectorAll('section');
+            
+            console.log('Debug info:', {
+              hasText,
+              hasElements,
+              title,
+              h2Text,
+              bodyTextLength: body?.textContent?.length || 0,
+              childrenCount: body?.children?.length || 0,
+              sectionsCount: sections.length
+            });
+            
+            return hasText && hasElements && sections.length > 0;
           });
           
-          pdfBuffer = Buffer.from(pdfData);
-          await browser.close();
+          console.log('[SEND-ORDER] Conteúdo visível na página:', contentVisible);
           
-          if (pdfBuffer.length > 0) {
-            console.log('[SEND-ORDER] PDF gerado com Puppeteer, tamanho:', pdfBuffer.length);
-            pdfGenerated = true;
+          // Capturar screenshot para debug se necessário
+          if (!contentVisible) {
+            const screenshot = await page.screenshot({ fullPage: true });
+            console.log('[SEND-ORDER] Screenshot capturado para debug, tamanho:', screenshot.length);
+            
+            // Log adicional para debug
+            const debugInfo = await page.evaluate(() => {
+              return {
+                bodyHTML: document.body?.innerHTML?.substring(0, 1000) || 'N/A',
+                computedStyles: {
+                  bodyDisplay: getComputedStyle(document.body).display,
+                  bodyVisibility: getComputedStyle(document.body).visibility,
+                  bodyOpacity: getComputedStyle(document.body).opacity
+                }
+              };
+            });
+            console.log('[SEND-ORDER] Debug adicional:', debugInfo);
+          }
+          
+          if (contentVisible) {
+            console.log('[SEND-ORDER] 🎯 Conteúdo detectado! Gerando PDF...');
+            const pdfData = await page.pdf({ 
+              format: 'A4',
+              printBackground: true,
+              margin: {
+                top: '20px',
+                right: '20px',
+                bottom: '20px',
+                left: '20px'
+              }
+            });
+            
+            pdfBuffer = Buffer.from(pdfData);
+            await browser.close();
+            
+            if (pdfBuffer.length > 0) {
+              console.log('[SEND-ORDER] ✅ PDF gerado com Puppeteer, tamanho:', pdfBuffer.length, 'bytes');
+              console.log('[SEND-ORDER] 💾 PDF salvo no buffer e será reutilizado para ambos os emails');
+              pdfGenerated = true;
+            }
+          } else {
+            console.log('[SEND-ORDER] ❌ Conteúdo não está visível, fechando browser e tentando jsPDF...');
+            await browser.close();
           }
         } catch (puppeteerError) {
-          console.error('[SEND-ORDER] Puppeteer falhou, tentando jsPDF...', puppeteerError);
+          console.error('[SEND-ORDER] ⚠️ Puppeteer falhou, tentando jsPDF...', puppeteerError);
+          console.error('[SEND-ORDER] 📚 Stack trace:', (puppeteerError as Error).stack);
         }
-      }
-      
-      // Se Puppeteer falhou ou estamos em produção, usar jsPDF
-      if (pdfBuffer.length === 0) {
-        console.log('[SEND-ORDER] Usando jsPDF como fallback...');
-        pdfBuffer = gerarPdfComJsPDF(pedido);
         
-        if (pdfBuffer.length > 0) {
-          console.log('[SEND-ORDER] PDF gerado com jsPDF, tamanho:', pdfBuffer.length);
-          pdfGenerated = true;
+        // Se Puppeteer falhou, usar jsPDF
+        if (pdfBuffer.length === 0) {
+          console.log('[SEND-ORDER] 🔄 Usando jsPDF como fallback...');
+          pdfBuffer = gerarPdfComJsPDF(pedido);
+          
+          if (pdfBuffer.length > 0) {
+            console.log('[SEND-ORDER] ✅ PDF gerado com jsPDF, tamanho:', pdfBuffer.length, 'bytes');
+            console.log('[SEND-ORDER] 💾 PDF salvo no buffer e será reutilizado para ambos os emails');
+            pdfGenerated = true;
+          }
         }
       }
     }
     
     // 3. Enviar e-mails para usuário e remetente
+    console.log('[SEND-ORDER] 📧 ===== INICIANDO ENVIO DE EMAILS =====');
+    console.log('[SEND-ORDER] 📊 Status do PDF:', pdfGenerated ? '✅ Gerado com sucesso' : '❌ Falhou na geração');
+    console.log('[SEND-ORDER] 📏 Tamanho do PDF no buffer:', pdfBuffer.length, 'bytes');
+    console.log('[SEND-ORDER] 🔄 O MESMO PDF será usado para ambos os emails (não será gerado um novo)');
+    
     const email = pedido.email || pedido.clientEmail;
     const senderEmail = process.env.EMAIL_USER;
     
@@ -458,12 +564,19 @@ export async function POST(request: Request) {
           },
         ] : [];
         
-        console.log('[SEND-ORDER] Anexo preparado, tamanho:', pdfAttachment.length);
-        console.log('[SEND-ORDER] PDF buffer tamanho:', pdfBuffer.length);
+        console.log('[SEND-ORDER] 📎 Anexo preparado:');
+        console.log('[SEND-ORDER]   - Número de anexos:', pdfAttachment.length);
+        console.log('[SEND-ORDER]   - Tamanho do PDF no buffer:', pdfBuffer.length, 'bytes');
+        console.log('[SEND-ORDER]   - Nome do arquivo:', `nota-pedido-${pedido.idPedido || `pedido_${Date.now()}`}.pdf`);
+        console.log('[SEND-ORDER] 🔄 IMPORTANTE: O MESMO PDF será usado para ambos os emails!');
         
         // Enviar email para o usuário (destinatário)
         if (email) {
-          console.log('[SEND-ORDER] Iniciando envio de e-mail para usuário:', email);
+          console.log('[SEND-ORDER] 📤 ===== ENVIANDO EMAIL PARA USUÁRIO =====');
+          console.log('[SEND-ORDER] 📧 Destinatário:', email);
+          console.log('[SEND-ORDER] 📎 Anexos:', pdfAttachment.length, 'arquivo(s)');
+          console.log('[SEND-ORDER] 💾 Usando PDF do buffer (tamanho:', pdfBuffer.length, 'bytes)');
+          
           await transporter.sendMail({
             from: `EcoFlow <${senderEmail}>`,
             to: email,
@@ -495,7 +608,12 @@ export async function POST(request: Request) {
         
         // Enviar cópia para o remetente (email que está enviando) - SEMPRE ENVIAR
         if (senderEmail) {
-          console.log('[SEND-ORDER] Iniciando envio de cópia para remetente:', senderEmail);
+          console.log('[SEND-ORDER] 📤 ===== ENVIANDO EMAIL PARA REMETENTE =====');
+          console.log('[SEND-ORDER] 📧 Destinatário:', senderEmail);
+          console.log('[SEND-ORDER] 📎 Anexos:', pdfAttachment.length, 'arquivo(s)');
+          console.log('[SEND-ORDER] 💾 Usando o MESMO PDF do buffer (tamanho:', pdfBuffer.length, 'bytes)');
+          console.log('[SEND-ORDER] 🔄 NENHUM PDF NOVO FOI GERADO - reutilizando o existente!');
+          
           await transporter.sendMail({
             from: `EcoFlow <${senderEmail}>`,
             to: senderEmail,
@@ -537,7 +655,7 @@ export async function POST(request: Request) {
     
     // Gerar link do WhatsApp
     const whatsappMessage = `Oi tudo bem? Realizei o pedido ${pedido.idPedido || `pedido_${Date.now()}`}, gostaria de ser um revendedor!`;
-    const whatsappLink = `https://wa.me/554191596957?text=${encodeURIComponent(whatsappMessage)}`;
+            const whatsappLink = `https://wa.me/55419984403450?text=${encodeURIComponent(whatsappMessage)}`;
     
     return NextResponse.json({ 
       success: true, 

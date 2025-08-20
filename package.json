@@ -11,6 +11,7 @@
   "dependencies": {
     "@clerk/nextjs": "^6.15.0",
     "@heroicons/react": "^2.2.0",
+    "@puppeteer/browsers": "^2.10.6",
     "@radix-ui/react-checkbox": "^1.2.3",
     "@radix-ui/react-dialog": "^1.1.11",
     "@radix-ui/react-dropdown-menu": "^2.1.12",
@@ -47,7 +48,7 @@
     "nuqs": "^2.4.3",
     "pizzip": "^3.2.0",
     "puppeteer": "^24.15.0",
-    "puppeteer-core": "^24.16.1",
+    "puppeteer-core": "^24.16.2",
     "react": "^19.1.0",
     "react-day-picker": "8.10.1",
     "react-dom": "^19.1.0",
