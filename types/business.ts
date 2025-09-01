@@ -81,6 +81,27 @@ export interface Manual {
   group: string;
 }
 
+// Tipos para FAQs
+export interface FAQ {
+  category: string;
+  title: string;
+  src: string;
+  pdfPath: string;
+  group: string;
+}
+
+// Interface para produtos com múltiplos PDFs
+export interface FAQProduct {
+  category: string;
+  title: string;
+  src: string;
+  group: string;
+  pdfs: Array<{
+    name: string;
+    path: string;
+  }>;
+}
+
 // Tipos para cálculo de frete
 export type DistanceRange = 
   | "001-100" | "101-200" | "201-400" | "401-600" | "601-800" | "801-1000" 
